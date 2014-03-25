@@ -1,4 +1,4 @@
-/* Donated to the public domain 2007 by Sam Trenholme
+/* Donated to the public domain 2007, 2014 by Sam Trenholme
  *
  * This software is provided 'as is' with no guarantees of correctness or
  * fitness for purpose.
@@ -470,7 +470,11 @@ int input_map(u_int32_t *a, u_int32_t *b, char *filename, int *o)  {
 	FILE *desc;
 	
 	/* Open the file */
+#ifndef LFS
 	if((desc = fopen(filename,"rb")) == NULL) {
+#else
+	if((desc = fopen64(filename,"rb")) == NULL) {
+#endif
 		return 1;
 	}
 
