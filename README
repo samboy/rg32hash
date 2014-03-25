@@ -1,0 +1,11 @@
+To use this program:
+
+	rg32hash . > RG32SUMS
+
+(This will recursively perform a RadioGatun hash on all files and folders
+in the current working directory, putting the result in a file named 
+"RG32SUMS")
+
+This is a third party implementation of the 32-bit version of the
+RadioGatun hash (RadioGatun[32]).  This is a test implementation that
+I wrote in order to make sure I fully understood the specification.
