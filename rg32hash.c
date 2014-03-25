@@ -32,6 +32,8 @@
 #include <unistd.h>
 #include <fcntl.h>
 #include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
 
 /* Fileprint: Print a filename, escaping control characters */
 void fileprint(char *filename) {
@@ -414,7 +416,7 @@ belt_12(u_int32_t *a, u_int32_t *b) {
 	a[15] ^= q2;
 }
 
-void round(u_int32_t *a, u_int32_t *b, int offset) {
+void rground(u_int32_t *a, u_int32_t *b, int offset) {
 	switch(offset) {
 		case 0:
 			belt_00(a,b);
@@ -505,7 +507,7 @@ int input_map(u_int32_t *a, u_int32_t *b, char *filename, int *o)  {
 						b[w + c * 13] ^= p[c];	
 						a[16 + c] ^= p[c];
 					}
-					round(a,b,*o);
+					rground(a,b,*o);
 					*o += 1;
 					if(*o == 13) {*o = 0;}
 					fclose(desc);
@@ -519,7 +521,7 @@ int input_map(u_int32_t *a, u_int32_t *b, char *filename, int *o)  {
 			b[w + c * 13] ^= p[c];	
 			a[16 + c] ^= p[c];
 		}
-		round(a,b,*o);
+		rground(a,b,*o);
 		*o += 1;
 		if(*o == 13) {*o = 0;}
 	}	
@@ -549,14 +551,14 @@ void hashfile(char *filename) {
 	}
 	/* End injection */
 	for(c = 0; c < 16; c++) {
-		round(a,b,o);
+		rground(a,b,o);
 		o++;
 		if(o > 12){o=0;}
 	}
 	/* End mangling */
 	for(c = 0; c < 4; c++) {
 		unsigned char d,e,f,g;
-		round(a,b,o);
+		rground(a,b,o);
 		o++;
 		if(o > 12){o=0;}
 		d = a[1] & 0xff;
