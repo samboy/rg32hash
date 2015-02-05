@@ -9,3 +9,6 @@ in the current working directory, putting the result in a file named
 This is a third party implementation of the 32-bit version of the
 RadioGatun hash (RadioGatun[32]).  This is a test implementation that
 I wrote in order to make sure I fully understood the specification.
+
+rg32-bin.c will compile in to a program which outputs an arbitrary long
+binary sequence of pseudo-random numbers.
