@@ -1,8 +1,8 @@
-#include <stdio.h>     // To run this: ./tinyrg32 '¡Es una niña linda!'
-#include <stdint.h>    // Or ./tinyrg32 --binary-stream '¡Es una niña!'
-#define p uint32_t     // Or maybe ./tinyrg32 --hex --data '¡Una niña!'
-#define f(a) for(c=0;c<a;c++)     // Tiny RadioGatun[32] implementation
-#define n w[c*13]^=s;u[16+c]^=s;         // Public domain - NO WARRANTY
+#include <stdio.h> // tinyrg32.c Compile with cc -o tinyrg32 tinyrg32.c
+#include <stdint.h>// Then, to run it: ./tinyrg32 '¡Es una niña linda!'
+#define p uint32_t // Or perhaps ./tinyrg32 --binary-stream '¡La niña!'
+#define f(a) for(c=0;c<a;c++) // Or ./tinyrg32 --hex --numbers '¡Niña!'
+#define n w[c*13]^=s;u[16+c]^=s; // This is public domain - NO WARRANTY
 void k(p*a,p*b){p m=19,A[19],x,o=13,c,y,r=0,q[3];f(3){for(q[c]=b[y=c*o+
 12];y>c*o;b[y+1]=b[y])y--;b[y]=q[c];}f(12)b[c+1+c%3*o]^=a[c+1];f(m){r=(
 c+r)&31;y=c*7%m;x=a[y++];x^=a[y%m]|~a[(y+1)%m];A[c]=x>>r|x<<(32-r);}f(m
