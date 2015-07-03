@@ -10,5 +10,5 @@ void k(p*a,p*b){p m=19,A[19],x,o=13,c,y,r=0,q[3];f(3){for(q[c]=b[y=c*o+
 u,p*w){p s,q,c,x;f(39)w[c]=u[c%19]=0;for(;;k(u,w)){f(3){for(s=q=0;q<4;)
 {x=*v++;s|=(x?x&255:1)<<8*q++;if(!x){n;f(17)k(u,w);return;}}n;}}}p i(p*
 m,p*b,p*a){*a&2?k(m,b):0;return m[*a^=3];}int main(int g,char**v){p c,j
-,b[39],m[19],q=2;l(v[--g],m,b);f(8){j=i(m,b,&q);j=(j<<24|j>>24|j>>8<<24
->>8|j<<8>>24<<8);printf(g&2?"%c":"%08x",j);c-=g>2;}puts("");return 0;}
+,b[39],m[19],q=2,z;l(v[--g],m,b);f(8){j=i(m,b,&q);z=c;f(4){printf(g&2?
+"%c":"%02x",j&255);j>>=8;}c=g>2?1:z;if(g>4||c>6)puts("");}return 0;}
