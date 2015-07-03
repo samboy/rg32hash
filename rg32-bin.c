@@ -1,5 +1,5 @@
-/* Donated the the public domain 2012 Sam Trenholme.  Written in 2009 and
- * 2012.
+/* Donated the the public domain 2012, 2015 Sam Trenholme.  Written in 2009,
+ * 2012, and 2015.
  *
  * This software is provided 'as is' with no guarantees of correctness or
  * fitness for purpose.
@@ -9,6 +9,8 @@
  * stream cipher by Sam Trenholme */
 
 #include <stdint.h>
+#include <stdio.h>
+#include <stdlib.h>
 
 /* This determines the word size we use for this particular Radio Gatun
  * implementation; DWR_WORDSIZE needs to be a multiple of 8 */
