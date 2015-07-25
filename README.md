@@ -53,3 +53,18 @@ Documentation for tinyrg32.c is included in its source code.
 I understand that tinyrg32.c may still have some bloat in it; if anyone 
 can help me reduce its size without giving up any of its functionality,
 please open up a github ticket with your smaller version of tinyrg32.c
+
+# rg32.class.php RG32 in PHP
+
+rg32.class.php is a class which performs RadioGatún[32] encryption.
+Its api is pretty simple:
+
+```php
+<?php
+require_once("rg32.class.php");
+$rand = new rg32("OrpheanBeholderScryDoubt");
+for($a=0;$a<32;$a++) {
+	printf("%08x\n",$rand->rg());
+}
+?>
+```
