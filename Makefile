@@ -1,4 +1,4 @@
-all: rg32hash rg32-bin tinyrg32
+all: rg32hash rg32-bin tinyrg32 
 
 clean:
 	rm -f rg32hash rg32-bin tinyrg32 *.exe
