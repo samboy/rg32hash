@@ -12,7 +12,7 @@ More information about the algorithm is here:
 
 http://radiogatun.noekeon.org/
 
-This repo has three third party implementations of RadioGatún[32].
+This repo has four implementations of RadioGatún[32].
 
 # Compile
 
@@ -68,3 +68,9 @@ for($a=0;$a<32;$a++) {
 }
 ?>
 ```
+
+The rg32 constructor takes one argument: The seed for the rg32
+random number generator.
+
+The rg32::rg() method returns a 32-bit random integer.
+
