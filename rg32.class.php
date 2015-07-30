@@ -162,11 +162,11 @@ class rg32 {
 
 # This is testing code which I used to make sure this code
 # generates correct test vectors.
-@$in = $argv[1];
-$test = new rg32($in);
-for($a=0;$a<8;$a++) {
-	printf("%08x", $test->rg());
-}
-print "\n";
+#@$in = $argv[1];
+#$test = new rg32($in);
+#for($a=0;$a<8;$a++) {
+#	printf("%08x", $test->rg());
+#}
+#print "\n";
 
 ?>
