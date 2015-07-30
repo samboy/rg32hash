@@ -74,3 +74,6 @@ random number generator.
 
 The rg32::rg() method returns a 32-bit random integer.
 
+rg.class.php is identical to rg32.class.php, but is written in a
+manner which makes it a little easier to experiement with
+RadioGatún variants.
