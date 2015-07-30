@@ -1,7 +1,8 @@
 rg32-bin.c, rg32hash.c, and tinyrg32.c have been
 donated to the public domain 2007, 2014, 2015 by Sam Trenholme 
 
-rg32.class.php is available under the following BSD license:
+rg32.class.php, rg.class.php, and make.php.mill.awk 
+are available under the following BSD license:
 
 # Copyright (c) 2015 Sam Trenholme
 #

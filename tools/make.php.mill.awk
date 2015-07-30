@@ -17,7 +17,7 @@
 # This software is provided 'as is' with no guarantees of correctness or
 # fitness for purpose.
 
-# This generates PHP code for running RG's mill with unrolled
+# This generates PHP code for running RG32's mill with unrolled
 # loops
 
 BEGIN {
