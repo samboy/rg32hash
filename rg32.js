@@ -17,6 +17,15 @@
  * fitness for purpose.
  */
 
+/* Example usage with Node:
+
+var rg32 = require("./rg32.js");
+var hash = new rg32.rg32("foo");
+console.log(hash.hash256()); // 256-bit hash as string
+console.log(hash.rng()); // 32-bit signed integer
+console.log(hash.hexnumber()); // 32-bit hex number
+
+ */
 function rg32(input) {
 	var a = [];
 	var b = [];

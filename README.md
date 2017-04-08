@@ -95,6 +95,8 @@ rg32.js is a Node-compatible Javascript implementation I wrote of
 RadioGatún[32] back in 2010 (slightly updated in 2017 to be Node 
 compatible).
 
-Note that node converts UTF-8 strings in to ISO 8859-1 strings in
-my environment; I use the utf8 Node module to undo this conversion.
+rg32test.js is a script to convert the first command line
+argument given to it in to a string.  Note that node converts UTF-8 
+strings in to ISO 8859-1 with my environment; I use the utf8 Node 
+module in rg32test.js to undo this conversion.
 
