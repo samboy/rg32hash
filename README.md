@@ -102,5 +102,5 @@ between 0 and 1114112; since the RG32 code assumes that each code
 point is between 0 and 255, I use https://github.com/mathiasbynens/utf8.js
 in rg32test.js to convert a Javascript string in to a form which is
 1) Unicode compatible (anything above 255 becomes multiple numbers)
-and 2) Standards compliant 
+2) Standards compliant 
 
