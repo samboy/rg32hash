@@ -96,13 +96,14 @@ RadioGatún[32] back in 2010 (slightly updated in 2017 to be Node
 compatible).
 
 rg32test.js is a script to convert the first command line
-argument given to it in to a string.  Note that Javascript treats a string
-of Unicode characters as a string where each character is its own number
-between 0 and 1114112; since the RG32 code assumes that each code
-point is between 0 and 255, I use https://github.com/mathiasbynens/utf8.js
-in rg32test.js to convert a Javascript string in to a form which is
-1) Unicode compatible (anything above 255 becomes multiple numbers)
-2) Standards compliant 
+argument given to it in to a hex digest string compatible with
+sqa/do.test.sh.  Note that Javascript treats a string of Unicode
+characters as a string where each character is its own number between 0
+and 1114112; since the RG32 code assumes that each code point is between
+0 and 255, I use https://github.com/mathiasbynens/utf8.js in rg32test.js
+to convert a Javascript string in to a form which is 
+1) Unicode compatible (anything above 255 becomes multiple numbers) 
+2) Standards compliant
 
 If the Javascript string is not converted first, Unicode characters with
 a numeric value above 255 will be converted in to an eight-bit number
