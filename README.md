@@ -12,7 +12,7 @@ More information about the algorithm is here:
 
 http://radiogatun.noekeon.org/
 
-This repo has four implementations of RadioGatún[32].
+This repo has five implementations of RadioGatún[32].
 
 # Compile
 
@@ -77,3 +77,9 @@ The rg32::rg() method returns a 32-bit random integer.
 rg.class.php is identical to rg32.class.php, but is written in a
 manner which makes it a little easier to experiement with
 RadioGatún variants.
+
+# rg32.py RadioGatún[32] in Python
+
+rg32.py is a Python implementation I wrote of RadioGatún[32] back
+in 2012.
+
