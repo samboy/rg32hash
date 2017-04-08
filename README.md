@@ -104,3 +104,6 @@ in rg32test.js to convert a Javascript string in to a form which is
 1) Unicode compatible (anything above 255 becomes multiple numbers)
 2) Standards compliant 
 
+If the Javascript string is not converted first, Unicode characters with
+a numeric value above 255 will be converted in to an eight-bit number
+by rg32.js.
