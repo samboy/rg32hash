@@ -21,8 +21,6 @@
 var rg32 = require("./rg32.js");
 var i = process.argv[2];
 
-// The following bit of code requires the utf8 module at
-// https://www.npmjs.com/package/utf8
 // If you do not care about correct hashes for UTF-8 strings with
 // non-ASCII characters, comment out the following two lines
 var utf8 = require('./utf8.js');
