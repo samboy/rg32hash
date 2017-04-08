@@ -1,10 +1,11 @@
 #!/usr/bin/env python
 
 # rg32.py 
+# See rg32test.py to see how the API is used
 
-test_rg32 = 1 # Make this 0 if using this as a library
+#test_rg32 = 1 # Make this 0 if using this as a library
 
-# Copyright (c) 2012-2013 Sam Trenholme
+# Copyright (c) 2012-2017 Sam Trenholme
 # 
 # TERMS
 # 
@@ -136,7 +137,8 @@ class RadioGatun32:
 				a[16 + c] ^= p[c]
 			(a,b) = self.belt(a,b)
 		return (a,b) # We should never get here
-	def rng(self):
+	# Return 16-bit random integer (between 0 and 65535)
+	def rng16(self):
 		if (self.index % 4) == 0:
 			(self.a, self.b) = self.belt(self.a, self.b)
 			self.index += 1
@@ -155,7 +157,7 @@ class RadioGatun32:
 		else: # Should never get here
 			return -1
 
-if test_rg32 == 1:
-	q = RadioGatun32("12345678")
-	for a in xrange(10001):
-		print "%04x%04x%04x%04x" % (q.rng(),q.rng(),q.rng(),q.rng())
+#if test_rg32 == 1:
+#	q = RadioGatun32("12345678")
+#	for a in xrange(10001):
+#		print "%04x%04x%04x%04x" % (q.rng(),q.rng(),q.rng(),q.rng())
