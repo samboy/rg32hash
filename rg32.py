@@ -160,4 +160,4 @@ class RadioGatun32:
 #if test_rg32 == 1:
 #	q = RadioGatun32("12345678")
 #	for a in xrange(10001):
-#		print "%04x%04x%04x%04x" % (q.rng(),q.rng(),q.rng(),q.rng())
+#		print "%04x%04x" % (q.rng16(),q.rng16())
