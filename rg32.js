@@ -25,6 +25,16 @@ console.log(hash.hash256()); // 256-bit hash as string
 console.log(hash.rng()); // 32-bit signed integer
 console.log(hash.hexnumber()); // 32-bit hex number
 
+Note that this uses charCodeAt to convert characters in to 8-bit (0 to 255)
+bytes given to the hash, and converts any Unicode point above 255 (anything 
+not in ISO 8859-1) in to its low eight bits.  If you want better Unicode 
+compatibility, one solution is to use https://github.com/mathiasbynens/utf8.js 
+to convert the string, e.g.
+
+var utf8 = require('utf8');
+var hash = new rg32.rg32(utf8.encode("¡Es una niña!"));
+console.log(hash.hash256());
+
  */
 function rg32(input) {
 	var a = [];
@@ -138,6 +148,15 @@ function rg32(input) {
 			for(q = 0; q < 4; q++) {
 				if(v < input.length) {
 					x = input.charCodeAt(v);
+
+					// While this stops high bit
+					// characters from corrupting
+					// the hash state, strings
+					// with Unicode given to rg32
+					// should be converted in to
+					// UTF-8 first
+					x &= 0xff;
+
 					v++;
 					s[r] |= x << (q * 8);
 				} else {

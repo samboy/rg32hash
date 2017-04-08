@@ -25,7 +25,7 @@ var i = process.argv[2];
 // https://www.npmjs.com/package/utf8
 // If you do not care about correct hashes for UTF-8 strings with
 // non-ASCII characters, comment out the following two lines
-var utf8 = require('utf8');
+var utf8 = require('./utf8.js');
 i = utf8.encode(i);
 
 var hash = new rg32.rg32(i); 

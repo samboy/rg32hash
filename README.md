@@ -96,7 +96,11 @@ RadioGatún[32] back in 2010 (slightly updated in 2017 to be Node
 compatible).
 
 rg32test.js is a script to convert the first command line
-argument given to it in to a string.  Note that node converts UTF-8 
-strings in to ISO 8859-1 with my environment; I use the utf8 Node 
-module in rg32test.js to undo this conversion.
+argument given to it in to a string.  Note that Javascript treats a string
+of Unicode characters as a string where each character is it own number
+between 0 and 1114112; since the RG32 code assumes that each code
+point is between 0 and 255, I use https://github.com/mathiasbynens/utf8.js
+in rg32test.js to convert a Javascript string in to a form which is
+1) Unicode compatible (anything above 255 becomes multiple numbers)
+and 2) Standards compliant 
 
