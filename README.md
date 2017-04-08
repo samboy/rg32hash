@@ -12,7 +12,12 @@ More information about the algorithm is here:
 
 http://radiogatun.noekeon.org/
 
-This repo has five implementations of RadioGatún[32].
+This repo has six implementations of RadioGatún[32]:
+
+* Three C-language implementations
+* A PHP implementation
+* A Python implementation
+* A Node-compatible Javascript implementation
 
 # Compile
 
@@ -81,5 +86,12 @@ RadioGatún variants.
 # rg32.py RadioGatún[32] in Python
 
 rg32.py is a Python implementation I wrote of RadioGatún[32] back
-in 2012.
+in 2012.  rg32test.py can be used with sqa/do.test.sh to ensure
+this implementation generates correct RadioGatún[32] hashes.
+
+# rg32.js RadioGatún[32] in Javascript
+
+rg32.js is a Node-compatible Javascript implementation I wrote of 
+RadioGatún[32] back in 2010 (slightly updated in 2017 to be Node 
+compatible).
 
