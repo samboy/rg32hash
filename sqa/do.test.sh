@@ -13,6 +13,11 @@ cat Input | awk '{print "'${PROG}\ \''" $0 "'\''"}' | sh > output.test
 
 if ! cmp output.success output.test > /dev/null 2>&1 ; then
 	echo Test failed
+	if cmp output.8859-1 output.test > /dev/null 2>&1 ; then
+		echo The script is converting UTF-8 strings in to
+		echo ISO 8859-1 strings.  It is otherwise generating
+		echo correct RadioGatun[32] hashes.
+	fi
 	exit 255
 fi
 
