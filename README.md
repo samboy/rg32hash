@@ -97,7 +97,7 @@ compatible).
 
 rg32test.js is a script to convert the first command line
 argument given to it in to a string.  Note that Javascript treats a string
-of Unicode characters as a string where each character is it own number
+of Unicode characters as a string where each character is its own number
 between 0 and 1114112; since the RG32 code assumes that each code
 point is between 0 and 255, I use https://github.com/mathiasbynens/utf8.js
 in rg32test.js to convert a Javascript string in to a form which is
