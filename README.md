@@ -99,12 +99,14 @@ rg32test.js is a script to convert the first command line
 argument given to it in to a hex digest string compatible with
 sqa/do.test.sh.  Note that Javascript treats a string of Unicode
 characters as a string where each character is its own number between 0
-and 1114112; since the RG32 code assumes that each code point is between
+and 1114111; since the RG32 code assumes that each code point is between
 0 and 255, I use https://github.com/mathiasbynens/utf8.js in rg32test.js
 to convert a Javascript string in to a form which is 
 1) Unicode compatible (anything above 127 becomes multiple numbers) 
 2) Standards compliant
 
-If the Javascript string is not converted first, Unicode characters with
-a numeric value above 255 will be converted in to an eight-bit number
-by rg32.js.
+If the Javascript string is not converted first, if the characters are
+all in ISO 8859-1, we will get the rg32hash as if the hash were given an
+ISO 8859-1 string; any Unicode characters with a numeric value above 255
+(i.e. not in ISO 8859-1) will be converted in to an eight-bit number
+by rg32.js (to prevent the hash state from being corrupted).
