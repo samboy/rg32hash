@@ -105,8 +105,14 @@ to convert a Javascript string in to a form which is
 1) Unicode compatible (anything above 127 becomes multiple numbers) 
 2) Standards compliant
 
-If the Javascript string is not converted first, if the characters are
-all in ISO 8859-1, we will get the rg32hash as if the hash were given an
-ISO 8859-1 string; any Unicode characters with a numeric value above 255
-(i.e. not in ISO 8859-1) will be converted in to an eight-bit number
-by rg32.js (to prevent the hash state from being corrupted).
+If the Javascript string is not converted first, and if the characters
+are all in the ISO 8859-1 subset of Unicode, we will get the rg32hash as
+if the hash were given an ISO 8859-1 string.  Any Unicode characters with
+a numeric value above 255 (i.e. not in ISO 8859-1) will be converted
+in to an eight-bit number by rg32.js (to prevent the hash state from
+being corrupted).
+
+As an aside, it would be simpler for rg32.js to treat each character as
+a 32-bit integer, but compatibility with official test vectors requires
+that we give RagioGatún[32] a string of ASCII-encoded characters
+converted in to 32-bit integers using the little-endian system.
