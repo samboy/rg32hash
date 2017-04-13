@@ -53,7 +53,18 @@ as an argument, an arbitrary long binary string, an arbitrarily long list
 of 32-bit random hex numbers, or even (undocumented) an arbitrarily long
 continuous stream of hex numbers.
 
-Documentation for tinyrg32.c is included in its source code.
+Documentation for tinyrg32.c is included in its source code.  To expand
+on that:
+
+```
+The current behavior is this:
+./tinyrg32: 32-bit hash of argv[0]
+./tinyrg32 "¡Es una niña linda!": 256-bit hash
+./tinyrg32 --binary-stream "¡La niña!": Binary stream
+./tinyrg32 --hex --numbers "¡Niña!": Eight 32-bit hex numbers
+./tinyrg32 --many --hex --numbers "ñ": Endless stream of 32-bit hex numbers
+```
+
 
 I understand that tinyrg32.c may still have some bloat in it; if anyone 
 can help me reduce its size without giving up any of its functionality,
@@ -86,8 +97,9 @@ RadioGatún variants.
 # rg32.py RadioGatún[32] in Python
 
 rg32.py is a Python implementation I wrote of RadioGatún[32] back
-in 2012.  rg32test.py can be used with sqa/do.test.sh to ensure
-this implementation generates correct RadioGatún[32] hashes.
+in 2012.  rg32test.py (an example of the API in use) can be used
+with sqa/do.test.sh to ensure this implementation generates correct
+RadioGatún[32] hashes.
 
 # rg32.js RadioGatún[32] in Javascript
 
