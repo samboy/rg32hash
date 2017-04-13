@@ -12,9 +12,9 @@ More information about the algorithm is here:
 
 http://radiogatun.noekeon.org/
 
-This repo has seven implementations of RadioGatún[32]:
+This repo has eight implementations of RadioGatún[32]:
 
-* Four C-language implementations
+* Five C-language implementations
 * A PHP implementation
 * A Python implementation
 * A Node-compatible Javascript implementation
@@ -79,6 +79,21 @@ please open up a github ticket with your smaller version of tinyrg32.c
 tinyapi.c has both a tiny rg32 library for C program and an example of 
 the library being used.  Useful when you want to give a C program a strong
 random number generator in only 12 lines of code.
+
+# rg32-55.c Creating RadioGatún[32] vectors for long inputs
+
+rg32-55.c is a program which, given about 20-30 minutes, generates
+the file rg32-55-output.txt, which is a series of RadioGatún[32]
+hashes for different lengths of strings of the byte 0x55 (ASCII “U”)
+repeated.
+
+To use the program, run it like this:
+
+./rg32-55 4
+
+This will tell us the RadioGatún[32] sum of 0x55 repeated four times;
+in other words this will tell us the RadioGatun[32] sum of “UUUU” (without
+the quotes).
 
 # rg32.class.php RG32 in PHP
 
