@@ -12,9 +12,9 @@ More information about the algorithm is here:
 
 http://radiogatun.noekeon.org/
 
-This repo has six implementations of RadioGatún[32]:
+This repo has seven implementations of RadioGatún[32]:
 
-* Three C-language implementations
+* Four C-language implementations
 * A PHP implementation
 * A Python implementation
 * A Node-compatible Javascript implementation
@@ -70,10 +70,15 @@ To get many 64-bit hex numbers, use tinyrg32 with other *NIX tools. e.g.
 ./tinyrg32 --many --hex --numbers 'ñ' | fmt -w 18 | tr -d ' '
 ```
 
-
 I understand that tinyrg32.c may still have some bloat in it; if anyone 
 can help me reduce its size without giving up any of its functionality,
 please open up a github ticket with your smaller version of tinyrg32.c
+
+# tinyapi.c Tiny rg32 library
+
+tinyapi.c has both a tiny rg32 library for C program and an example of 
+the library being used.  Useful when you want to give a C program a strong
+random number generator in only 12 lines of code.
 
 # rg32.class.php RG32 in PHP
 

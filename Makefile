@@ -1,4 +1,4 @@
-all: rg32hash rg32-bin tinyrg32 
+all: rg32hash rg32-bin tinyrg32 tinyapi
 
 clean:
 	rm -f rg32hash rg32-bin tinyrg32 *.exe
@@ -11,3 +11,6 @@ rg32-bin: rg32-bin.c
 
 tinyrg32: tinyrg32.c
 	cc -O3 -o tinyrg32 tinyrg32.c
+
+tinyapi: tinyapi.c
+	cc -O3 -o tinyapi tinyapi.c
