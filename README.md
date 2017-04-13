@@ -58,11 +58,16 @@ on that:
 
 ```
 The current behavior is this:
+
 ./tinyrg32: 32-bit hash of argv[0]
 ./tinyrg32 '¡Es una niña linda!': 256-bit hash
 ./tinyrg32 --binary-stream '¡La niña!': Binary stream
 ./tinyrg32 --hex --numbers '¡Niña!': Eight 32-bit hex numbers
 ./tinyrg32 --many --hex --numbers 'ñ': Endless stream of 32-bit hex numbers
+
+To get many 64-bit hex numbers, use tinyrg32 with other *NIX tools. e.g.
+
+./tinyrg32 --many --hex --numbers 'ñ' | fmt -w 18 | tr -d ' '
 ```
 
 
