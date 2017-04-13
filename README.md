@@ -59,10 +59,10 @@ on that:
 ```
 The current behavior is this:
 ./tinyrg32: 32-bit hash of argv[0]
-./tinyrg32 "¡Es una niña linda!": 256-bit hash
-./tinyrg32 --binary-stream "¡La niña!": Binary stream
-./tinyrg32 --hex --numbers "¡Niña!": Eight 32-bit hex numbers
-./tinyrg32 --many --hex --numbers "ñ": Endless stream of 32-bit hex numbers
+./tinyrg32 '¡Es una niña linda!': 256-bit hash
+./tinyrg32 --binary-stream '¡La niña!': Binary stream
+./tinyrg32 --hex --numbers '¡Niña!': Eight 32-bit hex numbers
+./tinyrg32 --many --hex --numbers 'ñ': Endless stream of 32-bit hex numbers
 ```
 
 
