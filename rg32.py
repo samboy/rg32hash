@@ -158,18 +158,19 @@ class RadioGatun32:
 			return -1
 	# Return 32-bit random integer
 	def rng32(self):
-		self.index &= 2;
-		if(self.index == 0):
-			self.index = 2
-			return (((self.a[1] & 0xff) << 24) |
-				((self.a[1] & 0xff000000) >> 24) |
-				((self.a[1] & 0xff00) << 8) |
-				((self.a[1] & 0xff0000) >> 8))
-		self.index = 0
-		return (((self.a[2] & 0xff) << 24) |
-			((self.a[2] & 0xff000000) >> 24) |
-			((self.a[2] & 0xff00) << 8) |
-			((self.a[2] & 0xff0000) >> 8))
+		self.index &= 2
+		if(self.index):
+			self.index = 0
+			return (((self.a[2] & 0xff) << 24) |
+				((self.a[2] & 0xff000000) >> 24) |
+				((self.a[2] & 0xff00) << 8) |
+				((self.a[2] & 0xff0000) >> 8))
+		(self.a, self.b) = self.belt(self.a, self.b)
+		self.index = 2
+		return (((self.a[1] & 0xff) << 24) |
+			((self.a[1] & 0xff000000) >> 24) |
+			((self.a[1] & 0xff00) << 8) |
+			((self.a[1] & 0xff0000) >> 8))
 
 
 #if test_rg32 == 1:
