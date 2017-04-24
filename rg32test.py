@@ -13,7 +13,8 @@ except:
 	i = "12345678"
 q = RadioGatun32(i)
 o = ""
-for a in xrange(8):
+for a in xrange(4):
 	o += "%04x%04x" % (q.rng16(),q.rng16())
+	o += "%08x" % (q.rng32())
 print o
 

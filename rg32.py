@@ -156,6 +156,21 @@ class RadioGatun32:
 				((self.a[2] & 0xff000000) >> 24))
 		else: # Should never get here
 			return -1
+	# Return 32-bit random integer
+	def rng32(self):
+		self.index &= 2;
+		if(self.index == 0):
+			self.index = 2
+			return (((self.a[1] & 0xff) << 24) |
+				((self.a[1] & 0xff000000) >> 24) |
+				((self.a[1] & 0xff00) << 8) |
+				((self.a[1] & 0xff0000) >> 8))
+		self.index = 0
+		return (((self.a[2] & 0xff) << 24) |
+			((self.a[2] & 0xff000000) >> 24) |
+			((self.a[2] & 0xff00) << 8) |
+			((self.a[2] & 0xff0000) >> 8))
+
 
 #if test_rg32 == 1:
 #	q = RadioGatun32("12345678")
