@@ -57,3 +57,24 @@ for a in xrange(4):
 	o += "%08x" % (q.rng32())
 	o += "%04x%04x" % (q.rng16(),q.rng16())
 print o
+
+print ""
+print "Test #4 randint"
+
+q = RadioGatun32(i)
+for a in xrange(32):
+	print "This number should be between 1 and %d: %d" % (
+		2 ** a, q.randint(1,2 ** a))
+print ""
+for a in xrange(48):
+	print ("This number should be between 101 and 121: " + 
+			str(q.randint(101,121)))
+
+print ""
+print "Test #5 random"
+q = RadioGatun32(i)
+print "The numbers should be 0.9008508757866456 0.37925485830094763 "
+print "0.9431169932393442 and 0.5271410449369754"
+print ""
+for a in xrange(4):
+	print ("This number should be between 0 and 1: " + str(q.random()))

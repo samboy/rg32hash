@@ -179,7 +179,7 @@ class RadioGatun32:
 	# Return number between 0 (can be 0) and 1 (can be slightly smaller
 	# than 1 but never 1)
 	def random(self):
-		return self.rng64() / 18446744073709551616
+		return float(self.rng64()) / 18446744073709551616
 	# Return a number between a and b
 	def randint(self, low, high):
 		if(low == high):
@@ -195,7 +195,7 @@ class RadioGatun32:
 			number = max
 			while number >= max:
 				number = self.rng16()
-			return low + number
+			return low + (number % range)
 		# int() returns the floor, e.g. int(1.99999) returns 1
 		return int(low + (self.random() * range))
 
