@@ -41,6 +41,8 @@ class RadioGatun32:
 		self.beltfeed = 12
 		self.mask = 0xffffffff # 32-bit
 		self.index = 0
+		self.left = 0
+		self.right = 0
 		(self.a, self.b) = self.seed(str(m))
 	def mill(self,a):
 		aa = []
@@ -171,7 +173,11 @@ class RadioGatun32:
 			((self.a[1] & 0xff000000) >> 24) |
 			((self.a[1] & 0xff00) << 8) |
 			((self.a[1] & 0xff0000) >> 8))
-
+	# Return 64-bit random integer
+	def rng64(self):
+		self.left = self.rng32()
+		self.right = self.rng32()
+		return ((self.left << 32) | self.right)
 
 #if test_rg32 == 1:
 #	q = RadioGatun32("12345678")
