@@ -41,7 +41,7 @@ class RadioGatun32:
 		self.beltfeed = 12
 		self.mask = 0xffffffff # 32-bit
 		self.index = 0
-		(self.a, self.b) = self.seed(m)
+		(self.a, self.b) = self.seed(str(m))
 	def mill(self,a):
 		aa = []
 		for g in xrange(self.millsize):
