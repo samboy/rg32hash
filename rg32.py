@@ -41,8 +41,6 @@ class RadioGatun32:
 		self.beltfeed = 12
 		self.mask = 0xffffffff # 32-bit
 		self.index = 0
-		self.left = 0
-		self.right = 0
 		(self.a, self.b) = self.seed(str(m))
 	def mill(self,a):
 		aa = []
@@ -175,9 +173,31 @@ class RadioGatun32:
 			((self.a[1] & 0xff0000) >> 8))
 	# Return 64-bit random integer
 	def rng64(self):
-		self.left = self.rng32()
-		self.right = self.rng32()
-		return ((self.left << 32) | self.right)
+		left = self.rng32()
+		right = self.rng32()
+		return ((left << 32) | right)
+	# Return number between 0 (can be 0) and 1 (can be slightly smaller
+	# than 1 but never 1)
+	def random(self):
+		return self.rng64() / 18446744073709551616
+	# Return a number between a and b
+	def randint(self, low, high):
+		if(low == high):
+			return low
+		if(high < low):
+			swap = low
+			low = high
+			high = swap
+		range = 1 + high - low	
+		# For low ranges, we can use 16-bit ints to get number
+		if(range <= 10000):
+			max = 65536 - (65536 % range)
+			number = max
+			while number >= max:
+				number = self.rng16()
+			return low + number
+		# int() returns the floor, e.g. int(1.99999) returns 1
+		return int(low + (self.random() * range))
 
 #if test_rg32 == 1:
 #	q = RadioGatun32("12345678")
