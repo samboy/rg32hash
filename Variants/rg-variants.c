@@ -24,6 +24,7 @@ uint64_t wordmask = 0xffffffff;
 /* Operation in Gamma: 
  * 0: or-not
  * 1: subtraction
+ * 2: not-addition
  */
 int operation = 0; 
 
@@ -47,6 +48,9 @@ void dwr_mill(DWR_WORD *a, DWR_WORD *A) {
 		} else if(operation == 1) {
 			x = a[y] ^ (a[ ((y + 1) % millsize) ] -
 			    (a[ ((y + 2) % millsize) ]));
+		} else if(operation == 2) {
+			x = a[y] ^ (a[ ((y + 1) % millsize) ] +
+			    (~a[ ((y + 2) % millsize) ]));
 		} 
 		x &= wordmask;
 		A[i] = (x >> r) | (x << (wordsize - r));
@@ -239,10 +243,11 @@ int main(int argc, char **argv) {
 	}
 	if(argc >= 5) {
 		operation = atoi(argv[4]);
-		if(operation < 0 || operation > 1) {
-			printf("Operation must be 0 or 1");
+		if(operation < 0 || operation > 2) {
+			printf("Operation must be 0, 1, or 2\n");
 			printf("0: or-not in gamma step (standard RG)\n");
 			printf("1: subtract in gamma step (RV200)\n");
+			printf("1: not-add in gamma step (RadioAddin)\n");
 			exit(1);
 		}
 	}
