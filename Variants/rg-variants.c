@@ -21,6 +21,11 @@ uint64_t beltcol = 13;
 uint64_t beltfeed = 12;
 uint64_t blankrounds = 16;
 uint64_t wordmask = 0xffffffff;
+/* Operation in Gamma: 
+ * 0: or-not
+ * 1: subtraction
+ */
+int operation = 0; 
 
 /* These are hard coded in the Radio Gatun specification */
 #define DWR_BELTROWS 3
@@ -37,8 +42,13 @@ void dwr_mill(DWR_WORD *a) {
 	for(i = 0; i < millsize ; i++) {
 		y = (i * 7) % millsize;
 		r = ((i * (i + 1)) / 2) % wordsize;
-		x = a[y] ^ (a[ ((y + 1) % millsize) ] | 
-		    (~a[ ((y + 2) % millsize) ]));
+		if(operation == 0) {
+			x = a[y] ^ (a[ ((y + 1) % millsize) ] | 
+		    	    (~a[ ((y + 2) % millsize) ]));
+		} else if(operation == 1) {
+			x = a[y] ^ (a[ ((y + 1) % millsize) ] -
+			    (a[ ((y + 2) % millsize) ]));
+		} 
 		x &= wordmask;
 		A[i] = (x >> r) | (x << (wordsize - r));
 		A[i] &= wordmask;
@@ -82,7 +92,6 @@ void dwr_belt(DWR_WORD *a, DWR_WORD *b) {
 	for(i = 0; i < DWR_BELTROWS; i++) {
 		a[(i + beltcol)] ^= q[i];
 	}
-	//int zz,zy;for(zz=0;zz<millsize;zz++){printf("%08x\n",a[zz]);}//DEBUG
 }
 
 /* Convert a null-terminated string in to a Radio Gatun state (doesn't
@@ -200,7 +209,8 @@ int main(int argc, char **argv) {
 	int a, b;
 	DWR_WORD x;
 	if(argc < 2) {
-		printf("Usage: rg {input to hash} {word size}\n");
+		printf("Usage: rg {input to hash} {word size} {mill size}");
+		printf("\n\t{operation} {blank rounds}\n");
 		exit(1);
 	}
 	if(argc >= 3) {
@@ -212,6 +222,28 @@ int main(int argc, char **argv) {
 		if(wordsize < 8 || wordsize > 64) {
 			printf("Wordsize must be between 8 and 64\n");
 		}
+	}
+	if(argc >= 4) {
+		millsize = atoi(argv[3]);
+		if(millsize < 11) {
+			printf("Millsize must be 11 or higher (sexy prime)\n");
+			exit(1);
+		}
+		blankrounds = millsize - 3;
+		beltcol = millsize - 6;
+		beltfeed = beltcol - 1;
+	}
+	if(argc >= 5) {
+		operation = atoi(argv[4]);
+		if(operation < 0 || operation > 1) {
+			printf("Operation must be 0 or 1");
+			printf("0: or-not in gamma step (standard RG)\n");
+			printf("1: subtract in gamma step (RV200)\n");
+			exit(1);
+		}
+	}
+	if(argc >= 6) {
+		blankrounds = atoi(argv[5]);
 	}
 	wordmask = (1ULL << wordsize) - 1;
 	if(!wordmask) { wordmask = 0xffffffffffffffffULL; }
