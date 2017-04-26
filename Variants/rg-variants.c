@@ -214,7 +214,7 @@ DWR_WORD dwr_rng(dwr_rg *state) {
 /* Main function; remove this if using the above as an API in your program */
 int main(int argc, char **argv) {
 	dwr_rg *hash;
-	int a, b;
+	int a, b, bytes_seen = 0;
 	DWR_WORD x;
 	if(argc < 2) {
 		printf("Usage: rg {input to hash} {word size} {mill size}");
@@ -261,10 +261,13 @@ int main(int argc, char **argv) {
 	if(hash == 0) {
 		exit(1);
 	}
-	for(a=0;a<8;a++) {
+	for(a=0;a<99999;a++) {
 		x = dwr_rng(hash);
 		for(b = 0; b < wordsize / 8; b++) {
 			printf("%02x",((x >> (b * 8)) & 0xff));
+			if(bytes_seen++ >= 32) {
+				return 0;
+			}
 		}
 	}
 	printf("\n");
