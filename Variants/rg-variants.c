@@ -97,8 +97,8 @@ void dwr_input_map(DWR_WORD *a, DWR_WORD *b, uint8_t *v) {
 		p[0] = p[1] = p[2] = 0;
 		for(r = 0; r < 3; r++) {
 			for(q = 0; q < wordsize / 8; q++) {
-				int x = 0;
-				x = (int)*v;
+				DWR_WORD x = 0;
+				x = (DWR_WORD)*v;
 				v++;
 				x &= 0xff;
 				if(x == 0) {
@@ -198,7 +198,7 @@ DWR_WORD dwr_rng(dwr_rg *state) {
 int main(int argc, char **argv) {
 	dwr_rg *hash;
 	int a, b;
-	int32_t x;
+	DWR_WORD x;
 	if(argc < 2) {
 		printf("Usage: rg {input to hash} {word size}\n");
 		exit(1);
@@ -209,8 +209,8 @@ int main(int argc, char **argv) {
 			printf("Wordsize must be a multiple of 8\n");
 			exit(1);
 		}
-		if(wordsize < 8 || wordsize > 56) {
-			printf("Wordsize must be between 8 and 56\n");
+		if(wordsize < 8 || wordsize > 64) {
+			printf("Wordsize must be between 8 and 64\n");
 		}
 	}
 	wordmask = (1ULL << wordsize) - 1;
