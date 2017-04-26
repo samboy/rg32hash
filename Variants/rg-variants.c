@@ -1,5 +1,5 @@
-/* Donated the the public domain 2012, 2015 Sam Trenholme.  Written in 2009,
- * 2012, and 2015. 
+/* Donated the the public domain 2012-2017 Sam Trenholme.  Written in 2009,
+ * 2012, 2015, 2017. 
  *
  * This software is provided 'as is' with no guarantees of correctness or
  * fitness for purpose.
@@ -31,8 +31,7 @@ int operation = 0;
 #define DWR_BELTROWS 3
 
 /* The "mill" part of Radio Gatun */
-void dwr_mill(DWR_WORD *a) {
-	DWR_WORD A[millsize];
+void dwr_mill(DWR_WORD *a, DWR_WORD *A) {
 	DWR_WORD x;
 	int i = 0;
 	int y = 0;
@@ -63,7 +62,7 @@ void dwr_mill(DWR_WORD *a) {
 }	
 
 /* The "belt" part of Radio Gatun */
-void dwr_belt(DWR_WORD *a, DWR_WORD *b) {
+void dwr_belt(DWR_WORD *a, DWR_WORD *b, DWR_WORD *A) {
 	DWR_WORD q[DWR_BELTROWS];
 	int s = 0;
 	int i = 0;
@@ -88,7 +87,7 @@ void dwr_belt(DWR_WORD *a, DWR_WORD *b) {
 		s = (i + 1) + ((i % DWR_BELTROWS) * beltcol);
 		b[s] ^= a[(i + 1)];
 	}
-	dwr_mill(a);
+	dwr_mill(a,A);
 	for(i = 0; i < DWR_BELTROWS; i++) {
 		a[(i + beltcol)] ^= q[i];
 	}
@@ -96,7 +95,7 @@ void dwr_belt(DWR_WORD *a, DWR_WORD *b) {
 
 /* Convert a null-terminated string in to a Radio Gatun state (doesn't
  * include padding and what not) */
-void dwr_input_map(DWR_WORD *a, DWR_WORD *b, uint8_t *v) {
+void dwr_input_map(DWR_WORD *a, DWR_WORD *b, DWR_WORD *A, uint8_t *v) {
 	DWR_WORD p[3];
 	int q = 0;
 	int c = 0;
@@ -118,19 +117,19 @@ void dwr_input_map(DWR_WORD *a, DWR_WORD *b, uint8_t *v) {
 				p[r] |= x << (q * 8);
 				if(done == 1) {
 					for(c = 0; c < 3; c++) {
-						b[c * 13] ^= p[c];
-						a[16 + c] ^= p[c];
+						b[c * beltcol] ^= p[c];
+						a[c + millsize - 3] ^= p[c];
 					}
-					dwr_belt(a,b);
+					dwr_belt(a,b,A);
 					return;
 				}
 			}
 		}
 		for(c = 0; c < 3; c++) {
-			b[c * 13] ^= p[c];
-			a[16 + c] ^= p[c];
+			b[c * beltcol] ^= p[c];
+			a[c + millsize - 3] ^= p[c];
 		}
-		dwr_belt(a,b);
+		dwr_belt(a,b,A);
 	}
 }
 
@@ -138,6 +137,7 @@ void dwr_input_map(DWR_WORD *a, DWR_WORD *b, uint8_t *v) {
 typedef struct {
         DWR_WORD *a;
         DWR_WORD *b;
+        DWR_WORD *A;
 	int index;
 } dwr_rg;
 
@@ -154,9 +154,10 @@ dwr_rg *dwr_init_rg(char *v) {
 		return 0;
 	}
 	out->a = (DWR_WORD *)malloc(millsize * sizeof(DWR_WORD) + 1);
+	out->A = (DWR_WORD *)malloc(millsize * sizeof(DWR_WORD) + 1);
 	out->b = (DWR_WORD *)malloc(DWR_BELTROWS * beltcol * 
 			sizeof(DWR_WORD) + 1);
-	if(out->a == 0 || out->b == 0) {
+	if(out->a == 0 || out->b == 0 || out->A == 0) {
 		free(out);
 		return 0;
 	}
@@ -168,9 +169,9 @@ dwr_rg *dwr_init_rg(char *v) {
 		out->b[c] = 0;
 	}
 	out->index = 0;
-	dwr_input_map(out->a,out->b,v);
+	dwr_input_map(out->a,out->b,out->A,v);
 	for(c = 0; c < blankrounds; c++) {
-		dwr_belt(out->a,out->b);
+		dwr_belt(out->a,out->b,out->A);
 	}
 	return out;
 }
@@ -183,6 +184,9 @@ void dw_zap_rg(dwr_rg *tozap) {
 	if(tozap->a != 0) {
 		free(tozap->a);
 	}
+	if(tozap->A != 0) {
+		free(tozap->A);
+	}
 	if(tozap->b != 0) {
 		free(tozap->b);
 	}
@@ -194,7 +198,7 @@ void dw_zap_rg(dwr_rg *tozap) {
 DWR_WORD dwr_rng(dwr_rg *state) {
 	DWR_WORD out;
 	if((state->index & 1) == 0) {
-		dwr_belt(state->a,state->b);
+		dwr_belt(state->a,state->b,state->A);
 		out = state->a[1];	
 	} else {
 		out = state->a[2];
