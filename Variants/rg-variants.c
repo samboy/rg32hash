@@ -5,8 +5,23 @@
  * fitness for purpose.
  */
 
-/* This is a tiny implementation of the Radio Gatun hash function/
- * stream cipher by Sam Trenholme */
+/* This version of RadioGatun[32] allows one to experiment with variants
+ * It takes a number of arguments:
+ * 1) The input to hash
+ * All other arguments are optional:
+ * 2) The word size in bits.  Must be a multiple of 8 between 8 and 64.
+ *    Defaults to 32.
+ * 3) The mill size in words.  Is 19 in RadioGatun, 17 in RV200
+ * 4) The operation to perform.  This is a numeric value:
+ *    0. or-not in gamma step (standard RadioGatun)
+ *    1. subtract in gamma step (RV200)
+ *    2. not-add in gamma step (RadioAddin)
+ * 5) The number of blank rounds.  To have every bit in the belt or mill
+ *    affect every bit in the mill, have this be the mill size minus 3
+ *    16 in both RadioGatun and RV200
+ * 6) The constant we exclusive or the first byte of the mill with during
+ *    the iota step.  This is 1 in RadioGatun
+ */
 
 #include <stdint.h>
 #include <stdio.h>
@@ -21,6 +36,7 @@ uint64_t beltcol = 13;
 uint64_t beltfeed = 12;
 uint64_t blankrounds = 16;
 uint64_t wordmask = 0xffffffff;
+uint64_t iota = 1;
 /* Operation in Gamma: 
  * 0: or-not
  * 1: subtraction
@@ -62,7 +78,7 @@ void dwr_mill(DWR_WORD *a, DWR_WORD *A) {
 		q = (i + 4) % millsize;
 		a[i] = A[y] ^ A[z] ^ A[q];
 	}
-	a[0] ^= 1;
+	a[0] ^= iota;
 }	
 
 /* The "belt" part of Radio Gatun */
@@ -218,7 +234,7 @@ int main(int argc, char **argv) {
 	DWR_WORD x;
 	if(argc < 2) {
 		printf("Usage: rg {input to hash} {word size} {mill size}");
-		printf("\n\t{operation} {blank rounds}\n");
+		printf("\n\t{operation} {blank rounds} {iota}\n");
 		exit(1);
 	}
 	if(argc >= 3) {
@@ -247,12 +263,15 @@ int main(int argc, char **argv) {
 			printf("Operation must be 0, 1, or 2\n");
 			printf("0: or-not in gamma step (standard RG)\n");
 			printf("1: subtract in gamma step (RV200)\n");
-			printf("1: not-add in gamma step (RadioAddin)\n");
+			printf("2: not-add in gamma step (RadioAddin)\n");
 			exit(1);
 		}
 	}
 	if(argc >= 6) {
 		blankrounds = atoi(argv[5]);
+	}
+	if(argc >= 7) {
+		iota = atoi(argv[6]);
 	}
 	wordmask = (1ULL << wordsize) - 1;
 	if(!wordmask) { wordmask = 0xffffffffffffffffULL; }
@@ -265,7 +284,8 @@ int main(int argc, char **argv) {
 		x = dwr_rng(hash);
 		for(b = 0; b < wordsize / 8; b++) {
 			printf("%02x",((x >> (b * 8)) & 0xff));
-			if(bytes_seen++ >= 32) {
+			if(++bytes_seen >= 32) {
+				printf("\n");
 				return 0;
 			}
 		}
