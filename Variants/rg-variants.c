@@ -16,6 +16,8 @@
  *    0. or-not in gamma step (standard RadioGatun)
  *    1. subtract in gamma step (RV200)
  *    2. not-add in gamma step (RadioAddin)
+ *    3. not-and in gamma step (Keccak)
+ *    4. NORX subtraction (a^(~b)^((a&(~b))<<1))
  * 5) The number of blank rounds.  To have every bit in the belt or mill
  *    affect every bit in the mill, have this be the mill size minus 3
  *    16 in both RadioGatun and RV200
@@ -38,9 +40,10 @@ uint64_t blankrounds = 16;
 uint64_t wordmask = 0xffffffff;
 uint64_t iota = 1;
 /* Operation in Gamma: 
- * 0: or-not
- * 1: subtraction
- * 2: not-addition
+ * 0: or-not (a |~ b)
+ * 1: subtraction (a - b)
+ * 2: not-addition (a + ~b)
+ * 3: not a and b (~a & b)
  */
 int operation = 0; 
 
@@ -67,7 +70,15 @@ void dwr_mill(DWR_WORD *a, DWR_WORD *A) {
 		} else if(operation == 2) {
 			x = a[y] ^ (a[ ((y + 1) % millsize) ] +
 			    (~a[ ((y + 2) % millsize) ]));
-		} 
+		} else if(operation == 3) {
+			x = a[y] ^ ((~a[ ((y + 1) % millsize) ]) &
+			    (a[ ((y + 2) % millsize) ]));
+		} else if(operation == 4) {
+			x = a[y] ^ ((a[ ((y + 1) % millsize) ]) 
+			         ^  (~a[ ((y + 2) % millsize) ])
+				 ^  (((a[ ((y + 1) % millsize) ]) &
+				      (~a[ ((y + 2) % millsize) ])) << 1));
+		}
 		x &= wordmask;
 		A[i] = (x >> r) | (x << (wordsize - r));
 		A[i] &= wordmask;
@@ -262,11 +273,13 @@ int main(int argc, char **argv) {
 	}
 	if(argc >= 5) {
 		operation = atoi(argv[4]);
-		if(operation < 0 || operation > 2) {
+		if(operation < 0 || operation > 4) {
 			printf("Operation must be 0, 1, or 2\n");
 			printf("0: or-not in gamma step (standard RG)\n");
 			printf("1: subtract in gamma step (RV200)\n");
 			printf("2: not-add in gamma step (RadioAddin)\n");
+			printf("3: not-and in gamma step (Keccak)\n");
+			printf("4: NORX subtraction (a^(~b)^((a&(~b))<<1))\n");
 			exit(1);
 		}
 	}
