@@ -44,6 +44,15 @@ in the current working directory, putting the result in a file named
 rg32-bin.c will compile in to a program which outputs an arbitrary long
 binary sequence of pseudo-random numbers.
 
+# rg32-floats
+
+rg32-floats.c will compile in to a program which outputs an arbitrary long
+sequence of pseudo-random floating point numbers between 0 and 1 (it could
+be 0 but never 1).  Note that each number has 32 bits of entropy.
+
+I used this program to verify that RadioGatún[32] passes the “Small Crush”
+version of TestU01.
+
 # tinyrg32: Less bloat
 
 For people that feel rg32-bin.c and rg32hash.c are too bloated, I have
