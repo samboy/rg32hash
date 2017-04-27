@@ -59,7 +59,7 @@ uint64_t kIotaNum(int *LFSR) {
 	for(j = 0; j < 7; j++) {
 		b = (1 << j) - 1; // The bit to alter
 		if(*LFSR & 1) { out |= (1ULL << b); }
-		// And now, an 8-bit Galoris LFSR in three lines of code
+		// And now, an 8-bit Galois LFSR in three lines of code
 		*LFSR &= 0xff;
 		*LFSR <<= 1;
 		if(*LFSR & 256) { *LFSR ^= 0x171; }
