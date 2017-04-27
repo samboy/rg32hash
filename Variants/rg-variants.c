@@ -254,6 +254,9 @@ int main(int argc, char **argv) {
 			exit(1);
 		}
 		blankrounds = millsize - 3;
+		if(blankrounds < 16) { blankrounds = 16; }
+		if(millsize > 40) { blankrounds++; }
+		blankrounds += (millsize / 100);
 		beltcol = millsize - 6;
 		beltfeed = beltcol - 1;
 	}
