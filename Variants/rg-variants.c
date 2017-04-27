@@ -22,7 +22,8 @@
  *    affect every bit in the mill, have this be the mill size minus 3
  *    16 in both RadioGatun and RV200
  * 6) The constant we exclusive or the first byte of the mill with during
- *    the iota step.  This is 1 in RadioGatun
+ *    the iota step.  This is 1 in RadioGatun.  If set to 0, we perform
+ *    the Keccak algorithm to calculate iota
  */
 
 #include <stdint.h>
@@ -39,6 +40,7 @@ uint64_t beltfeed = 12;
 uint64_t blankrounds = 16;
 uint64_t wordmask = 0xffffffff;
 uint64_t iota = 1;
+int LFSR = 1; // Used for Keccak-style iota calculation
 /* Operation in Gamma: 
  * 0: or-not (a |~ b)
  * 1: subtraction (a - b)
@@ -46,6 +48,21 @@ uint64_t iota = 1;
  * 3: not a and b (~a & b)
  */
 int operation = 0; 
+
+/* Keccak iota constant calculator */
+uint64_t kIotaNum(int *LFSR) {
+	int j, b;
+	uint64_t out = 0;
+	for(j = 0; j < 7; j++) {
+		b = (1 << j) - 1; // The bit to alter
+		if(*LFSR & 1) { out |= (1ULL << b); }
+		// And now, an 8-bit Galoris LFSR in three lines of code
+		*LFSR &= 0xff;
+		*LFSR <<= 1;
+		if(*LFSR & 256) { *LFSR ^= 0x171; }
+	}
+	return out;
+}
 
 /* These are hard coded in the Radio Gatun specification */
 #define DWR_BELTROWS 3
@@ -89,7 +106,11 @@ void dwr_mill(DWR_WORD *a, DWR_WORD *A) {
 		q = (i + 4) % millsize;
 		a[i] = A[y] ^ A[z] ^ A[q];
 	}
-	a[0] ^= iota;
+	if(iota) {
+		a[0] ^= iota;
+	} else {
+		a[0] ^= kIotaNum(&LFSR);
+	}
 }	
 
 /* The "belt" part of Radio Gatun */
