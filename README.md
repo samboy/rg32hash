@@ -12,9 +12,9 @@ More information about the algorithm is here:
 
 http://radiogatun.noekeon.org/
 
-This repo has eight implementations of RadioGatún[32]:
+This repo has 10 implementations of RadioGatún[32]:
 
-* Five C-language implementations
+* Seven C-language implementations
 * A PHP implementation
 * A Python implementation
 * A Node-compatible Javascript implementation
@@ -53,7 +53,7 @@ be 0 but never 1).  Note that each number has 32 bits of entropy.
 I used this program to verify that RadioGatún[32] passes the “Small Crush”
 version of TestU01.
 
-# tinyrg32: Less bloat
+# tinyrg32: Somewhat less bloat
 
 For people that feel rg32-bin.c and rg32hash.c are too bloated, I have
 also included tinyrg32.c, which is a somewhat unbloated program which
@@ -82,6 +82,10 @@ To get many 64-bit hex numbers, use tinyrg32 with other *NIX tools. e.g.
 I understand that tinyrg32.c may still have some bloat in it; if anyone 
 can help me reduce its size without giving up any of its functionality,
 please open up a github ticket with your smaller version of tinyrg32.c
+
+# nanorg32 RadioGatún[32] in 607 bytes
+
+nanorg32.c is a RadioGatún[32] implementation in 607 bytes.
 
 # tinyapi.c Tiny rg32 library
 
