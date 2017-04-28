@@ -85,7 +85,8 @@ why I have made...
 # nanorg32 RadioGatún[32] in 607 bytes
 
 nanorg32.c is a C-language RadioGatún[32] implementation in 607 bytes, 
-using lines under 75 characters long.
+using lines under 75 characters long.  There are no warnings when
+compiling with -Wall in gcc 5.4.0.
 
 # tinyapi.c Tiny rg32 library
 
