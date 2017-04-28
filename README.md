@@ -79,13 +79,13 @@ To get many 64-bit hex numbers, use tinyrg32 with other *NIX tools. e.g.
 ./tinyrg32 --many --hex --numbers 'ñ' | fmt -w 18 | tr -d ' '
 ```
 
-I understand that tinyrg32.c may still have some bloat in it; if anyone 
-can help me reduce its size without giving up any of its functionality,
-please open up a github ticket with your smaller version of tinyrg32.c
+I understand that tinyrg32.c still has some bloat in it; which is
+why I have made...
 
 # nanorg32 RadioGatún[32] in 607 bytes
 
-nanorg32.c is a RadioGatún[32] implementation in 607 bytes.
+nanorg32.c is a C-language RadioGatún[32] implementation in 607 bytes, 
+using lines under 75 characters long.
 
 # tinyapi.c Tiny rg32 library
 
