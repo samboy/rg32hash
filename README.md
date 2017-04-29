@@ -87,7 +87,7 @@ why I have made...
 nanorg32.c is a C-language RadioGatún[32] implementation in 607 bytes, 
 using lines under 75 characters long.  There are no warnings when
 compiling with -Wall -Wpedantic in gcc 5.4.0, a recent version
-of clang (LLVM), and there are no warnings or errors when compiled
+of clang (LLVM), nor are there any warnings or errors when compiled
 with TCC 0.9.25.
 
 nanorg32.c is public domain.
