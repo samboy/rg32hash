@@ -90,6 +90,8 @@ compiling with -Wall -Wpedantic in gcc 5.4.0, a recent version
 of clang (LLVM), and there ar eno warnings or errors when compiled
 with TCC 0.9.25.
 
+nanorg32.c is public domain.
+
 # tinyapi.c Tiny rg32 library
 
 tinyapi.c has both a tiny rg32 library for C program and an example of 
