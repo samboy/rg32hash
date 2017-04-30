@@ -66,17 +66,20 @@ Documentation for tinyrg32.c is included in its source code.  To expand
 on that:
 
 ```
+The final argument given to tinyrg32.c is always the key used to 
+choose the random numbers generated; the same key will always
+generate the same numbers.
+
 The current behavior is this:
 
-./tinyrg32: 32-bit hash of argv[0]
+./tinyrg32: A 32-bit hash of argv[0]
 ./tinyrg32 '¡Es una niña linda!': 256-bit hash
 ./tinyrg32 --binary-stream '¡La niña!': Binary stream
-./tinyrg32 --hex --numbers '¡Niña!': Eight 32-bit hex numbers
-./tinyrg32 --many --hex --numbers 'ñ': Endless stream of 32-bit hex numbers
-
-To get many 64-bit hex numbers, use tinyrg32 with other *NIX tools. e.g.
-
-./tinyrg32 --many --hex --numbers 'ñ' | fmt -w 18 | tr -d ' '
+./tinyrg32 --hex --numbers '¡Niña!': Ten 32-bit hex numbers
+./tinyrg32 --two --alphanum --strings 'ñ': Two alphanumeric strings
+./tinyrg32 --infinite --number --of --alphanum -strings 'ñ': Self-explanatory
+./tinyrg32 - - - - - - - - - -: Infinite 32-bit hex strings
+./tinyrg32 - - - - - - - - - - - - - - - - - -: Infinite long hex strings
 ```
 
 I understand that tinyrg32.c still has some bloat in it; which is

@@ -1,14 +1,12 @@
-#include <stdio.h> // tinyrg32.c Compile with cc -o tinyrg32 tinyrg32.c
-#include <stdint.h>// Then, to run it: ./tinyrg32 '¡Es una niña linda!'
-#define p uint32_t // Or perhaps ./tinyrg32 --binary-stream '¡La niña!'
-#define f(a) for(c=0;c<a;c++) // Or ./tinyrg32 --hex --numbers '¡Niña!'
-#define n w[c*13]^=s;u[16+c]^=s; // This is public domain - NO WARRANTY
-void k(p*a,p*b){p m=19,A[19],x,o=13,c,y,r=0,q[3];f(12)b[c+c%3*o]^=a[c+1
-];f(3){for(q[c]=b[y=c*o+12];y>c*o;b[y+1]=b[y])y--;b[y]=q[c];}f(m){r=(c+
-r)&31;y=c*7%m;x=a[y++];x^=a[y%m]|~a[(y+1)%m];A[c]=x>>r|x<<(32-r);}f(m)a
-[c]=A[c]^A[(c+1)%m]^A[(c+4)%m];f(3)a[c+o]^=q[c];*a^=1;}void l(char*v,p*
-u,p*w){p s,q,c,x;f(39)w[c]=u[c%19]=0;for(;;k(u,w)){f(3){for(s=q=0;q<4;)
-{x=*v++;s|=(x?x&255:1)<<8*q++;if(!x){n;f(17)k(u,w);return;}}n;}}}p i(p*
-m,p*b,p*a){*a&2?k(m,b):0;return m[*a^=3];}int main(int g,char**v){p c,j
-,b[39],m[19],q=2,z;l(v[--g],m,b);f(8){j=i(m,b,&q);z=g&1?c:1;f(4){printf
-(g-2?"%02x":"%c",j&255);j>>=8;}c=g?z:7;if(g>2||c>6)puts("");}return 0;}
+#include <stdio.h> // cc -o tinyrg32 tinyrg32.c ; ./tinyrg32 'Test vector'
+#include <stdint.h> // ./tinyrg32 --hex --numbers 'A tiny list of numbers'
+#define b(z) for(c=0;c<z;c++) // ./tinyrg32 --binary-stream '¡Es la niña!'
+#define d f[c*13]^=s;e[16+c]^=s; // This is public domain, but NO WARRANTY
+uint32_t c,e[19],f[40],g=19,h=13,r,s,t,n[19],i,k;void m(){int c,j=0;b(12)f
+[c+c%3*h]^=e[c+1];b(g){j=(c+j)&31;i=c*7%g;k=e[i++];k^=e[i%g]|~e[(i+1)%g];n
+[c]=k>>j|k<<(32-j);}for(i=39;i--;f[i+1]=f[i])e[i%g]=n[i%g]^n[(i+1)%g]^n[(i
++4)%g];*e^=1;b(3)e[c+h]^=f[c*h]=f[c*h+h];}int main(int p,char**v){char *q=
+v[--p];b(40)f[c]=e[c%19]=0;for(;;m()){b(3){for(s=r=0;r<4;){t=*q++;s|=(t?t&
+255:1)<<8*r++;if(!t){d;b(17)m();b(7+p){if(~t&1)m();s=e[(t++&1)+1];r=(p&3)-
+2?c:1;b(4){i=s;if(p&4){i&=31;i+=i<9?49:56;}printf(p==2||p&4?"%c":"%02x",i&
+255);s>>=8;}c=p?r:7;if(p-2&&(t%9==8||(p&22)==2))puts("");}return 0;}}d;}}}
