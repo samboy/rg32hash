@@ -65,13 +65,13 @@ continuous stream of hex numbers.
 Documentation for tinyrg32.c is included in its source code.  To expand
 on that:
 
-```
 The final argument given to tinyrg32.c is always the key used to 
 choose the random numbers generated; the same key will always
 generate the same numbers.
 
 The current behavior is this:
 
+```
 ./tinyrg32: A 32-bit hash of argv[0]
 ./tinyrg32 '¡Es una niña linda!': 256-bit hash
 ./tinyrg32 --binary-stream '¡La niña!': Binary stream
