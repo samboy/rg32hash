@@ -79,7 +79,7 @@ The current behavior is this:
 ./tinyrg32 --two --alphanum --strings 'ñ': Two alphanumeric strings
 ./tinyrg32 --infinite --number --of --alphanum -strings 'ñ': Self-explanatory
 ./tinyrg32 - - - - - - - - - -: Infinite 32-bit hex strings
-./tinyrg32 - - - - - - - - - - - - - - - - - -: Infinite long hex strings
+./tinyrg32 - - - - - - - - - - - - - - - - - -: Infinite 256-bit hex strings
 ```
 
 I understand that tinyrg32.c still has some bloat in it; which is
