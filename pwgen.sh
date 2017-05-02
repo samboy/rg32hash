@@ -28,7 +28,7 @@ SUFFIX="Z_7" # This covers most site's password rules.  Change this to
 	# to the password, more if the attacker doesn't know this rule)
 
 # If you need an index above five, change this command line
-PASSWORD=$( tinyrg32 --make --five --alphanumeric --numbers $SECRET:$SITE | \
+PASSWORD=$( tinyrg32 --make --five --alphanumeric --chars "$SECRET:$SITE" | \
 	head -$INDEX | tail -1 )
 
 echo ${PASSWORD}${SUFFIX}
