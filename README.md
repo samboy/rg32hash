@@ -56,11 +56,11 @@ version of TestU01.
 # tinyrg32: Somewhat less bloat
 
 For people that feel rg32-bin.c and rg32hash.c are too bloated, I have
-also included tinyrg32.c, which is a somewhat unbloated program which
-will output either the 256-bit hex hash of a string given to the program
-as an argument, an arbitrary long binary string, an arbitrarily long list
-of 32-bit random hex numbers, or even (undocumented) an arbitrarily long
-continuous stream of hex numbers.
+also included tinyrg32.c, which is a somewhat unbloated program which will
+output either the 256-bit hex hash of a string given to the program as
+an argument, an arbitrary long binary string, an arbitrarily long list
+of 32-bit random hex numbers, or even an arbitrarily long continuous
+stream of 32-character long strings of random numbers and letters.
 
 Documentation for tinyrg32.c is included in its source code.  To expand
 on that:
@@ -111,7 +111,7 @@ pwgen.sh 1 facebook.com
 Replace “Some secret string” with a suitably hard to guess string, and 
 facebook.com with the site you need to log in to.
 
-To create another password for the site, to something like this:
+To create another password for the site, do something like this:
 
 ```
 pwgen.sh 2 facebook.com
