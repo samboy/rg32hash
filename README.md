@@ -82,6 +82,9 @@ The current behavior is this:
 ./tinyrg32 - - - - - - - - - - - - - - - - - -: Infinite 256-bit hex strings
 ```
 
+Note that alphanumeric strings never have the characters “0” and “1” in
+them.
+
 I understand that tinyrg32.c still has some bloat in it; which is
 why I have made...
 
