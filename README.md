@@ -98,6 +98,31 @@ with TCC 0.9.25.
 
 nanorg32.c is public domain.
 
+# pwgen.sh Generate passwords with tinyrg32
+
+pwgen.sh allows the tinyrg32 program to generate secure passwords for
+websites. To use, do something like this:
+
+```
+echo 'Some secret string' > ~/.mash_prefix2 # Only do this once
+pwgen.sh 1 facebook.com
+```
+
+Replace “Some secret string” with a suitably hard to guess string, and 
+facebook.com with the site you need to log in to.
+
+To create another password for the site, to something like this:
+
+```
+pwgen.sh 2 facebook.com
+```
+
+Or, if the index is above five:
+
+```
+pwgen.sh facebook.com:6
+```
+
 # tinyapi.c Tiny rg32 library
 
 tinyapi.c has both a tiny rg32 library for C program and an example of 
