@@ -76,7 +76,7 @@ The current behavior is this:
 ./tinyrg32 '¡Es una niña linda!': 256-bit hash
 ./tinyrg32 --binary-stream '¡La niña!': Binary stream
 ./tinyrg32 --hex --numbers '¡Niña!': 24 32-bit hex numbers
-./tinyrg32 --two --alphanum --strings 'ñ': Four alphanumeric strings
+./tinyrg32 --two --alphanum --strings 'ñ': Four 160-bit alphanumeric strings 
 ./tinyrg32 --infinite --number --of --alphanum -strings 'ñ': Self-explanatory
 ./tinyrg32 - - - - - - - - - -: Infinite 32-bit hex strings
 ./tinyrg32 - - - - - - - - - - - - - - - - - -: Infinite 256-bit hex strings
