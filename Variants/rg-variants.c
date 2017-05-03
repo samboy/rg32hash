@@ -20,7 +20,8 @@
  *    4. NORX subtraction (a^(~b)^((a&(~b))<<1))
  * 5) The number of blank rounds.  To have every bit in the belt or mill
  *    affect every bit in the mill, have this be the mill size minus 3
- *    16 in both RadioGatun and RV200
+ *    (more for really big mills; and probably 16 for really small mills)
+ *    The value is 16 in both RadioGatun and RV200
  * 6) The constant we exclusive or the first byte of the mill with during
  *    the iota step.  This is 1 in RadioGatun.  If set to 0, we perform
  *    the Keccak algorithm to calculate iota. If set to -1, we add one

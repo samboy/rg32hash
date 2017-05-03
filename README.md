@@ -98,6 +98,9 @@ with TCC 0.9.25.
 
 nanorg32.c is public domain.
 
+Since the code may be hard to read, I explain what some of the code does
+in the document nanorg32.md.
+
 # pwgen.sh Generate passwords with tinyrg32
 
 pwgen.sh allows the tinyrg32 program to generate secure passwords for
