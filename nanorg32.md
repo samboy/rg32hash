@@ -124,21 +124,23 @@ b(g){j=(c+j)&31;i=c*7%g;k=e[i++];k^=e[i%g]|~e[(i+1)%g];n[c]=k>>j|k<<(32-j);}
 Expanded, we would get something like this:
 
 ```c
-for(counter=0; counter < 19; counter++) {
+for(counter=0; counter < 19; counter++) 
+	{
 	rotateAmount = (rotateAmount + counter) % 32;
 	index = (counter * 7) % 19;
 	temp = mill[ index ];
 	temp ^=  mill[ ( index + 1 ) % 19 ] |~ mill [ ( index + 2 ) % 19 ];
-	millcopy[ counter ] = circularRotateRight(temp,rotateAmount);
-}
+	millcopy[ counter ] = circularRotateRight(temp,rotateAmount); 
+	}
 ```
 
 With circularRotateRight being something like this:
 
 ```c
-uint32_t circularRotateRight(in, rotateAmount) {
-	return (in >> rotateAmount) | (in << (32 - rotateAmount));
-}
+uint32_t circularRotateRight(in, rotateAmount) 
+	{
+	return (in >> rotateAmount) | (in << (32 - rotateAmount)); 
+	}
 ```
 
 We have a few magic constants in the above code:
@@ -169,25 +171,28 @@ for(i=39;i--;f[i+1]=f[i])e[i%g]=n[i%g]^n[(i+1)%g]^n[(i+4)%g];
 Expanded, this would look something like:
 
 ```c
-for(counter = 38; counter >= 0; counter--) {
+for(counter = 38; counter >= 0; counter--) 
+	{	
 	belt [ counter + 1 ] = belt [ counter ];
 	mill [ counter % 19 ] = millcopy [ counter % 19 ];
 	mill [ counter % 19 ] ^= millcopy [ ( counter + 1 ) % 19 ];
-	mill [ counter % 19 ] ^= millcopy [ ( counter + 4 ) % 19 ];
-}
+	mill [ counter % 19 ] ^= millcopy [ ( counter + 4 ) % 19 ]; 
+	}
 ```
 
 Or, perhaps:
 
 ```c
-for(counter = 38; counter >= 0; counter--) {
-	belt [ counter + 1 ] = belt [ counter ];
-}
-for(counter = 0; counter < 19; counter++) {
+for(counter = 38; counter >= 0; counter--) 
+	{
+	belt [ counter + 1 ] = belt [ counter ]; 
+	}
+for(counter = 0; counter < 19; counter++) 
+	{
 	mill [ counter ] = millcopy [ counter ];
 	mill [ counter ] ^= millcopy [ ( counter + 1 ) % 19 ];
 	mill [ counter ] ^= millcopy [ ( counter + 4 ) % 19 ];
-}
+	}
 ```
 
 Note that this does most, but not all of the belt rotation.
@@ -241,12 +246,14 @@ b(3)e[c+h]^=f[c*h]=f[c*h+h];
 Expanded, this would look like this:
 
 ```
-for( counter = 0; counter < 3; counter++ ) {
+for( counter = 0; counter < 3; counter++ ) 
+	{
 	// Finish up the belt rotate
 	belt [ counter * 13 ] = belt [ ( counter * 13 ) + 13 ];
 	// Mill to belt feedforward
 	mill [ counter + 13 ] ^= belt [ counter * 13 ];
-}
+	}
+```
 
 ## That ends the beltmill function
 
