@@ -37,7 +37,7 @@ exit 0
 
 # Here is the tinyrg32.c source
 
-cat > /dev/null < EOF
+cat > /dev/null << EOF
 #include <stdio.h> // cc -o tinyrg32 tinyrg32.c ; ./tinyrg32 'Test vector'
 #include <stdint.h> // ./tinyrg32 --hex --numbers 'A tiny list of numbers'
 #define b(z) for(c=0;c<(z);c++) // ./tinyrg32 --binary-stream 'Es la niña'
