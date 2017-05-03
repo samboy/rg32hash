@@ -195,7 +195,7 @@ for(counter = 0; counter < 19; counter++)
 	}
 ```
 
-Note that this does most, but not all of the belt rotation.
+Note that this does most, but not all, of the belt rotation.
 The values for indices 0, 13, and 26 in the belt have the wrong
 values; we correct these later.
 
