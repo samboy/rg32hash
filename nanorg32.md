@@ -26,7 +26,7 @@ newlines).
 
 The official RadioGatún[32] specification is here:
 
-	http://radiogatun.noekeon.org/
+>http://radiogatun.noekeon.org/
 
 In the interests of making the code as compact as possible,
 nanorg32 implements RadioGatún[32] somewhat differently (but, of
