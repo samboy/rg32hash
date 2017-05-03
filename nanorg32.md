@@ -215,7 +215,12 @@ Expanded, this would be something like
 mill [ 0 ] ^= 1;
 ```
 
-Compare this to how the SHA-3 Iota step looks:
+Here, the XOR constant is always 1, which is perfect for an experimental
+research cipher where we expect cryptographers to analyze reduced bit 
+versions of RadioGatún.
+
+Compare this to how the SHA-3 (a.k.a. Keccak) Iota step XOR constant
+is calculated:
 
 ```c
 /* Keccak iota constant calculator */
@@ -233,6 +238,15 @@ uint64_t kIotaNum(int *LFSR) {
         return out;
 }
 ```
+
+The reason why the SHA-3 form of Iota is more complicated is because:
+
+* To quote the Keccak 3.0 reference: “As l [the number of non-zero 
+  bits in the Iota XOR constant] increases, the round constants 
+  add more and more asymmetry.”
+* A LFSR is used so hardware implementations need fewer gates to implement
+  the Iota step (software implementations are expected to just use a
+  table with Iota constants precalculated).
 
 ## Belt to mill feedforward
 
@@ -262,6 +276,7 @@ The rest of nanorg32.c performs input mapping (converting a string in
 to numbers that alter the belt and mill) as well as output generation
 (we generate a 256-bit hash).
 
-I hope to have time to explain how that code works in nanorg32.c
+I hope to have time in the future to explain how that code works in 
+nanorg32.c
 
 
