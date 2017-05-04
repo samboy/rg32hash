@@ -1,27 +1,26 @@
 all: rg32hash rg32-bin tinyrg32 tinyapi rg32-55 rg32-floats nanorg32
 
 clean:
-	rm -f rg32hash rg32-bin tinyrg32 rg32-floats tinyapi \
-		nanorg32 rg32-55 *.exe
+	rm -f bin/t* bin/r* bin/n* bin/*.exe
 
-rg32hash: rg32hash.c
-	cc -O3 -o rg32hash rg32hash.c
+rg32hash: C/rg32hash.c
+	cc -O3 -o bin/rg32hash C/rg32hash.c
 
-rg32-bin: rg32-bin.c
-	cc -O3 -o rg32-bin rg32-bin.c
+rg32-bin: C/rg32-bin.c
+	cc -O3 -o bin/rg32-bin C/rg32-bin.c
 
-rg32-floats: rg32-floats.c
-	cc -O3 -o rg32-floats rg32-floats.c
+rg32-floats: C/rg32-floats.c
+	cc -O3 -o bin/rg32-floats C/rg32-floats.c
 
-tinyrg32: tinyrg32.c
-	cc -Wall -O3 -o tinyrg32 tinyrg32.c
+tinyrg32: C/tinyrg32.c
+	cc -Wall -O3 -o bin/tinyrg32 C/tinyrg32.c
 
-nanorg32: nanorg32.c
-	cc -Wall -O3 -o nanorg32 nanorg32.c
+nanorg32: C/nanorg32.c
+	cc -Wall -O3 -o bin/nanorg32 C/nanorg32.c
 
-tinyapi: tinyapi.c
-	cc -Wall -O3 -o tinyapi tinyapi.c
+tinyapi: C/tinyapi.c
+	cc -Wall -O3 -o bin/tinyapi C/tinyapi.c
 
-rg32-55: rg32-55.c
-	cc -O3 -o rg32-55 rg32-55.c
+rg32-55: C/rg32-55.c
+	cc -O3 -o bin/rg32-55 C/rg32-55.c
 

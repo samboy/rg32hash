@@ -27,7 +27,12 @@ A Makefile is included to compile the programs here. To use:
 make
 ```
 
+The C programs compiler are in the “C” directory; the compiled programs
+will be placed in the “bin/” directory.
+
 # Using rg32hash
+
+This program will be compiled in to the “bin/” directory.
 
 To use this program:
 
@@ -41,10 +46,14 @@ in the current working directory, putting the result in a file named
 
 # Using rg32-bin
 
+This program will be compiled in to the “bin/” directory.
+
 rg32-bin.c will compile in to a program which outputs an arbitrary long
 binary sequence of pseudo-random numbers.
 
 # rg32-floats
+
+This program will be compiled in to the “bin/” directory.
 
 rg32-floats.c will compile in to a program which outputs an arbitrary long
 sequence of pseudo-random floating point numbers between 0 and 1 (it could
@@ -54,6 +63,8 @@ I used this program to verify that RadioGatún[32] passes the “Small Crush”
 version of TestU01.
 
 # tinyrg32: Somewhat less bloat
+
+This program will be compiled in to the “bin/” directory.
 
 For people that feel rg32-bin.c and rg32hash.c are too bloated, I have
 also included tinyrg32.c, which is a somewhat unbloated program which will
@@ -90,6 +101,8 @@ why I have made...
 
 # nanorg32 RadioGatún[32] in 607 bytes
 
+This program will be compiled in to the “bin/” directory.
+
 nanorg32.c is a C-language RadioGatún[32] implementation in 607 bytes, 
 using lines under 75 characters long.  There are no warnings when
 compiling with -Wall -Wpedantic in gcc 5.4.0, a recent version
@@ -99,9 +112,11 @@ with TCC 0.9.25.
 nanorg32.c is public domain.
 
 Since the code may be hard to read, I explain what some of the code does
-in the document nanorg32.md.
+in the document nanorg32.md (in the “C” directory).
 
 # pwgen.sh Generate passwords with tinyrg32
+
+This script can be found in the “C/” directory.
 
 pwgen.sh allows the tinyrg32 program to generate secure passwords for
 websites. To use, do something like this:
@@ -128,11 +143,15 @@ pwgen.sh facebook.com:6
 
 # tinyapi.c Tiny rg32 library
 
+This program will be compiled in to the “bin/” directory.
+
 tinyapi.c has both a tiny rg32 library for C program and an example of 
 the library being used.  Useful when you want to give a C program a strong
 random number generator in only 12 lines of code.
 
 # rg32-55.c Creating RadioGatún[32] vectors for long inputs
+
+This program will be compiled in to the “bin/” directory.
 
 rg32-55.c is a program which, given about 20-30 minutes, generates
 the file rg32-55-output.txt, which is a series of RadioGatún[32]
