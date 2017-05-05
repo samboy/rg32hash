@@ -1,6 +1,8 @@
 # You are not expected to understand this
 
-In order to make nanorg32.c as compact as possible, the code is
+Well, that’s one way to put it, but not very helpful.
+
+Yes, in order to make nanorg32.c as compact as possible, the code is
 a little hard to read.
 
 If this were an IOCCC entry and not a personal side project, I would
@@ -142,6 +144,9 @@ for(counter=0; counter < 19; counter++)
 	millcopy[ counter ] = circularRotateRight(temp,rotateAmount); 
 	}
 ```
+
+Note that the ~ operator inverts bits; with 32-bit numbers, it is 
+equivalent to performing an exclusive or against 0xffffffff.
 
 With circularRotateRight being something like this:
 
