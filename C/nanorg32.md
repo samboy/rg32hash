@@ -653,9 +653,11 @@ Which acts the same way.
 
 ### Converting the outWord in to a hex number
 
-Because of endian issues, we have to swap the words we get from the
-RadioGatún state to generate correct test vectors; this is an optional
-step and, if test vector compatibility is not needed, can be ignored.
+Since the test vectors were generated on a little-endian machine that 
+converted the 32-bit numbers in an 8-bit string array, we have to swap the 
+words we get from the RadioGatún state to generate correct test vectors; 
+this is an optional step and, if test vector compatibility is not needed, 
+can be ignored.
 
 Since nanorg32.c generates correct test vectors, we do it thusly:
 
