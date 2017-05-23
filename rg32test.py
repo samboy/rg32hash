@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 
+# vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
+
 # This is a Python script which calls the code in rg32.py
 # It outputs the 256-bit hex hash of the first argument given to the program
 # Use this with sqa/do.test.sh
