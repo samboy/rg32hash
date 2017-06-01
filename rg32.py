@@ -160,6 +160,8 @@ class RadioGatun32:
             return -1
     # Return 32-bit random integer
     def rng32(self):
+        if(self.index & 1):
+            self.index += 1
         self.index &= 2
         if(self.index):
             self.index = 0

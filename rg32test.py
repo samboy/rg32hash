@@ -68,15 +68,36 @@ for a in xrange(32):
     print "This number should be between 1 and %d: %d" % (
             2 ** a, q.randint(1,2 ** a))
 print ""
-for a in xrange(48):
+for a in xrange(4):
     print ("This number should be between 101 and 121: " +
                     str(q.randint(101,121)))
 
 print ""
-print "Test #5 random"
+print "Test #5 random() (number between 0 and 1)"
 q = RadioGatun32(i)
 print "The numbers should be 0.9008508757866456 0.37925485830094763 "
 print "0.9431169932393442 and 0.5271410449369754"
 print ""
 for a in xrange(4):
     print ("This number should be between 0 and 1: " + str(q.random()))
+
+print ""
+print "Test #6 combine 16-bit and 32-bit"
+
+# Show reference numbers in 32-bit chunks
+q = RadioGatun32(i)
+o = ""
+for a in xrange(8):
+    o += "%08x " % (q.rng32())
+print o
+
+print "The 16-bit number should not be repreated in the final 32-bit number"   
+# Make sure 16-bit chunks are not repeated in 32-bit chunks 
+for a in xrange(8):
+    q = RadioGatun32(i)
+    o = ""
+    for b in xrange(a):
+        o += "%04x " % (q.rng16())
+    o += "%08x" % (q.rng32())
+    print o
+
