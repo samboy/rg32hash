@@ -91,13 +91,15 @@ for a in xrange(8):
     o += "%08x " % (q.rng32())
 print o
 
-print "The 16-bit number should not be repreated in the final 32-bit number"   
+print "No 16-bit number should be repreated in the 32-bit number"   
 # Make sure 16-bit chunks are not repeated in 32-bit chunks 
 for a in xrange(8):
     q = RadioGatun32(i)
     o = ""
     for b in xrange(a):
         o += "%04x " % (q.rng16())
-    o += "%08x" % (q.rng32())
+    o += "%08x " % (q.rng32())
+    o += "%04x " % (q.rng16())
+    o += "%08x " % (q.rng32())
     print o
 
