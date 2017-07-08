@@ -9,7 +9,8 @@ if [ -z "$PROG" ] ; then
 	exit 255
 fi
 
-cat Input | awk '{print "'${PROG}\ \''" $0 "'\''"}' | sh > output.test
+cat Input | awk '{print "'${PROG}\ \''" $0 "'\''"}' | sh | \
+	tr -d '\015' > output.test
 
 if ! cmp output.success output.test > /dev/null 2>&1 ; then
 	echo Test failed

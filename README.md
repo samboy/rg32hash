@@ -12,16 +12,17 @@ More information about the algorithm is here:
 
 http://radiogatun.noekeon.org/
 
-This repo has 10 implementations of RadioGatún[32]:
+This repo has 11 implementations of RadioGatún[32]:
 
 * Seven C-language implementations
 * A PHP implementation
 * A Python implementation
 * A Node-compatible Javascript implementation
+* A C# (.NET) implementation
 
 # Compile
 
-A Makefile is included to compile the programs here. To use:
+A Makefile is included to compile the C programs here. To use:
 
 ```
 make
@@ -224,3 +225,9 @@ As an aside, it would be simpler for rg32.js to treat each character as
 a 32-bit integer, but compatibility with official test vectors requires
 that we give RagioGatún[32] a string of ASCII-encoded characters
 converted in to 32-bit integers using the little-endian system.
+
+# rg32.cs RadioGatún[32] in C# (.NET)
+
+rg32.cs is a .NET (C sharp) implementation of the RadioGatún[32] 
+algorithm.
+
