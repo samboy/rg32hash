@@ -49,8 +49,8 @@ namespace RG32
             for(a = 0; a < 3; a++) 
             {
                 belt[a * 13] = belt[(a * 13) + 13];
-	            mill[a + 13] ^= belt[a * 13];
-	        }
+                mill[a + 13] ^= belt[a * 13];
+            }
         }
 
         private void inputMap(byte i)
