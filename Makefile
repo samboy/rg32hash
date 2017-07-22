@@ -1,4 +1,5 @@
-all: rg32hash rg32-bin tinyrg32 tinyapi rg32-55 rg32-floats nanorg32
+all: rg32hash rg32-bin tinyrg32 tinyapi rg32-55 rg32-floats nanorg32 \
+	tiny32api
 
 clean:
 	rm -f bin/t* bin/r* bin/n* bin/*.exe
@@ -20,6 +21,9 @@ nanorg32: C/nanorg32.c
 
 tinyapi: C/tinyapi.c
 	cc -Wall -O3 -o bin/tinyapi C/tinyapi.c
+
+tiny32api: C/tiny32api.c
+	cc -Wall -O3 -o bin/tiny32api C/tiny32api.c
 
 rg32-55: C/rg32-55.c
 	cc -O3 -o bin/rg32-55 C/rg32-55.c

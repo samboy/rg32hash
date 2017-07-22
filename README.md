@@ -12,9 +12,9 @@ More information about the algorithm is here:
 
 http://radiogatun.noekeon.org/
 
-This repo has 11 implementations of RadioGatún[32]:
+This repo has 12 implementations of RadioGatún[32]:
 
-* Seven C-language implementations
+* Eight C-language implementations
 * A PHP implementation
 * A Python implementation
 * A Node-compatible Javascript implementation
@@ -166,6 +166,15 @@ To use the program, run it like this:
 This will tell us the RadioGatún[32] sum of 0x55 repeated four times;
 in other words this will tell us the RadioGatun[32] sum of “UUUU” (without
 the quotes).
+
+# tiny32api.c
+
+This version of RadioGatún takes a 32-bit unsigned int as its seed.  This
+way, we can reduce the code size in applications where we simply use RG32
+as a source of random numbers.  This is a compliant subset of
+RadioGatún[32]: the generated numbers are the same as the ones the
+reference RadioGatún[32] implementation generates when it’s given a
+32-bit little endian number as the hash input.
 
 # rg32.class.php RG32 in PHP
 
