@@ -1,10 +1,12 @@
-rg32-bin.c, rg32hash.c, and tinyrg32.c have been
-donated to the public domain 2007, 2014, 2015 by Sam Trenholme 
+rg32-bin.c, rg32hash.c, tinyrg32.c, nanorg32.c, nanorg32-vertical.c,
+pwgen.sh, rg32.cs, rg32-55.c, rg32-floats.c, tiny32api.c, tinyapi.c,
+rg32.cpp, rg-variants.c, rg65-coverage.c, and the files in the sqa 
+directory have been donated to the public domain 2007-2017 by Sam Trenholme 
 
-rg32.class.php, rg.class.php, and make.php.mill.awk 
-are available under the following BSD license:
+rg32.class.php, rg.class.php, rg32.js, rg32.py, rv200.py, and 
+make.php.mill.awk are available under the following BSD license:
 
-# Copyright (c) 2015 Sam Trenholme
+# Copyright (c) 2010-2017 Sam Trenholme
 #
 # TERMS
 #
@@ -20,7 +22,4 @@ are available under the following BSD license:
 #
 # This software is provided 'as is' with no guarantees of correctness or
 # fitness for purpose.
-
-rg32.py and rg32.js have similiar BSD licenses in their files
-
 
