@@ -12,9 +12,10 @@ More information about the algorithm is here:
 
 http://radiogatun.noekeon.org/
 
-This repo has 12 implementations of RadioGatún[32]:
+This repo has 14 implementations of RadioGatún[32]:
 
-* Eight C-language implementations
+* 10 C-language implementations
+* A C++ implementation
 * A PHP implementation
 * A Python implementation
 * A Node-compatible Javascript implementation
@@ -115,6 +116,9 @@ nanorg32.c is public domain.
 Since the code may be hard to read, I explain what some of the code does
 in the document nanorg32.md (in the “C” directory).
 
+nanorg32-vertical.c is the code for nanorg32.c reformatted to fit better
+on a smartphone screen or a business card.
+
 # pwgen.sh Generate passwords with tinyrg32
 
 This script can be found in the “C/” directory.
@@ -175,6 +179,10 @@ as a source of random numbers.  This is a compliant subset of
 RadioGatún[32]: the generated numbers are the same as the ones the
 reference RadioGatún[32] implementation generates when it’s given a
 32-bit little endian number as the hash input.
+
+# rg32.cpp RG32 in C++
+
+rg32.cpp is a C++ version of RadioGatún[32]
 
 # rg32.class.php RG32 in PHP
 
