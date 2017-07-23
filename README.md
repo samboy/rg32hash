@@ -14,7 +14,7 @@ http://radiogatun.noekeon.org/
 
 This repo has 14 implementations of RadioGatún[32]:
 
-* 10 C-language implementations
+* Nine C-language implementations
 * A C++ implementation
 * A PHP implementation
 * A Python implementation
