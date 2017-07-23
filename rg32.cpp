@@ -1,5 +1,5 @@
 // Radio Gatun 32 hash/stream cipher/PRNG 
-// Written in 2011 and donated to the public domain 2017 by 
+// Written in 2009 and donated to the public domain 2017 by 
 // Sam Trenholme
 
 #include <iostream>
