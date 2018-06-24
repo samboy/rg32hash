@@ -87,3 +87,162 @@ The arguments are:
   we make this 0
 * The number of blank rounds
 
+# RV200
+
+I am proposing a modest RadioGatún variant, which I call RV200
+(Radiogatún Variant 200 bytes).
+
+##Definition
+RV200 is identical to RadioGatún, except:
+
+*   The belt rows are 11 words wide, and the mill is 17 words wide.
+
+*   Only ten (not 12) words are exclusive ored in the mill-to-belt
+    feedforward stage
+
+*   When mapping the input, it’s the final three words of the mill that
+    are altered. In RadioGatún, those are words 17, 18, and 19 of the mill
+    (16-18 if using zero-indexed arrays); the indexes are two less in RV200:
+    14, 15, and 16, or 13-15 when using zero-indexed arrays.
+
+*   The inner Gamma operation, instead of being (a[(y+1)%m]|~a[(y+2)%m]),
+    is (a[(y+1)%m]-a[(y+2)%m]) (bitwise or/not is replaced with i
+    subtraction).
+
+*   The only allowed word sizes are 16 bits, 32 bits, and 64 bits. The
+    16-bit version is called “RV100”, the 32-bit version is “RV200”,
+    and the 64-bit version is “RV400”. The primary version, and the only
+    version I provide test vectors for, is the 32-bit one: RV200.
+
+*   32-bit RV200 is suitable for 256-bit hashes and as a stream cipher
+    with 256 bits of key security. RV100 is suitable as a stream cipher
+    with 128 bits of security. RV400 may be suitable for 512-bit hashes
+    or as a stream cipher with 512 bits of security.
+
+*   RV200’s behavior is undefined when the input is not an even number
+    of octets in size. In other words, there is no specification for,
+    say, its output if given a 3-bit input. Only multiples of eight bits
+    are allowed for the input given to RV200.
+
+## Rationale
+The reason I am making a RadioGatún (RG) variant is because RG is one
+of the fastest hashes out there, faster than MD5. It also is a very
+small, efficient stream cipher. However, the original RG design has
+some “hairline crack” issues which might become a realistic attack
+in the future; as Schneier has said: “Attacks always gets better,
+never worse.”
+
+The reason for the changes in the design:
+
+*   The “Gamma” step has bitwise or/not replaced by
+    subtraction. Pretty much all of the attacks against RG out there start
+    off with “since RadioGatún’s Gamma function has a low algebraic
+    degree...” By using a different operation with very different
+    mathematical properties, we thwart those kinds of attacks.
+
+*   The disadvantage of using subtraction is that, while it is just as
+    fast when implemented as software (indeed, faster, since we only have 
+    to do one, not two operations), at the hardware level, subtraction
+    needs five times (or six times, depending on how it is done) as many
+    gates as or/not.
+
+    However, software implementations are far more common than hardware
+    implementations; for people who are designing hardware and something
+    which is very fast when implemented in silicon, RG’s direct
+    successor, SHA-3 (Keccak), is probably a better choice.
+
+*   Subtraction is done instead of addition because it more closely
+    resembles bitwise or/not, and because, like RG’s or/not, 
+    a-b != b-a.
+
+*   The belt and mill are made smaller to give RV200 a slight performance
+    boost compared to RG, and to make the algorithm fit better on
+    embedded chipsets. RG32 (RG with 32-bit words) needs 232 bytes to
+    store its state; that leaves too little room on embedded chips with
+    256 bytes of ram, since we need seven temporary words in addition to
+    the memory the state uses to calculate the mill. By using only 200
+    bytes, 56 bytes can be used for temporary variables or the stack,
+    which is much more breathing room.
+
+*   The mill function for RV200 can be calculated using only 228 bytes,
+    including the 200 bytes used to store its static state. This allows
+    RV200 to fit inside, as just one example, a 68 cent ATTINY45-20MU
+    with 256 bytes of RAM, instead of having to use a ATTINY85-20MU with
+    522 bytes of RAM which costs 77 cents — a 12% cost savings.
+
+*   Since RG has a sponge security claim based on the size of the mill,
+    RV200 gives us 272 bits of claimed securty instead of the 304 bits
+    of security 32-bit RadioGatún claims to have. That’s still over
+    256 bits of security.
+
+*   The smallest version of RG/RV with usable security is the version
+    using 16-bit words, which gives us 128 bits of security. The only
+    reason to have smaller RV variants is to perform cryptographic
+    research on them. There is no real-world reason to have 21-bit,
+    22-bit, and so on word sizes; indeed Keccak (RG’s direct sucessor)
+    forces the word size to be a power of two — All modern non-embedded
+    CPUs work with 8-bit, 16-bit, and 32-bit words, with a large number
+    of CPUs also able to work with 64-bit words. Unless you still have
+    a PDP-10 using 36-bit words in your closet, other word sizes just
+    don’t make sense.
+
+    Mathematically, the triangular numbers RV uses to determine the
+    rotation amounts work best when the word size is a power of 2.
+
+*   The reason why the primary word size is 32-bit is because there are
+    still a lot of places where 64-bit words are inconvenient:
+    Javascript’s bitwise operations only work with 32-bit words; and PHP
+    compiled on 32-bit systems can not work with 64-bit words. Even here
+    in the mid-2010s, the majority of smartphones still use 32-bit words.
+
+*   By leaving non-octet-length inputs undefined, we could, in the future,
+    propose RV200 variants by simply changing the final “padding”
+    byte, which is currently hard-coded to one.
+
+*   Looking at the number of cycles in the mill of a reduced word size
+    RV200 variant (2-bit words), the RV200 mill function looks like a
+    random permutation (the number of cycles a N-bit random permutation
+    will normally have is log(2) * N; therefore, we would expect a 34-bit
+    random permutation to have 23 or 24 cycles, and the mill in 2-bit
+    word size RV200 has 23 cycles)
+
+## Test vectors
+Some test vectors for RV200:
+
+```
+RV200("") = b8d32785ded8f828b3ba74293dcdf433 a7b6abf40848248c3037c06712a3494b
+RV200("1") = 3c619a527f6bcc4f1050b8bcbed7c6e1 c351feacf5379af7644ac51f3bcbf223
+RV200("12") = df251c4cb0ec7273af6c072354fa92e2 d0ccbe22f050ad8bbcb90d58db47555a
+RV200("1234") = ea5e5b6bbe714b3cede6dbb4ba0835c2 c2fb13945d41f633e0844ce7faa56865
+RV200("12345678") = 73b99ad6b76960e868ef99a5f76b4eb2 e0f1c12bd71ab5cf0afb926e76832cab
+RV200("123456789") = 230f97664a358286232d35e2953e05a7 9f02a689b4b7196b3891940c20e16393
+RV200("12345678901234567890") = 022601dc5cfa0efda12bc0e273456c5d aea35671c49bcf716799cef9d5ca747e 
+```
+
+## Infinite RV200
+
+We can vary the mill size with RV200.
+
+Here is the ASCII string "1" (0x31) with different mill widths
+
+* Mill width 11, 16 blank rounds: `455a1cd0928432c330bee92e921577a139c66f2af4860ec5ff85886344331900`
+* M13/R16 `8e6bb4b27013a3f505d76c38c8a5e02f18ad9027107bb31141010545ccb88cbd`
+* M17/R16 `3c619a527f6bcc4f1050b8bcbed7c6e1c351feacf5379af7644ac51f3bcbf223`
+* M19/R16 `86352c01534f80964af39288f88c33ccc57c3168f22672844e27bd8c3c4d78dc`
+* M23/R20 `34f3545c9b02196a9a2edcaa8f4741586205562fd264192a1110d1417aaf530a`
+* M29/R26 `447207da61a13ea977dba3166c5466b88a2dbe39352ec97fa8e88725ee88b1fa`
+* M37/R34 `166e663c763dd43fad03e6e3766589457679dd89728e90d645efa04c550c4e4c`
+* M43/R41 `ffe5642e4d2880921e48a044004eb01e30f70784a408e5c54ec3fbb507a184d8`
+
+To generate these test vectors:
+
+```
+./rg-variants '1' 32 11 1 16
+./rg-variants '1' 32 13 1 16
+./rg-variants '1' 32 17 1 16
+./rg-variants '1' 32 19 1 16
+./rg-variants '1' 32 23 1 20
+./rg-variants '1' 32 29 1 26
+./rg-variants '1' 32 37 1 34
+./rg-variants '1' 32 43 1 41
+```
