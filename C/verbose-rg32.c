@@ -60,8 +60,8 @@ if(verboseLevel > 1) {
 puts("Mill core function performed");
 show();}
 
-if(verboseLevel > 3) {
 *e^=1;
+if(verboseLevel > 3) {
 puts("Iota step done");
 show();
 }
