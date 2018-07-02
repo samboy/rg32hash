@@ -1,0 +1,728 @@
+<!-- This is a description of RadioGatún I wrote for WikiBooks.
+     This is CC0: Public domain -->
+
+This article describes a cryptographic algorithm named '''RadioGatún'''.  To fully understand this article, the following concepts need to be understood by the reader:
+
+* [[A-level_Computing/AQA/Paper_2/Fundamentals_of_data_representation/Number_bases|Binary numbers]] To maximize seed, RadioGatún works directly with binary numbers
+* [[GCSE_Computer_Science/Hexadecimal|Hexadecimal numbers]] are used to illustrate some parts of the algorithm 
+* [[Digital_Circuits/Logic_Operations|Bitwise logic operations]] RadioGatún uses bitwise negation, bitwise or, and bitwise exclusive or
+* [[Microprocessor_Design/Shift_and_Rotate_Blocks|Bit rotation]] RadioGatún uses circular rotations
+* [[Cryptography/Hashes|Cryptographic hashes]] RadioGatún is a, as far as we know, secure cryptographic hash
+* [[Cryptography/Random_number_generation#Methods_of_Pseudorandom_Number_Generation|Pseudo-random number generator]] RadioGatún also functions as a secure random number generator
+* The reader should be familiar with at least one [[Subject:Computer_programming_languages|programming language]] which can perform the bitwise operations RadioGatún performs.
+
+== What is RadioGatún? ==
+
+RadioGatún is the direct predecessor of Keccak, the SHA-3 hashing standard.  It is one of the fastest hashes out there: The 64-bit version of RadioGatún is about as fast as Blake2b, and the 32-bit version is about as fast as Blake2s.  While Blake2 was given variable-length output as an add-on, RadioGatún has intrinsic variable length support, acting both as a cryptographic hash and as a stream cipher.
+
+RadioGatún is the oldest secure variable length hash out there; it has been around since 2006, and, as of 2018, there is no known attack which weakens its security claims.  MD5 was broken within 12 years of its release; RadioGatún has the same age and still appears secure.
+
+The 32-bit version appears to offer 304 bits of security; the 64-bit version looks to have 608 bits of security. In other words, the 32-bit version is more than secure enough for 256 bit hashes, while the 64-bit version can make 512 bit hashes.
+
+==Note on notation==
+
+===Arrays===
+The code below uses a number of arrays to alter the RadioGatún state.  The arrays are zero-indexed; this means that the first element of an array has the index 0 instead of the index 1.  Instead of representing an array of 3 words as i[1], i[2], and i[3] (one-indexed arrays), we represent them as i[0], i[1], and i[2].
+
+===Hexadecimal numbers===
+Since RadioGatún directly manipulates binary numbers, we sometimes put numbers in [[GCSE_Computer_Science/Hexadecimal|Hexadecimal]] format.  When this is done, we put an "0x" at the beginning of the number.  Examples: 0x07 is 7; 0x10 is 16.
+
+===Bytes and words===
+On this page, bytes are always eight bits in size.  Words can be 32 bits or 64 bits, depending on the version of RadioGatún being used.
+
+==Variable word length==
+RadioGatún is a cipher designed in the mid-first-2000s-decade, in an era when servers were running a mixture of 32-bit and 64-bit operating systems, most desktops were still running 32-bit systems, and well before any hand held phones were running 64-bit code.  This in mind, the cipher has different modes to support both 32-bit and 64-bit operation.  There are also tiny versions that make cryptoanalysis easier: People investigating RadioGatún's security can analyze the one-bit or two-bit versions (as of 2018, the largest RadioGatún variant that has been broken is the two-bit one).
+
+While RadioGatún has 8-bit and 16-bit support, the eight-bit version is ''probably'' too small to be secure, and the 16-bit ''might'' be too small.  That in mind, only the 32-bit and 64-bit variants of RadioGatún will be looked at.
+
+RadioGatún uses 58 words (of either 32-bit or 64-bit length, depending on the RadioGatún variant we are looking at) to store its state.  For the rest of this document, "word" is either a 32-bit or 64-bit number, depending on which RadioGatún variant is being used.
+
+==State initialization==
+To initialize RadioGatún's state, all 58 words are reset to have the value 0.
+
+==The belt and mill==
+RadioGatún stores its state in two pieces: 39 words are stored in the belt, which can be visualized as three rows of 13 words.  The mill is 19 words wide.  Some implementations of RadioGatún use an extra word to store the belt, which facilitates code size optimizations.
+
+==The beltmill function==
+While the [http://radiogatun.noekeon.org/ RadioGatún spec] considers the "belt" and "mill" operations separate, they are both done at the same time, so, in this document, we will consider a combined beltmill operation.  This is the core of the RadioGatún algorithm, and all parts of RadioGatún (the input map, the mixing of RadioGatún after the input ends, and the generation of pseudo-random output bits) use the same beltmill function.
+
+The RadioGatún spec considers the mill three arrays of 13 elements each; we will, here, consider the mill a single 40-word array. In addition, the ordering of operations in this book are different than as described in the spec.
+
+This operation acts like a blender, blending the bits of RadioGatún state in a manner which is both predictable and believed to be cryptographically secure. 
+
+===Belt to mill feedforward===
+In the ''belt to mill feedforward'', we exclusive or 12 words in the mill with 12 words in to the belt, as follows:
+
+* The first word (element 0 in programming languages with zero-indexed arrays) of the mill is exclusive ored with the second word (element 1) of the mill; the resulting word is stored as the element 0 in the belt
+* Element 14 of the belt is exclusive ored with element 2 of the mill
+* Element 28 of the belt is exclusive ored with element 3 of the mill
+* Element 3 of the belt is exclusive ored with element 4 of the mill
+* Element 17 of the belt is exclusive ored with element 5 of the mill
+* Element 31 of the belt is exclusive ored with element 6 of the mill
+* Element 6 of the belt is exclusive ored with element 7 of the mill
+* Element 20 of the belt is exclusive ored with element 8 of the mill
+* Element 34 of the belt is exclusive ored with element 9 of the mill
+* Element 9 of the belt is exclusive ored with element 10 of the mill
+* Element 23 of the belt is exclusive ored with element 11 of the mill
+* Element 37 of the belt is exclusive ored with element 12 of the mill
+
+This can be viewed as followed in pseudo-code:
+
+ For a = 0 to 11 { # "a" has the values (0,1,2,3,4,5,6,7,8,9,10,11) in this loop
+    belt[a + ((a % 3) * 13)] = belt[a + ((a % 3) * 13)] ^ mill[a + 1]
+ }
+
+Here, % is the modulo operation: The remainder after division (For example: 5 modulo 3 is 2; 11 modulo 4 is 3)
+
+^ is the exclusive or operation
+
+<nowiki>*</nowiki> is multiplication
+
++ is addition
+
+===The main mill operation===
+In the main mill operation, we perform a number of operations on the words in the mill, putting the results in a temporary array "t" of 19 words.
+
+We set the rotate constant, "r", to 0
+
+We do the following 19 times, for values of "a" between 0 and 18 inclusive:
+
+* We add "a" to "r"
+* We modulo "r" by the word size for the RadioGatún variant in use (For RadioGatún[32], the 19 rotate values are [0, 1, 3, 6, 10, 15, 21, 28, 4, 13, 23, 2, 14, 27, 9, 24, 8, 25, 11]; for RadioGatún[64], [0, 1, 3, 6, 10, 15, 21, 28, 36, 45, 55, 2, 14, 27, 41, 56, 8, 25, 43])
+* We set an index, "i", to "a" multiplied by seven
+* We module "i" by 19, the mill width (the 19 "i" values are [0, 7, 14, 2, 9, 16, 4, 11, 18, 6, 13, 1, 8, 15, 3, 10, 17, 5, 12])
+* We set "k" to be the mill index "i"
+* We set index "ia" to be one added to "i", modulo 19.  "Modulo 19" here means that, if "i" has the value 18, instead of giving "ia" the value 19, we give it the value 0 instead.
+* We set index "ib" to be two added to "i", modulo 19.  "Modulo 19" here means that, if i + 2 is 19 or higher, we subtract 19 from "i": If "i" is 17, "ib" will be 0 (instead of 19); if "i" is 18, "ib" will be 1 (instead of 20).   
+* We copy the mill element "ib" in to "mb"
+* We perform bitwise negation on "mb" (we make every 0 bit 1, and every 1 bit 0)
+* We copy the mill element "ia" in to "ma"
+* We perform a bitwise or on "ma" and "mb", putting the result in "mc"
+* We exclusive or "mc" with the mill element "i", and put the result in the element of the temporary array "t" indexed by "a"
+* We take the element in the temporary array "t" with index "a", and rotate it right by "r" bits
+
+This might look like this is pseudo-code:
+ 
+ r = 0
+ for a = 0 to 18 {
+    r = r + a
+    r = r % wordsize # 32 for 32-bit RadioGatún, 64 for 64-bit RadioGatún
+    i = a * 7
+    i = i % 19 # Mill width
+    k = mill[i]
+    i = i + 1
+    k = k ^ (mill[(i + 1) % 19] | (~mill[(i + 2) % 19]))
+    t[a] = rotate_right(k, r)
+ }
+
+The operators are the same as above; in addition, ~ is bitwise negation
+
+rotate_right is a circular rotate right.  For example, for 32-bit RadioGatún, rotate_right might look like this is C:
+
+ uint32_t rotate_right(uint32_t k, int r) {
+    return k>>r|k<<(32-r);
+ }
+
+===Updating the mill===
+Now that we have performed some operations on the elements in the mill and put them in a 19-word temporary array "t", we can now update the actual mill based on the values we have in "t".
+
+For each value of "a" between 0 and 18 inclusive:
+
+* "i1" will be "a" incremented by one (a + 1), modulo 19
+* "i2" will be "a" incremented by four (a + 4), modulo 19
+* Set the mill element "a" to the value of element "a" in the "t" array
+* Exclusive or mill element "a" with the value of element "i1" in the "t" array
+* Exclusive or mill element "a" with the value of element "i2" in the "t" array
+
+In pseudo-code:
+
+ for a = 0 to 18 {
+    mill[a] = t[a] ^ t[(a + 1) % 19] ^ t[(a + 4) % 19]
+ }
+
+===Rotating the belt===
+We now rotate the belt.  In the RadioGatún specification, this is described as taking each of the three rows of the belt, and moving the values one to the right.  All of the words move right one, like a conveyor belt, except the word on the right is moved to the left.  The belt has three rows of 13 elements each; we do this rotate separately on the three rows.
+
+To make the code simpler and smaller, we can look at the belt as an array of 40 (not 39) elements, then move all of the elements over by one.  After doing that, we then take three values and move then down the belt, to make the belt circular.
+
+For "i" between 38 and 0 (inclusive; note that we're starting at 38 then going down to 0):
+
+* Increment "i" by one and give it the value "i1" (so 38 becomes 39, 37 becomes 38, and so on)
+* Assign the belt element with the index "i1" the value of the belt element with the index "i"
+
+The reason why we go down from 38 to 0 instead of up from 0 to 39 is because, if we incremented instead of decremented "i", all of the elements in the mill would have the same value (mill element 0), destroying the mill.
+
+Once we shift all of the elements in the mill up by one, we now move three of the elements down again.
+
+For "i" between 0 and 2 (inclusive):
+
+* "i0" is "i" multiplied by 13 (the belt width)
+* "i1" is "i0" with 13 added to it
+* Take the belt element "i0" and assign the value of the belt element "i1" to it
+
+This second loop makes the belt three 13-element circular belts
+
+The above two steps can be done with the following pseudo-code:
+
+ for a = 38 to 0 step -1 { # "step -1" makes it clear we're moving down from 38 instead of up from 0
+    belt[a + 1] = belt[a]
+ }
+ for a = 0 to 2 {
+    belt[(a + 1) * 13] = belt[a * 13]
+ }
+
+Note that speed optimized implementations of RadioGatún, such as the ones written by Thomas Pornin in sphlib, do not rotate the belt; instead they run 13 different versions of the beltmill function, changing which elements to interact with instead of moving 39 elements around.
+
+===The iota step===
+The iota step simply takes the first word in the mill (element 0), and exclusive ors it by the number 1.
+
+In pseudocode:
+
+ mill[0] = mill[0] ^ 1
+
+Note that, in Keccak, the iota step is significantly more complex.
+
+===Belt to mill===
+To finish off the beltmill function, we exclusive or three words in the mill against three words in the belt, storing the result in the mill words:
+
+* Mill element 13 (the 14th element in the mill) is exclusive ored against Belt element 12 (the last word in the lowest row of the mill), storing the result in mill element 13
+* Mill element 14 (15th element in the mill) is exclusive ored against Belt element 25 (the last word in the middle row of the mill), storing the result in mill element 14
+* Mill element 15 (16th element in the mill) is exclusive ored against Belt element 38 (the last word in the top row of the mill), storing the result in mill element 15
+
+In pseudo-code:
+
+ mill[13] = mill[13] ^ belt[12]
+ mill[14] = mill[14] ^ belt[25]
+ mill[15] = mill[15] ^ belt[38]
+
+Note that code sized optimized versions of RadioGatún will put this in a 3-step loop, since we can do both the second part of the belt rotation and the belt-to-mill operation in one small loop, but speed-optimized versions will unroll the loop (convert actions performed in a loop in to multiple actions performed outside of a loop, to save the CPU cycles needed to process the loop).
+
+==Input mapping==
+The ''input mapping'' step is where we take a binary string of arbitrary octet length, and use it to establish RadioGatún's state.  
+
+===A simplified input map===
+We will first look at RadioGatún[32] (32-bit RadioGatún) in the case where the hash input is precisely 32 bits in length.  
+
+First we initialize RadioGatún: We set all words in the belt and mill to have a value of 0.  After doing that, we do the following (all of these steps are actually exclusive ors, but since we are exclusive oring against the value 0, it is equivalent to setting them to the desired values):
+
+* We set the first element of the belt (belt element 0) to have our 32-bit hash input.
+* We set the 17th byte of the mill (mill element 16) to be the same 32-bit hash input. 
+* We have the 14th byte of the belt (belt element 13, or, if you will, the first word in the belt's second row) be a binary 1.
+* We set the 18th byte of the mill (mill element 17) to also have the value 1.
+
+Voila!  We have now put a 32-bit hash input (or, if you will, "seed") in to RadioGatún.  
+
+Pseudocode:
+
+ function initRadioGatun32(int32bit a) {
+    for b = 0 to 18 {
+        mill[b] = 0
+    }
+    for b = 1 to 39 {
+        belt[b] = 0
+    }
+    mill[16] = a
+    belt[0] = a
+    mill[17] = 1
+    belt[13] = 1
+ }
+
+
+Once we have put this 32-bit value in to the RadioGatún state (the belt and mill), we can now perform the "blank rounds" step.
+
+===Blank rounds===
+After the input string is ended, RadioGatún runs 18 blank rounds: 18 iterations of the Beltmill() function.  
+
+In pseudocode:
+
+ for a = 1 to 18 {
+    Beltmill() # As already described above
+ }
+
+Once the blank rounds are performed, jump to the "Generating Output" section which follows.
+
+===What about other hash sizes?===
+RadioGatún does not support only 32-bit inputs; it supports an input of any number of bytes, from 0 and up.  We will now describe how to process inputs of other lengths.
+
+===Little endian===
+RadioGatún assumes to run on a little-endian processor (or, should we say, the reference implementation used to generate the reference test vectors was run on a little-endian machine). This in mind, eight-bit bytes are converted in to 32-bit or 64-bit words (depending on whether we're using the 32-bit or 64-bit variant) with the first bytes made to be the least significant bits.
+
+In other words, if RadioGatún is given the string '124', which consists of the bytes (in hexadecimal) 0x31, 0x32, and 0x34, this will be converted by RadioGatún[32] (the 32-bit version) in to 0x01343231, and in to 0x0000000001343231 with the 64-bit version of RadioGatún.
+
+Here, the first byte given to RadioGatún is made in to the lowest (least significant) eight bytes of the word used by RadioGatún.
+
+Speed optimized versions of RadioGatún which know they are being run on little endian machines can simply read the words from memory to prepare them to affect the state.
+
+===Input padding===
+One may also observe that the byte 0x01 is placed after the end of the string above; this is a padding byte used to let RadioGatún know where the string has ended.  This padding byte protects RadioGatún from some security attacks.  So, if our string is the three byte string '124', or 0x31 0x32 0x34, this becomes 0x31 0x32 0x34 0x01, which is then converted in to a little endian number like 0x01343231.  If a one-byte string with the value 0x01 is given to RadioGatún, this is converted in to 0x01 0x01 before the little endian conversion is done.
+
+RadioGatún can read in any arbitrary binary string, including strings with 0x00 (NULL), 0x01, etc., as long as the string's length is a multiple of 8 (0 bits long, 8 bits long, 16 bits long, 24 bits long, etc.); the reason why RadioGatún does not support other input lengths is because its padding behavior is not fully defined, and there are no official test vectors which are not a multiple of eight bits long.
+
+===Putting the input in to RadioGatún===
+Once the input string is converted in to little endian words, we take three words and exclusive or them against the RadioGatún state, as follows:
+
+* We take these three words and give them the names "w1", "w2", and "w3".  For example, if RadioGatún[32] was given the string '12345678901' as an input, "w1" will have the value 0x34333231, "w2" will be 0x38373635, and "w3" will be 0x01313039.  Should the string be shorter, such as '1' (0x31), we will zero pad things: "w1" will be 0x00000131, and both "w2" and "w3" will simply be 0x00000000; if using RadioGatún[64] and just ASCII '1' as a string, "w1" will be 0x0000000000000131, and both "w2" and "w3" will be 0x0000000000000000.
+* We exclusive or the first byte of the belt (belt element 0) against "w1", placing the result back in belt[0]
+* We exclusive or the 17th byte of the mill (mill element 16) against "w1", placing the result back in mill[16]
+* We exclusive or the 14th byte of the belt (belt element 13, or, if you will, the first byte in the belt's second row) against "w2", placing the result back in belt[13]
+* We exclusive or the 18th byte of the mill (mill element 17) against "w2", placing the result back in mill[17]
+* We exclusive or the 27th byte of the belt (belt element 26, or, if you will, the first byte in the belt's top row) against "w3", placing the result back in belt[26]
+* We exclusive or the 19th byte of the mill (mill element 18) against "w3", placing the result back in mill[18]
+* We now run the Beltmill function against RadioGatún's state
+
+Should the string, including the final 0x01 padding byte, be used up, we move on to the next section.  Otherwise, we move forward in the string either 12 or 24 bytes (depending on whether we are calculating RadioGatún[32] or RadioGatún[64]) and repeat the above steps.
+
+In this pseudocode example, we read in the input byte-by-byte to make the code endian-neutral (it runs the same way on both big-endian and little-endian machines).  RadioGatunWordSize indicates the word size for the variant of RadioGatún we are implementing, and can be 32 or 64; Beltmill() is the beltmill function described previously:
+
+ endOfString = False
+ array inputWords[3]
+ # Initialize the input words
+ for i = 0 to 2 {
+    inputWords[i] = 0
+ }
+ i = 0
+ shift = 0
+ while(endOfString is False) {
+    a = getByteFromString()
+    if(isEndOfString()) {
+        a = 1
+        endOfString = True
+    }
+    a = shiftLeft(a, shift)
+    inputWords[i] = inputWords[i] | a  # Here, '|' is bitwise "or"
+    shift = shift + 8
+    if(shift >= RadioGatunWordSize or endOfString is True) {
+        belt[i + 16] = belt[i + 16] ^ inputWords[i]
+        mill[i * 13] = mill[i * 13] ^ inputWords[i]
+        i = i + 1
+        shift = 0
+        if(i >= 3) {
+            Beltmill()
+            i = 0
+        }
+    }
+ }
+
+getByteFromString() is a function which gets a single octet (8-bit byte) from our input string.  isEndOfString() returns true if the last call to getByteFromString() failed because we have reached the end of the input string.
+
+Once this is done, perform the 18 blank rounds, as described above, then go to the "generating output" section which follows to generate RadioGatún's hash output.
+
+===Security properties===
+Since RadioGatún was designed to be a secure hash function, it is not computationally feasible to find two different inputs that establish the same internal state.  In addition, it should not be possible to distinguish RadioGatún's output from actual random bits—it will appear to be noise.  It should also not be possible to predict what pseudo-random bits will come next when shown RadioGatún's output unless the input is known, even if the attacker knows they are looking at RadioGatún generated bits.
+
+==Generating output==
+Once we have run the blank rounds, we can now outputs words in the mill of RadioGatun() to generate as many cryptographically secure random numbers as desired.
+
+The process is simple:
+
+* We look at the second element in the mill (mill element number 1) to get the first 32 or 64 bits of random output, depending on whether we chose to implement RadioGatún[32] or RadioGatún[64]
+* We look at the third element in the mill (mill element number 2) to get another 32/64 bits of output
+* We run the Beltmill operation, as already described previously
+* We repeat the above three steps to get as many output bits as desired
+
+Here is some pseudocode showing this:
+
+ phase = 1 # The word we get from the mill; initial value is one
+ function getWordFromRadioGatun() {
+   out = mill[phase]
+   phase = phase + 1
+   if(phase > 2) {
+     phase = 1
+     Beltmill()
+   }
+   return out
+ }
+
+getWordFromRadioGatun() gives us 32 bits if using the 32-bit version of RadioGatun, and 64 bits if using the 64-bit version.
+
+Note that, for reference test vector compatibility, the numbers need to be endian swapped (or, equivalently, the mill needs to be seen as an array of bytes on a small-endian system).
+
+==Example==
+
+In this example, we process the string '1234' with RadioGatún[32].  As per the reference specification:
+
+ RadioGatun[32]("1234") = 9EBDD24F469993796C4AAC6A821735A65A3CDEF8A359944CE71F34E7A08E1182
+
+===Initial belt and mill state after running input map===
+This in mind, after running and finishing the input map, the belt and mill is as follows: 
+
+    Mill       Belt Row 1 Belt Row 2 Belt Row 3
+  0 0x00000000 0x34333231 0x00000001 0x00000000
+  1 0x00000000 0x00000000 0x00000000 0x00000000
+  2 0x00000000 0x00000000 0x00000000 0x00000000
+  3 0x00000000 0x00000000 0x00000000 0x00000000
+  4 0x00000000 0x00000000 0x00000000 0x00000000
+  5 0x00000000 0x00000000 0x00000000 0x00000000
+  6 0x00000000 0x00000000 0x00000000 0x00000000
+  7 0x00000000 0x00000000 0x00000000 0x00000000
+  8 0x00000000 0x00000000 0x00000000 0x00000000
+  9 0x00000000 0x00000000 0x00000000 0x00000000
+ 10 0x00000000 0x00000000 0x00000000 0x00000000
+ 11 0x00000000 0x00000000 0x00000000 0x00000000
+ 12 0x00000000 0x00000000 0x00000000 0x00000000
+ 13 0x00000000
+ 14 0x00000000
+ 15 0x00000000
+ 16 0x34333231
+ 17 0x00000001
+ 18 0x00000000
+
+In this chart, the left hand number is the array index for the element in question.  Instead of treating the belt like a single array of 39 (or 40) words, we treat the belt like three rows of 13 words.  If using code that treats the belt as a single array, belt row 1 consists of elements 0-12 in the belt, row 2 has elements 13-25, and row 3 has elements 26-38.
+
+===First run of Beltmill()===
+
+After we perform the '''belt rotation''', the belt and mill look like this (observe how the elements moved from row 0 to row 1 in the belt):
+
+    Mill       Belt Row 1 Belt Row 2 Belt Row 3
+  0 0x00000000 0x00000000 0x00000000 0x00000000
+  1 0x00000000 0x34333231 0x00000001 0x00000000
+  2 0x00000000 0x00000000 0x00000000 0x00000000
+  3 0x00000000 0x00000000 0x00000000 0x00000000
+  4 0x00000000 0x00000000 0x00000000 0x00000000
+  5 0x00000000 0x00000000 0x00000000 0x00000000
+  6 0x00000000 0x00000000 0x00000000 0x00000000
+  7 0x00000000 0x00000000 0x00000000 0x00000000
+  8 0x00000000 0x00000000 0x00000000 0x00000000
+  9 0x00000000 0x00000000 0x00000000 0x00000000
+ 10 0x00000000 0x00000000 0x00000000 0x00000000
+ 11 0x00000000 0x00000000 0x00000000 0x00000000
+ 12 0x00000000 0x00000000 0x00000000 0x00000000
+ 13 0x00000000
+ 14 0x00000000
+ 15 0x00000000
+ 16 0x34333231
+ 17 0x00000001
+ 18 0x00000000
+
+The '''main mill operation''' sets the 19 elements in the temporary ("t") array as follows:
+
+  0 0xffffffff
+  1 0xffffffff
+  2 0xd97999b9
+  3 0xffffffff
+  4 0xffffffff
+  5 0x9b9d9799
+  6 0xffffffff
+  7 0xffffffff
+  8 0xffffffff
+  9 0xffffffff
+ 10 0xffffffff
+ 11 0xffffffff
+ 12 0xffffffff
+ 13 0xffffffff
+ 14 0xffffffff
+ 15 0xffffffff
+ 16 0xfeffffff
+ 17 0xffffffff
+ 18 0xffffffff
+
+After we use those values to '''update the mill''', the mill and belt will look like this:
+
+    Mill       Belt Row 1 Belt Row 2 Belt Row 3
+  0 0xffffffff 0x00000000 0x00000000 0x00000000
+  1 0xbd1bf1df 0x34333231 0x00000001 0x00000000
+  2 0xd97999b9 0x00000000 0x00000000 0x00000000
+  3 0xffffffff 0x00000000 0x00000000 0x00000000
+  4 0x9b9d9799 0x00000000 0x00000000 0x00000000
+  5 0x9b9d9799 0x00000000 0x00000000 0x00000000
+  6 0xffffffff 0x00000000 0x00000000 0x00000000
+  7 0xffffffff 0x00000000 0x00000000 0x00000000
+  8 0xffffffff 0x00000000 0x00000000 0x00000000
+  9 0xffffffff 0x00000000 0x00000000 0x00000000
+ 10 0xffffffff 0x00000000 0x00000000 0x00000000
+ 11 0xffffffff 0x00000000 0x00000000 0x00000000
+ 12 0xfeffffff 0x00000000 0x00000000 0x00000000
+ 13 0xffffffff
+ 14 0xffffffff
+ 15 0xfeffffff
+ 16 0xfeffffff
+ 17 0xd97999b9
+ 18 0xffffffff
+
+The '''iota step''' only affects the first element of the mill (making it 0xfffffffe here):
+
+    Mill       Belt Row 1 Belt Row 2 Belt Row 3
+  0 0xfffffffe 0x00000000 0x00000000 0x00000000
+  1 0xbd1bf1df 0x34333231 0x00000001 0x00000000
+  2 0xd97999b9 0x00000000 0x00000000 0x00000000
+  3 0xffffffff 0x00000000 0x00000000 0x00000000
+  4 0x9b9d9799 0x00000000 0x00000000 0x00000000
+  5 0x9b9d9799 0x00000000 0x00000000 0x00000000
+  6 0xffffffff 0x00000000 0x00000000 0x00000000
+  7 0xffffffff 0x00000000 0x00000000 0x00000000
+  8 0xffffffff 0x00000000 0x00000000 0x00000000
+  9 0xffffffff 0x00000000 0x00000000 0x00000000
+ 10 0xffffffff 0x00000000 0x00000000 0x00000000
+ 11 0xffffffff 0x00000000 0x00000000 0x00000000
+ 12 0xfeffffff 0x00000000 0x00000000 0x00000000
+ 13 0xffffffff
+ 14 0xffffffff
+ 15 0xfeffffff
+ 16 0xfeffffff
+ 17 0xd97999b9
+ 18 0xffffffff
+
+===The second Beltmill() call===
+
+And the above is how the state looks after running the Beltmill operation once.  Here is how it looks after running Beltmill() on it again:
+
+    Mill       Belt Row 1 Belt Row 2 Belt Row 3
+  0 0x40600820 0x00000000 0x00000000 0x00000000
+  1 0xcc8c4f0c 0xbd1bf1df 0x00000000 0x00000000
+  2 0x189a1999 0x34333231 0xd97999b8 0x00000000
+  3 0x089a1999 0x00000000 0x00000000 0xffffffff
+  4 0xdc8c4f0c 0x9b9d9799 0x00000000 0x00000000
+  5 0xcc8c4f0c 0x00000000 0x9b9d9799 0x00000000
+  6 0x10000000 0x00000000 0x00000000 0xffffffff
+  7 0x99189a19 0xffffffff 0x00000000 0x00000000
+  8 0x10000000 0x00000000 0xffffffff 0x00000000
+  9 0x00000000 0x00000000 0x00000000 0xffffffff
+ 10 0x99189a19 0xffffffff 0x00000000 0x00000000
+ 11 0x99189a19 0x00000000 0xffffffff 0x00000000
+ 12 0x46268666 0x00000000 0x00000000 0xfeffffff
+ 13 0x31343332
+ 14 0x00002000
+ 15 0x06468e47
+ 16 0x7712b554
+ 17 0x31341332
+ 18 0x58fa31b8
+
+===Beltmill() after 18 calls===
+
+After running it 16 more times (for a total of 18 Beltmill() calls), it looks like this:
+
+    Mill       Belt Row 1 Belt Row 2 Belt Row 3
+  0 0xd9958271 0x4fa9a4eb 0x3a5bda1c 0x599e1cba
+  1 0x4fd2bd9e 0xf40378f6 0xa5fff169 0xce6dad5a
+  2 0x79939946 0x7d0e377e 0x72637aad 0x83531eac
+  3 0xd9acd8da 0xbe8a2a76 0xc9958a5e 0x6a9d5b52
+  4 0x4a9b1478 0x44a12573 0xc4d346a6 0x0691e902
+  5 0xdefb4010 0xcfd07457 0x36adb7a1 0x112926ab
+  6 0x839db45d 0x08bc2beb 0x4cf52045 0x37060596
+  7 0x9bf58054 0x33bb3e40 0x978cf3fc 0x6452478c
+  8 0x734beab8 0x7873cf2d 0xbfaa6388 0x8840c4ae
+  9 0xa4c4d0dd 0x526856e9 0x1e33dbc2 0x80f95c1b
+ 10 0x3fa1dc95 0x9829c411 0x4cd43100 0xfb9eb71a
+ 11 0x0da8e828 0x1891da52 0x4f264567 0xccd49043
+ 12 0x25fd61e7 0x031a49c7 0x5866b7ab 0x7f443d0c
+ 13 0xd247ea91
+ 14 0xb1e8b921
+ 15 0x23154075
+ 16 0x5ad6fbc4
+ 17 0xbbc617dc
+ 18 0x6eb76abb
+
+===Generating output bits===
+
+At this point, we use mill index 1 (0x4fd2bd9e) to generate the first 32 bits of output:
+
+ 93bdd24f 
+
+Observe that there has been an endian swap: The first byte is now the fourth byte, the second byte is now the third byte, the third byte is now the second byte, and the last byte is now the first byte.
+
+The next 32 bits of the hash come from mill index 2 (0x79939946):
+
+ 46999379
+
+Now that we have extracted the values of two elements on the mill to generate some random numbers, we run the Beltmill() operation again.  We will look at this in some more detail.
+
+===Another detailed look at a Beltlook() call===
+
+First, we run the '''belt-to-mill feed-forward''', resulting in:
+
+    Mill       Belt Row 1 Belt Row 2 Belt Row 3
+  0 0xd9958271 0x007b1975 0x3a5bda1c 0x599e1cba
+  1 0x4fd2bd9e 0xf40378f6 0xdc6c682f 0xce6dad5a
+  2 0x79939946 0x7d0e377e 0x72637aad 0x5affc676
+  3 0xd9acd8da 0xf4113e0e 0xc9958a5e 0x6a9d5b52
+  4 0x4a9b1478 0x44a12573 0x1a2806b6 0x0691e902
+  5 0xdefb4010 0xcfd07457 0x36adb7a1 0x92b492f6
+  6 0x839db45d 0x9349abbf 0x4cf52045 0x37060596
+  7 0x9bf58054 0x33bb3e40 0xe4c71944 0x6452478c
+  8 0x734beab8 0x7873cf2d 0xbfaa6388 0x2c841473
+  9 0xa4c4d0dd 0x6dc98a7c 0x1e33dbc2 0x80f95c1b
+ 10 0x3fa1dc95 0x9829c411 0x417cd928 0xfb9eb71a
+ 11 0x0da8e828 0x1891da52 0x4f264567 0xe929f1a4
+ 12 0x25fd61e7 0x031a49c7 0x5866b7ab 0x7f443d0c
+ 13 0xd247ea91
+ 14 0xb1e8b921
+ 15 0x23154075
+ 16 0x5ad6fbc4
+ 17 0xbbc617dc
+ 18 0x6eb76abb
+
+We next '''rotate the belt''':
+
+    Mill       Belt Row 1 Belt Row 2 Belt Row 3
+  0 0xd9958271 0x031a49c7 0x5866b7ab 0x7f443d0c
+  1 0x4fd2bd9e 0x007b1975 0x3a5bda1c 0x599e1cba
+  2 0x79939946 0xf40378f6 0xdc6c682f 0xce6dad5a
+  3 0xd9acd8da 0x7d0e377e 0x72637aad 0x5affc676
+  4 0x4a9b1478 0xf4113e0e 0xc9958a5e 0x6a9d5b52
+  5 0xdefb4010 0x44a12573 0x1a2806b6 0x0691e902
+  6 0x839db45d 0xcfd07457 0x36adb7a1 0x92b492f6
+  7 0x9bf58054 0x9349abbf 0x4cf52045 0x37060596
+  8 0x734beab8 0x33bb3e40 0xe4c71944 0x6452478c
+  9 0xa4c4d0dd 0x7873cf2d 0xbfaa6388 0x2c841473
+ 10 0x3fa1dc95 0x6dc98a7c 0x1e33dbc2 0x80f95c1b
+ 11 0x0da8e828 0x9829c411 0x417cd928 0xfb9eb71a
+ 12 0x25fd61e7 0x1891da52 0x4f264567 0xe929f1a4
+ 13 0xd247ea91
+ 14 0xb1e8b921
+ 15 0x23154075
+ 16 0x5ad6fbc4
+ 17 0xbbc617dc
+ 18 0x6eb76abb
+
+Here is how the temporary array "t" looks after we do the '''main mill operation''':
+
+  0 0x166b7dce
+  1 0x704737f7
+  2 0xc2dabfab
+  3 0x6611fd8a
+  4 0xc296ccc3
+  5 0xd831c230
+  6 0x02fe55a3
+  7 0x0559dc72
+  8 0xa970aa8c
+  9 0x0850e341
+ 10 0x5aaa745f
+ 11 0x4c0040be
+ 12 0x651e5e54
+ 13 0xbd57724f
+ 14 0x92d919b3
+ 15 0x0b22ade0
+ 16 0x63d53968
+ 17 0xb25ff79c
+ 18 0xe71f7551
+
+Now we use those values to '''update the mill''':
+
+    Mill       Belt Row 1 Belt Row 2 Belt Row 3
+  0 0xa4ba86fa 0x031a49c7 0x5866b7ab 0x7f443d0c
+  1 0x6aac4a6c 0x007b1975 0x3a5bda1c 0x599e1cba
+  2 0xa6351782 0xf40378f6 0xdc6c682f 0xce6dad5a
+  3 0xa1deed3b 0x7d0e377e 0x72637aad 0x5affc676
+  4 0xb3d7a47f 0xf4113e0e 0xc9958a5e 0x6a9d5b52
+  5 0xd29f74d2 0x44a12573 0x1a2806b6 0x0691e902
+  6 0x5d0dfd8e 0xcfd07457 0x36adb7a1 0x92b492f6
+  7 0xe0293640 0x9349abbf 0x4cf52045 0x37060596
+  8 0xc43e1799 0x33bb3e40 0xe4c71944 0x6452478c
+  9 0xefade551 0x7873cf2d 0xbfaa6388 0x2c841473
+ 10 0x84732d52 0x6dc98a7c 0x1e33dbc2 0x80f95c1b
+ 11 0x223cb30a 0x9829c411 0x417cd928 0xfb9eb71a
+ 12 0xbb9c1573 0x1891da52 0x4f264567 0xe929f1a4
+ 13 0x9dd19c60
+ 14 0x7ee4c102
+ 15 0x7e9ce946
+ 16 0xa1cdf903
+ 17 0x979a3d66
+ 18 0x9765f515
+
+The '''iota''' step only affects word 0 of the mill:
+
+    Mill       Belt Row 1 Belt Row 2 Belt Row 3
+  0 0xa4ba86fb 0x031a49c7 0x5866b7ab 0x7f443d0c
+  1 0x6aac4a6c 0x007b1975 0x3a5bda1c 0x599e1cba
+  2 0xa6351782 0xf40378f6 0xdc6c682f 0xce6dad5a
+  3 0xa1deed3b 0x7d0e377e 0x72637aad 0x5affc676
+  4 0xb3d7a47f 0xf4113e0e 0xc9958a5e 0x6a9d5b52
+  5 0xd29f74d2 0x44a12573 0x1a2806b6 0x0691e902
+  6 0x5d0dfd8e 0xcfd07457 0x36adb7a1 0x92b492f6
+  7 0xe0293640 0x9349abbf 0x4cf52045 0x37060596
+  8 0xc43e1799 0x33bb3e40 0xe4c71944 0x6452478c
+  9 0xefade551 0x7873cf2d 0xbfaa6388 0x2c841473
+ 10 0x84732d52 0x6dc98a7c 0x1e33dbc2 0x80f95c1b
+ 11 0x223cb30a 0x9829c411 0x417cd928 0xfb9eb71a
+ 12 0xbb9c1573 0x1891da52 0x4f264567 0xe929f1a4
+ 13 0x9dd19c60
+ 14 0x7ee4c102
+ 15 0x7e9ce946
+ 16 0xa1cdf903
+ 17 0x979a3d66
+ 18 0x9765f515
+
+The '''belt to mill''' operation affects elements 13 to 15 in the mill:
+
+    Mill       Belt Row 1 Belt Row 2 Belt Row 3
+  0 0xa4ba86fb 0x031a49c7 0x5866b7ab 0x7f443d0c
+  1 0x6aac4a6c 0x007b1975 0x3a5bda1c 0x599e1cba
+  2 0xa6351782 0xf40378f6 0xdc6c682f 0xce6dad5a
+  3 0xa1deed3b 0x7d0e377e 0x72637aad 0x5affc676
+  4 0xb3d7a47f 0xf4113e0e 0xc9958a5e 0x6a9d5b52
+  5 0xd29f74d2 0x44a12573 0x1a2806b6 0x0691e902
+  6 0x5d0dfd8e 0xcfd07457 0x36adb7a1 0x92b492f6
+  7 0xe0293640 0x9349abbf 0x4cf52045 0x37060596
+  8 0xc43e1799 0x33bb3e40 0xe4c71944 0x6452478c
+  9 0xefade551 0x7873cf2d 0xbfaa6388 0x2c841473
+ 10 0x84732d52 0x6dc98a7c 0x1e33dbc2 0x80f95c1b
+ 11 0x223cb30a 0x9829c411 0x417cd928 0xfb9eb71a
+ 12 0xbb9c1573 0x1891da52 0x4f264567 0xe929f1a4
+ 13 0x9ecbd5a7
+ 14 0x268276a9
+ 15 0x01d8d44a
+ 16 0xa1cdf903
+ 17 0x979a3d66
+ 18 0x9765f515
+
+At this point, we take words 1 and 2 from the mill to generate 64 more bits of hash output:
+
+ 6c4aac6a821735a6
+
+===Running Beltmill() again to generate more random bits===
+
+We then run Beltmill() again, resulting in:
+
+    Mill       Belt Row 1 Belt Row 2 Belt Row 3
+  0 0x6cf36fda 0x1891da52 0x4f264567 0xe929f1a4
+  1 0xf8de3c5a 0x69b603ab 0x5866b7ab 0x7f443d0c
+  2 0x4c9459a3 0x007b1975 0x9c6ecd9e 0x599e1cba
+  3 0x54ab7f1f 0xf40378f6 0xdc6c682f 0x6fb34061
+  4 0x467fcf23 0xced99301 0x72637aad 0x5affc676
+  5 0xd40be986 0xf4113e0e 0x1b0afe8c 0x6a9d5b52
+  6 0x07c891d4 0x44a12573 0x1a2806b6 0x5b9c148c
+  7 0xdf077459 0x2ff94217 0x36adb7a1 0x92b492f6
+  8 0x7cfc3d41 0x9349abbf 0x88cb37dc 0x37060596
+  9 0xc0b4f9dd 0x33bb3e40 0xe4c71944 0x8bffa2dd
+ 10 0x5e7d770b 0xfc00e27f 0xbfaa6388 0x2c841473
+ 11 0x286065c7 0x6dc98a7c 0x3c0f68c8 0x80f95c1b
+ 12 0xf47debb2 0x9829c411 0x417cd928 0x4002a269
+ 13 0x9c7f8208
+ 14 0x7173015d
+ 15 0x49e3be00
+ 16 0x4927ddf9
+ 17 0x5fe72eb5
+ 18 0x2af7cf5f
+
+Giving us these 64 bits of hash output:
+
+ 5a3cdef8a359944c
+
+To generate the final 64 bits of the desired 256-bit hash, we run Beltmill() one final time:
+
+    Mill       Belt Row 1 Belt Row 2 Belt Row 3
+  0 0x7ef726d9 0x9829c411 0x417cd928 0x4002a269
+  1 0xe7341fe7 0xe04fe608 0x4f264567 0xe929f1a4
+  2 0x82118ea0 0x69b603ab 0x14f2ee08 0x7f443d0c
+  3 0xb29a8d55 0x007b1975 0x9c6ecd9e 0x0d3563a5
+  4 0x7b4ebd5a 0xb27cb7d5 0xdc6c682f 0x6fb34061
+  5 0xfec38e38 0xced99301 0xa668932b 0x5affc676
+  6 0xf95a2809 0xf4113e0e 0x1b0afe8c 0x6d55ca86
+  7 0xb84b5869 0x9ba6512a 0x1a2806b6 0x5b9c148c
+  8 0x2ffcf15a 0x2ff94217 0x4a518ae0 0x92b492f6
+  9 0x235557d9 0x9349abbf 0x88cb37dc 0xf7b2fc4b
+ 10 0x7658fde8 0x6dc6494b 0xe4c71944 0x8bffa2dd
+ 11 0xc8320830 0xfc00e27f 0x97ca064f 0x2c841473
+ 12 0xc39a12ae 0x6dc98a7c 0x3c0f68c8 0x7484b7a9
+ 13 0x4801294c
+ 14 0x4f6ee74f
+ 15 0x82e8af69
+ 16 0x63210515
+ 17 0x2b657fd0
+ 18 0xc6c57d5f
+
+And finish off our hash as follows:
+
+ e71f34e7a08e1182 
+
+We can, if more pseudo-random numbers are desired, run Beltmill() as many times as we want to generate more numbers.
