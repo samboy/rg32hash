@@ -20,9 +20,12 @@ random number generator.  I wanted to be able to have a quality
 random number generator that would be compact and seen as a “black
 box” where a string is given to it, and random numbers come out.
 
-nanorg32 is the latest version of this, which has the RadioGatún[32]
-algorithm in only 607 bytes of code (600 if we remove unnecessary 
-newlines).
+nanorg32 described here is a recent version of this, which has the
+RadioGatún[32] algorithm in only 607 bytes of code (600 if we remove
+unnecessary newlines).
+
+Since this paper was written, I have found some further code size 
+optimizations and nanorg32.c is now only 580 bytes in size.
 
 # How nanorg32 and RadioGatún[32] work
 
