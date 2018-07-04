@@ -88,9 +88,9 @@ We set the rotate constant, "r", to 0
 We do the following 19 times, for values of "a" between 0 and 18 inclusive:
 
 * We add "a" to "r"
-* We modulo "r" by the word size for the RadioGatún variant in use (For RadioGatún[32], the 19 rotate values are [0, 1, 3, 6, 10, 15, 21, 28, 4, 13, 23, 2, 14, 27, 9, 24, 8, 25, 11]; for RadioGatún[64], [0, 1, 3, 6, 10, 15, 21, 28, 36, 45, 55, 2, 14, 27, 41, 56, 8, 25, 43])
+* We modulo "r" by the word size for the RadioGatún variant in use (For RadioGatún[32], the 19 rotate values are {0, 1, 3, 6, 10, 15, 21, 28, 4, 13, 23, 2, 14, 27, 9, 24, 8, 25, 11}; for RadioGatún[64], {0, 1, 3, 6, 10, 15, 21, 28, 36, 45, 55, 2, 14, 27, 41, 56, 8, 25, 43})
 * We set an index, "i", to "a" multiplied by seven
-* We module "i" by 19, the mill width (the 19 "i" values are [0, 7, 14, 2, 9, 16, 4, 11, 18, 6, 13, 1, 8, 15, 3, 10, 17, 5, 12])
+* We modulo "i" by 19, the mill width (the 19 "i" values are {0, 7, 14, 2, 9, 16, 4, 11, 18, 6, 13, 1, 8, 15, 3, 10, 17, 5, 12})
 * We set "k" to be the mill index "i"
 * We set index "ia" to be one added to "i", modulo 19.  "Modulo 19" here means that, if "i" has the value 18, instead of giving "ia" the value 19, we give it the value 0 instead.
 * We set index "ib" to be two added to "i", modulo 19.  "Modulo 19" here means that, if i + 2 is 19 or higher, we subtract 19 from "i": If "i" is 17, "ib" will be 0 (instead of 19); if "i" is 18, "ib" will be 1 (instead of 20).   
