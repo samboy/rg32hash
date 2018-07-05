@@ -118,13 +118,13 @@ them.
 I understand that tinyrg32.c still has some bloat in it; which is
 why I have made...
 
-# nanorg32 RadioGatún[32] in 607 bytes
+# nanorg32 RadioGatún[32] in 579 bytes
 
 This program will be compiled in to the “bin/” directory.
 
-nanorg32.c is a C-language RadioGatún[32] implementation in 607 bytes, 
+nanorg32.c is a C-language RadioGatún[32] implementation in 579 bytes, 
 using lines under 75 characters long.  There are no warnings when
-compiling with -Wall -Wpedantic in gcc 5.4.0, a recent version
+compiling with -Wall -Wpedantic in gcc 7.3.0, a recent version
 of clang (LLVM), nor are there any warnings or errors when compiled
 with TCC 0.9.25.
 
