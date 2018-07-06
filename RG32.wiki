@@ -526,7 +526,7 @@ The next 32 bits of the hash come from mill index 2 (0x79939946):
 
 Now that we have extracted the values of two elements on the mill to generate some random numbers, we run the Beltmill() operation again.  We will look at this in some more detail.
 
-===Another detailed look at a Beltlook() call===
+===Another detailed look at a Beltmill() call===
 
 First, we run the '''belt-to-mill feed-forward''', resulting in:
 
