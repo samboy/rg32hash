@@ -516,7 +516,7 @@ After running it 16 more times (for a total of 18 Beltmill() calls), it looks li
 
 At this point, we use mill index 1 (0x4fd2bd9e) to generate the first 32 bits of output:
 
- 93bdd24f 
+ 9ebdd24f 
 
 Observe that there has been an endian swap: The first byte is now the fourth byte, the second byte is now the third byte, the third byte is now the second byte, and the last byte is now the first byte.
 
