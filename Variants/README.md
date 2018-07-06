@@ -40,6 +40,14 @@ The number of blank rounds is determined as follows:
   rounding down.  The resulting number is added to the number of blank   
   rounds we have.
 
+## Computation cost
+
+The computation needed to hash a short string is the square of the size of
+our RadioGatún variant (order _n_ calculations per Beltmill calculation,
+multiplied by order _n_ blank rounds).  As the string we hash increases in
+length to infinity, however, the time needed to hash it is linear to the
+size of our mill.
+
 ## Some test vectors
 
 Here is the string '1' (i.e. the one-byte string with the byte 0x31)
