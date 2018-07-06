@@ -46,7 +46,9 @@ The computation needed to hash a short string is the square of the size of
 our RadioGatún variant (order _n_ calculations per Beltmill calculation,
 multiplied by order _n_ blank rounds).  As the string we hash increases in
 length to infinity, however, the time needed to hash it is linear to the
-size of our mill.
+size of our mill (but, remember, for the blank rounds to stay a small
+part of the total calculation of a hash, the size of the string to hash
+has to get bigger and bigger for bigger mill size variants of RG).
 
 ## Some test vectors
 
