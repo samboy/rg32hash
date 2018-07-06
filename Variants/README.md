@@ -3,7 +3,7 @@
 For all practical purposes, in the universe that exists, RadioGatun may
 as well be infinite.  With 1856 bits in the 32-bit variant of RG, that
 gives us more numbers than the number of particles in the observable
-universe (266 bits) multiplied by the age of the universe in Planck
+universe (296 [10 ** 89] bits) multiplied by the age of the universe in Planck
 units (202 bits) (a Planck unit is the shortest measurable unit of time
 according to standard physics; there are 10 ** 44 or so Planck time units
 in a single second).  However, standard RadioGatun, while having more 
