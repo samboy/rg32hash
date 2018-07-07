@@ -25,7 +25,7 @@ RadioGatún[32] algorithm in only 607 bytes of code (600 if we remove
 unnecessary newlines).
 
 Since this paper was written, I have found some further code size 
-optimizations and nanorg32.c is now only 580 bytes in size.
+optimizations and nanorg32.c is now only 577 bytes in size.
 
 # How nanorg32 and RadioGatún[32] work
 
