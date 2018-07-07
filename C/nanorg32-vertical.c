@@ -12,10 +12,10 @@ j=0;b(12)f[c+c%3*h]^=e[c+1];b
 ]^=f[c*h]=f[c*h+h];*e^=1;}int
 main(int p,char**v){char *q=v
 [--p];b(40)f[c]=e[c%g]=0;for(
-;;m()){b(3){for(p=0;p<4;){i=*
-q++;f[c*13]^=k=(i?255&i:1)<<8
-*p++;e[16+c]^=k;if(!i){b(17)m
-();p=2;b(8){if(p&2)m();i=c;k=
-e[p^=3];b(4){printf("%02x",k&
-255);k>>=8;}c=i;}return puts(
-"");}}}}}
+;;m()){b(3){for(p=0;p<4;){f[c
+*h]^=k=(*q?255&*q:1)<<8*p++;e
+[16+c]^=k;if(!*q++){b(17)m();
+p=2;b(8){if(p&2)m();i=c;k=e[p
+^=3];b(4){printf("%02x",k&255
+);k>>=8;}c=i;}return puts("")
+;}}}}}
