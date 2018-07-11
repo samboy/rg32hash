@@ -296,7 +296,7 @@ In this pseudocode example, we read in the input byte-by-byte to make the code e
         mill[i * 13] = mill[i * 13] ^ inputWords[i]
         i = i + 1
         shift = 0
-        if(i >= 3) {
+        if(i >= 3 and endOfString is not True) {
             Beltmill()
             i = 0
         }
