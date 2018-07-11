@@ -185,15 +185,15 @@ Note that, in Keccak, the iota step is significantly more complex.
 ===Belt to mill===
 To finish off the beltmill function, we exclusive or three words in the mill against three words in the belt, storing the result in the mill words:
 
-* Mill element 13 (the 14th element in the mill) is exclusive ored against Belt element 12 (the last word in the lowest row of the mill), storing the result in mill element 13
-* Mill element 14 (15th element in the mill) is exclusive ored against Belt element 25 (the last word in the middle row of the mill), storing the result in mill element 14
-* Mill element 15 (16th element in the mill) is exclusive ored against Belt element 38 (the last word in the top row of the mill), storing the result in mill element 15
+* Mill element 13 (the 14th element in the mill) is exclusive ored against Belt element 0 (the first word in the lowest row of the mill), storing the result in mill element 13
+* Mill element 14 (15th element in the mill) is exclusive ored against Belt element 13 (the first word in the middle row of the mill), storing the result in mill element 14
+* Mill element 15 (16th element in the mill) is exclusive ored against Belt element 26 (the first word in the top row of the mill), storing the result in mill element 15
 
 In pseudo-code:
 
- mill[13] = mill[13] ^ belt[12]
- mill[14] = mill[14] ^ belt[25]
- mill[15] = mill[15] ^ belt[38]
+ mill[13] = mill[13] ^ belt[0]
+ mill[14] = mill[14] ^ belt[13]
+ mill[15] = mill[15] ^ belt[26]
 
 Note that code sized optimized versions of RadioGatún will put this in a 3-step loop, since we can do both the second part of the belt rotation and the belt-to-mill operation in one small loop, but speed-optimized versions will unroll the loop (convert actions performed in a loop in to multiple actions performed outside of a loop, to save the CPU cycles needed to process the loop).
 
