@@ -21,6 +21,16 @@ This repo has 14 implementations of RadioGatún[32]:
 * A Node-compatible Javascript implementation
 * A C# (.NET) implementation
 
+# Other RadioGatun[32] implementations
+
+Before going in to these implementations, let me link to some other
+RadioGatun[32] implementations out there:
+
+* [A Pascal implementation](https://github.com/Xor-el/HashLib4Pascal/blob/master/HashLib/src/Crypto/HlpRadioGatun32.pas)
+* [A very fast C implementation](https://github.com/samboy/sphlib/blob/master/c/radiogatun.c)
+* [A Java implementation](https://github.com/samboy/sphlib/blob/master/java/fr/cryptohash/RadioGatun32.java)
+* [Another Python implementation](https://github.com/doegox/python-cryptoplus/blob/master/src/CryptoPlus/Hash/pyradiogatun.py)
+
 # Compile
 
 A Makefile is included to compile the C programs here. To use:
