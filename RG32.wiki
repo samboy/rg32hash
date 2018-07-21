@@ -3,13 +3,13 @@
 
 This article describes a cryptographic algorithm named '''RadioGatún'''.  To fully understand this article, the following concepts need to be understood by the reader:
 
-* [[A-level_Computing/AQA/Paper_2/Fundamentals_of_data_representation/Number_bases|Binary numbers]] To maximize performance, RadioGatún works directly with binary numbers
-* [[GCSE_Computer_Science/Hexadecimal|Hexadecimal numbers]] are used to illustrate some parts of the algorithm 
-* [[Digital_Circuits/Logic_Operations|Bitwise logic operations]] RadioGatún uses bitwise negation, bitwise or, and bitwise exclusive or
-* [[Microprocessor_Design/Shift_and_Rotate_Blocks|Bit rotation]] RadioGatún uses circular rotations
-* [[Cryptography/Hashes|Cryptographic hashes]] RadioGatún is a, as far as we know, secure cryptographic hash
-* [[Cryptography/Random_number_generation#Methods_of_Pseudorandom_Number_Generation|Pseudo-random number generator]] RadioGatún also functions as a secure random number generator
-* The reader should be familiar with at least one [[Subject:Computer_programming_languages|programming language]] which can perform the bitwise operations RadioGatún performs.
+* '''Binary numbers''' To maximize performance, RadioGatún works directly with binary numbers
+* '''Hexadecimal numbers''' are used to illustrate some parts of the algorithm 
+* '''Bitwise logic operations''' RadioGatún uses bitwise negation, bitwise or, and bitwise exclusive or
+* '''Bit rotation''' RadioGatún uses circular rotations
+* '''Cryptographic hashes''' RadioGatún is a, as far as we know, secure cryptographic hash
+* '''Pseudo-random number generator''' RadioGatún also functions as a secure random number generator
+* The reader should be familiar with at least one programming language which can perform the bitwise operations RadioGatún performs.
 
 == What is RadioGatún? ==
 
