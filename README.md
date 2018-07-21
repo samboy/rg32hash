@@ -88,18 +88,18 @@ stream of 32-character long strings of random numbers and letters.
 Its source code is as follows:
 
 ```c
-#include <stdio.h> // cc -o tinyrg32 tinyrg32.c ; ./tinyrg32 'Test vector'
+#include <stdio.h> // cc -o tinyrg32 tinyrg32.c /////// Public domain code
 #include <stdint.h> // ./tinyrg32 --hex --numbers 'A tiny list of numbers'
 #define b(z) for(c=0;c<(z);c++) // ./tinyrg32 --binary-stream 'Es la niña'
-#define d f[c*13]^=s;e[16+c]^=s; // This is public domain, but NO WARRANTY
-uint32_t c,e[19],f[40],g=19,h=13,r,s,t,n[19],i,k;void m(){int c,j=0;b(12)f
-[c+c%3*h]^=e[c+1];b(g){j=(c+j)&31;i=c*7%g;k=e[i++];k^=e[i%g]|~e[(i+1)%g];n
-[c]=k>>j|k<<(32-j);}for(i=39;i--;f[i+1]=f[i])e[i%g]=n[i%g]^n[(i+1)%g]^n[(i
+uint32_t c,e[40],f[40],g=19,h=13,r,s,t,n[40],i,k,z=0;void m(){int c,j=0;b(
+12)f[c+c%3*h]^=e[c+1];b(40){j=(c+j)&31;i=c*7%g;k=e[i++];k^=e[i%g]|~e[(i+1)
+%g];n[c]=k>>j|k<<(32-j);}for(c--;c--;f[c+1]=f[c])e[c]=n[c]^n[(c+1)%g]^n[(c
 +4)%g];*e^=1;b(3)e[c+h]^=f[c*h]=f[c*h+h];}int main(int p,char**v){char *q=
-v[--p];b(40)f[c]=e[c%19]=0;for(;;m()){b(3){for(s=r=0;r<4;){t=*q++;s|=(t?t&
-255:1)<<8*r++;if(!t){d;b(17)m();b(p?8*p:8){if(~t&1)m();s=e[(t&1)+1];r=(p&3
-)-2?c:1;b(4){i=s;if(p&4){i&=31;i+=i<8?50:89;}printf(p==2||p&4?"%c":"%02x",
-255&i);s>>=8;}c=r;if((++t%8==0||(p&22)==2)&&p-2)puts("");}return 0;}}d;}}}
+v[--p],y=0;b(40)f[c]=e[c]=0;for(;;m()){b(3){for(r=0;r<4;){f[c*h]^=k=(*q?*q
+&255:1)<<8*r++;e[16+c]^=k;if(!*q++){b(17)m();b(p?8*p:8){if(~t&1)m();s=e[(t
+&1)+1];r=(p&3)-2?c:1;b(4){i=s;if(p&4){y=1;z=z?z:*v[p-1]%8;i&=31;i+=i<8?50:
+89;}printf(p==2||p&4?"%c":"%02x",255&i);s>>=8;}c=r;if(!y&&(++t%8==0||(p&22
+)==2)&&p-2){puts("");}if(y&&!--z)puts("_Aa1");}y?puts(""):1;return 0;}}}}}
 ```
 
 Documentation for tinyrg32.c is included in its source code.  To expand
@@ -116,14 +116,18 @@ The current behavior is this:
 ./tinyrg32 '¡Es una niña linda!': 256-bit hash
 ./tinyrg32 --binary-stream '¡La niña!': Binary stream
 ./tinyrg32 --hex --numbers '¡Niña!': 24 32-bit hex numbers
-./tinyrg32 --four --alphanum --strings 'ñ': Four 160-bit alphanumeric strings 
-./tinyrg32 --infinite --number --of --alphanum -strings 'ñ': Self-explanatory
+./tinyrg32 --ten --strings 3 'ñ': Ten 60-bit alphanumeric strings 
+./tinyrg32 --eight --strings 4 'ñ': Eight 80-bit alphanumeric strings 
+./tinyrg32 --infinite --number --of --strings 3 'ñ': Infinite 60-bit strings
+./tinyrg32 --infinite --number --of --strings 4 'ñ': Infinite 80-bit strings
+./tinyrg32 --infinite --number --of --strings 5 'ñ': Infinite 100-bit strings
+./tinyrg32 --infinite --number --of --strings 7 'ñ': Infinite 140-bit strings
 ./tinyrg32 - - - - - - - - - -: Infinite 32-bit hex strings
 ./tinyrg32 - - - - - - - - - - - - - - - - - -: Infinite 256-bit hex strings
 ```
 
 Note that alphanumeric strings never have the characters “0” and “1” in
-them.
+them. 
 
 I understand that tinyrg32.c still has some bloat in it; which is
 why I have made...
@@ -150,8 +154,8 @@ on a smartphone screen or a business card.
 
 This script can be found in the “C/” directory.
 
-pwgen.sh allows the tinyrg32 program to generate secure passwords for
-websites. To use, do something like this:
+pwgen.sh allows the one to generate secure passwords for websites. 
+To use, do something like this:
 
 ```
 echo 'Some secret string' > ~/.mash_prefix2 # Only do this once
@@ -167,11 +171,14 @@ To create another password for the site, do something like this:
 pwgen.sh 2 facebook.com
 ```
 
-Or, if the index is above five:
+Or, if the index is above ten:
 
 ```
 pwgen.sh facebook.com:6
 ```
+
+pwgen.sh is smart enough to compile tinyrg32 should tinyrg32 not be
+in one's path.
 
 # tinyapi.c Tiny rg32 library
 
