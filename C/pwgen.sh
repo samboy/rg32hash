@@ -69,6 +69,12 @@ fi
 # Make sure tinyrg32 is in the path; if not then compile and run it
 TINYRG32="tinyrg32"
 
+## NOTE: The string "_Aa1" on the last line in the code below can be 
+## changed to some other value to make generated passwords about 16 bits
+## more secure, such as making that code look like puts("_Zq3") or 
+## some other short secret string (make sure to have an upper case
+## letter, lower case letter, the symbol '_', and a number in it)
+
 if ! command -v tinyrg32 > /dev/null 2>&1 ; then
 	cat > tinyrg32-$$.c << EOF
 #include <stdio.h> // cc -o tinyrg32 tinyrg32.c /////// Public domain code
