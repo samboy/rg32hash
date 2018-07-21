@@ -13,20 +13,50 @@ if [ -z "$SECRET" ] ; then
 	exit 1
 fi
 
-INDEX="$1"
-if [ -z "$INDEX" ] ; then
-	echo Usage: $0 {index} {site}
-	echo Where {index} is the password number index for this site
-	exit 1
-fi
-
-SITE="$2"
+SITE="$1"
 if [ -z "$SITE" ] ; then
-	echo Usage: $0 {index} {site}
+	echo Usage: $0 {site} 
 	echo Where {site} is the website to generate a password for
 	exit 1
 fi
 
+# As a general rule, *most* sites require: 8-16 characters, at least one:
+# a) lower case letter
+# b) upper case letter
+# c) number
+# d) punctuation, where _ is considered punctuation
+# The tinyrg32 program adds _Aa1 to the end of each password which covers
+# *most* sites.  However, this being the internet, some sites have dumb
+# password rules we have to make exceptions for.  This script covers
+# most of them
+
+# Some sites will not allow a '_' character in their passwords.  That
+# in mind, we can optionally zap the '_' character.
+# Real world offender: timewarnercable.com
+ZAP='~'
+
+# Some sites do not consider _ punctuation.  
+# Make $CHANGE something besides '_' to change the '_' to another symbol
+# Real world offenders: southwest.com
+CHANGE='_'
+
+# Some sites require passwords to be changed frequently.  This is actually
+# a reasonable security practice, and we support it
+INDEX=1
+
+##### SITE SPECIFIC RULES GO HERE #####
+if [ "$SITE" = "timewarnercable.com" ] ; then
+	ZAP='_'
+fi
+if [ "$SITE" = "southwest.com" ] ; then
+	CHANGE=':'
+fi
+if [ "$SITE" = "paypal.com" ] ; then
+	INDEX=2
+fi
+### END SITE SPECIFIC RULES ###
+
+# Make sure tinyrg32 is in the path; if not then compile and run it
 TINYRG32="tinyrg32"
 
 if ! command -v tinyrg32 > /dev/null 2>&1 ; then
@@ -49,7 +79,8 @@ EOF
 fi
 
 # If you need an index above ten, change this command line
-$TINYRG32 --make --ten --passwords 3 "$SECRET:$SITE" | head -$INDEX | tail -1 
+$TINYRG32 --make --ten --passwords 3 "$SECRET:$SITE" | head -$INDEX | \
+	tail -1 | tr -d "$ZAP" | tr '_' "$CHANGE"
 
 rm -f ./tinyrg32-$$ ./tinyrg32-$$.c ./tinyrg32-$$.exe
 
