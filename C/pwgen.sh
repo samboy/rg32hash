@@ -37,7 +37,7 @@ ZAP='~'
 
 # Some sites do not consider _ punctuation.  
 # Make $CHANGE something besides '_' to change the '_' to another symbol
-# Real world offenders: southwest.com
+# Real world offender: southwest.com
 CHANGE='_'
 
 # Some sites require passwords to be changed frequently.  This is actually
