@@ -3,6 +3,10 @@
 # Use tinyrg32 to generate a password; tinyrg32 source at the end of
 # this script
 
+# Note that this version of pwgen.sh is not compatible with passwords
+# generated with the older pwgen.sh; this in mind, there is pwgen-old.sh
+# for people who need the older passwords.
+
 SECRET=$( cat $HOME/.mhash_prefix2 )
 if [ -z "$SECRET" ] ; then
 	echo Could not find $HOME/.mhash_prefix2
