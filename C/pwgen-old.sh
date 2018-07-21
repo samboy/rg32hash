@@ -7,6 +7,10 @@
 # generated with the newer pwgen.sh; this in mind, this pwgen-old.sh
 # is here for people who need the older passwords.
 
+# Note that the newer tinyrg32.c generates incompatible passwords; use
+# the tinyrg32.c at the bottom of this older script to retain old 
+# passwords.
+
 SECRET=$( cat $HOME/.mhash_prefix2 )
 if [ -z "$SECRET" ] ; then
 	echo Could not find $HOME/.mhash_prefix2
