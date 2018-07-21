@@ -40,7 +40,7 @@ v[--p],y=0;b(40)f[c]=e[c]=0;for(;;m()){b(3){for(r=0;r<4;){f[c*h]^=k=(*q?*q
 89;}printf(p==2||p&4?"%c":"%02x",255&i);s>>=8;}c=r;if(!y&&(++t%8==0||(p&22
 )==2)&&p-2){puts("");}if(y&&!--z)puts("_Aa1");}y?puts(""):1;return 0;}}}}}
 EOF
-	gcc -o tinyrg32-$$ tinyrg32-$$.c
+	cc -o tinyrg32-$$ tinyrg32-$$.c
 	TINYRG32=./tinyrg32-$$
 fi
 
