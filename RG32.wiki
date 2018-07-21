@@ -3,7 +3,7 @@
 
 This article describes a cryptographic algorithm named '''RadioGatún'''.  To fully understand this article, the following concepts need to be understood by the reader:
 
-* [[A-level_Computing/AQA/Paper_2/Fundamentals_of_data_representation/Number_bases|Binary numbers]] To maximize seed, RadioGatún works directly with binary numbers
+* [[A-level_Computing/AQA/Paper_2/Fundamentals_of_data_representation/Number_bases|Binary numbers]] To maximize performance, RadioGatún works directly with binary numbers
 * [[GCSE_Computer_Science/Hexadecimal|Hexadecimal numbers]] are used to illustrate some parts of the algorithm 
 * [[Digital_Circuits/Logic_Operations|Bitwise logic operations]] RadioGatún uses bitwise negation, bitwise or, and bitwise exclusive or
 * [[Microprocessor_Design/Shift_and_Rotate_Blocks|Bit rotation]] RadioGatún uses circular rotations
