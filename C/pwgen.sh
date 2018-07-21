@@ -44,6 +44,13 @@ CHANGE='_'
 # a reasonable security practice, and we support it
 INDEX=1
 
+# Some sites might require a password to be longer than 16 characters, or
+# to be shorter. The password length is 4 + (4 * LEN), so for a site which
+# can only handle passwords 12 characters long, make LEN 2; for a site which
+# can only handle 8 character passwords, make LEN 1.  For someone who needs
+# 24 chars in the password, make LEN 5
+LEN=3 # 16 character password
+
 ##### SITE SPECIFIC RULES GO HERE #####
 if [ "$SITE" = "timewarnercable.com" ] ; then
 	ZAP='_'
@@ -53,6 +60,9 @@ if [ "$SITE" = "southwest.com" ] ; then
 fi
 if [ "$SITE" = "paypal.com" ] ; then
 	INDEX=2
+fi
+if [ "$SITE" = "idiot.example.com" ] ; then
+	LEN=2
 fi
 ### END SITE SPECIFIC RULES ###
 
@@ -79,7 +89,7 @@ EOF
 fi
 
 # If you need an index above ten, change this command line
-$TINYRG32 --make --ten --passwords 3 "$SECRET:$SITE" | head -$INDEX | \
+$TINYRG32 --make --ten --passwords $LEN "$SECRET:$SITE" | head -$INDEX | \
 	tail -1 | tr -d "$ZAP" | tr '_' "$CHANGE"
 
 rm -f ./tinyrg32-$$ ./tinyrg32-$$.c ./tinyrg32-$$.exe
