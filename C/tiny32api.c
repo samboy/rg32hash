@@ -13,7 +13,9 @@ rg rgi(rg*m,rg*b,rg*a){if(*a&2)rgf(m,b);return m[*a^=3];}
  * as a source of random numbers.  This is a compliant subset of 
  * RadioGatún[32]: the generated numbers are the same as the ones the
  * reference RadioGatún[32] implementation generates when it's given a 
- * 32-bit little endian number as the hash input. */
+ * 32-bit little endian number as the hash input (e.g. the seed
+ * 875770417 generates the same numbers as when RadioGatun[32] hashes
+ * the string '1234') */
 
 /* Example of API usage, non-Golfed (also public domain) */
 #include <stdio.h>
