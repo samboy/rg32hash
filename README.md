@@ -115,13 +115,13 @@ The current behavior is this:
 ./tinyrg32: A 256-bit hash of argv[0]
 ./tinyrg32 '¡Es una niña linda!': 256-bit hash
 ./tinyrg32 --binary-stream '¡La niña!': Binary stream
-./tinyrg32 --hex --numbers '¡Niña!': 24 32-bit hex numbers
-./tinyrg32 --ten --strings 3 'ñ': Ten 60-bit alphanumeric strings 
-./tinyrg32 --eight --strings 4 'ñ': Eight 80-bit alphanumeric strings 
-./tinyrg32 --infinite --number --of --strings 3 'ñ': Infinite 60-bit strings
-./tinyrg32 --infinite --number --of --strings 4 'ñ': Infinite 80-bit strings
-./tinyrg32 --infinite --number --of --strings 5 'ñ': Infinite 100-bit strings
-./tinyrg32 --infinite --number --of --strings 7 'ñ': Infinite 140-bit strings
+./tinyrg32 --hex --numbers '¡Niña!': Many 32-bit hex numbers
+./tinyrg32 --ten _Fo0 3 'ñ': Many 60-bit alphanumeric strings 
+./tinyrg32 --eight _Fo0 4 'ñ': Many 80-bit alphanumeric strings 
+./tinyrg32 --infinite --number --strings _Fo0 3 'ñ': Infinite 60-bit strings
+./tinyrg32 --infinite --number --strings _Fo0 4 'ñ': Infinite 80-bit strings
+./tinyrg32 --infinite --number --strings _Fo0 5 'ñ': Infinite 100-bit strings
+./tinyrg32 --infinite --number --strings _Fo0 9 'ñ': Infinite 180-bit strings
 ./tinyrg32 - - - - - - - - - -: Infinite 32-bit hex strings
 ./tinyrg32 - - - - - - - - - - - - - - - - - -: Infinite 256-bit hex strings
 ```
