@@ -19,6 +19,9 @@ tinyrg32: C/tinyrg32.c
 nanorg32: C/nanorg32.c
 	cc -Wall -O3 -o bin/nanorg32 C/nanorg32.c
 
+nanorg32-endian: C/nanorg32-endian.c
+	cc -Wall -O3 -o bin/nanorg32-endian C/nanorg32-endian.c
+
 nanorg32-vertical: C/nanorg32-vertical.c
 	cc -Wall -O3 -o bin/nanorg32-vertical C/nanorg32-vertical.c
 
