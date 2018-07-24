@@ -8,7 +8,7 @@
 # for people who need the older passwords.
 
 # Change this to something else to get a bit more security
-SUFFIX="_Aa9"
+SUFFIX="Aa9"
 
 SECRET=$( cat $HOME/.mhash_prefix2 )
 if [ -z "$SECRET" ] ; then
@@ -85,14 +85,14 @@ v[--p],*x=0;for(;;m()){b(3){for(r=0;r<4;){f[c*h]^=k=(*q?*q&255:1)<<8*r++;e
 [16+c]^=k;if(!*q++){b(17)m();b(p<3?8:9973){if(~t&1)m();s=e[(t&1)+1];r=(p&3
 )-2?c:1;b(4){i=s;if(p&4){x=v[p-2];y=z=z?z:*v[p-1]%16;i&=31;i+=i<8?50:89;}s
 >>=8;printf(p==2||p&4?"%c":"%02x",255&i);}if((++t%8==0||(p&22)==2)&&p-2&&!
-y){puts("");}c=r;if(y&&!--z)puts(x?x:"");}if(x&&t%8)puts(x);return 0;}}}}}
+y){puts("");}c=r;if(y&&!--z)puts(*x==95?x:"");}if(x)puts(x);return 0;}}}}}
 EOF
 	cc -o tinyrg32-$$ tinyrg32-$$.c
 	TINYRG32=./tinyrg32-$$
 fi
 
 # If you need an index above ten, change this command line
-$TINYRG32 --make --ten $SUFFIX $LEN "$SECRET:$SITE" | head -$INDEX | \
+$TINYRG32 --make --many _$SUFFIX $LEN "$SECRET:$SITE" | head -$INDEX | \
 	tail -1 | tr -d "$ZAP" | tr '_' "$CHANGE"
 
 rm -f ./tinyrg32-$$ ./tinyrg32-$$.c ./tinyrg32-$$.exe
