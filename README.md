@@ -91,18 +91,18 @@ Its source code is as follows:
 #include <stdio.h> // cc -o tinyrg32 tinyrg32.c /////// Public domain code
 #include <stdint.h> // ./tinyrg32 --hex --numbers 'A tiny list of numbers'
 #define b(z) for(c=0;c<(z);c++) // ./tinyrg32 --binary-stream 'Es la niña'
-uint32_t c,e[40],f[40],g=19,h=13,r,s,t,n[40],i,k,z=0;void m(){int c,j=0;b(
-12)f[c+c%3*h]^=e[c+1];b(40){j=(c+j)&31;i=c*7%g;k=e[i++];k^=e[i%g]|~e[(i+1)
-%g];n[c]=k>>j|k<<(32-j);}for(c--;c--;f[c+1]=f[c])e[c]=n[c]^n[(c+1)%g]^n[(c
+uint32_t c,e[40],f[40],g=19,h=13,r,s,t,n[40],i,k,y,z;void m(){int c,j=0;b(
+12)f[c+c%3*h]^=e[c+1];b(g){j=(c+j)&31;i=c*7%g;k=e[i++];k^=e[i%g]|~e[(i+1)%
+g];n[c]=k>>j|k<<(32-j);}for(c=39;c--;f[c+1]=f[c])e[c]=n[c]^n[(c+1)%g]^n[(c
 +4)%g];*e^=1;b(3)e[c+h]^=f[c*h]=f[c*h+h];}int main(int p,char**v){char *q=
-v[--p],y=0;b(40)f[c]=e[c]=0;for(;;m()){b(3){for(r=0;r<4;){f[c*h]^=k=(*q?*q
-&255:1)<<8*r++;e[16+c]^=k;if(!*q++){b(17)m();b(p?8*p:8){if(~t&1)m();s=e[(t
-&1)+1];r=(p&3)-2?c:1;b(4){i=s;if(p&4){y=1;z=z?z:*v[p-1]%8;i&=31;i+=i<8?50:
-89;}printf(p==2||p&4?"%c":"%02x",255&i);s>>=8;}c=r;if(!y&&(++t%8==0||(p&22
-)==2)&&p-2){puts("");}if(y&&!--z)puts("_Aa1");}y?puts(""):1;return 0;}}}}}
+v[--p],*x=0;for(;;m()){b(3){for(r=0;r<4;){f[c*h]^=k=(*q?*q&255:1)<<8*r++;e
+[16+c]^=k;if(!*q++){b(17)m();b(p<3?8:9973){if(~t&1)m();s=e[(t&1)+1];r=(p&3
+)-2?c:1;b(4){i=s;if(p&4){x=v[p-2];y=z=z?z:*v[p-1]%16;i&=31;i+=i<8?50:89;}s
+>>=8;printf(p==2||p&4?"%c":"%02x",255&i);}if((++t%8==0||(p&22)==2)&&p-2&&!
+y){puts("");}c=r;if(y&&!--z)puts(x?x:"");}if(x&&t%8)puts(x);return 0;}}}}}
 ```
 
-Documentation for tinyrg32.c is included in its source code.  To expand
+Some documentation for tinyrg32.c is included in its source code.  To expand
 on that:
 
 The final argument given to tinyrg32.c is always the key used to 
@@ -140,11 +140,11 @@ them; they use a custom base32 alphabet designed to minimize code size:
 I understand that tinyrg32.c still has some bloat in it; which is
 why I have made...
 
-# nanorg32 RadioGatún[32] in 577 bytes
+# nanorg32 RadioGatún[32] in 552 bytes
 
 This program will be compiled in to the “bin/” directory.
 
-nanorg32.c is a C-language RadioGatún[32] implementation in 577 bytes, 
+nanorg32.c is a C-language RadioGatún[32] implementation in 552 bytes, 
 using lines under 75 characters long.  There are no warnings when
 compiling with `-Wall -Wpedantic` in gcc 7.3.0, with `-Wall -Wpedantic`
 in clang 5.0.1, nor are there any warnings or errors when compiled 
