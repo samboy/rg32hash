@@ -14,7 +14,6 @@ c*h]=f[c*h+h];*e^=1;}int main
 ;for(;;m()){b(3){for(p=0;p<4;
 ){f[c*h]^=k=(*q?255&*q:1)<<8*
 p++;e[c+16]^=k;if(!*q++){b(17
-){m();}b(32){if(c%8==0){q=4+(
-char*)e;m();}printf("%02x",*(
-q++)&255);}return puts("");}}
-}}}
+)m();b(32){if(c%8==0){q=(char
+*)e+4;m();}printf("%02x",*q++
+&255);}return puts("");}}}}}
