@@ -23,7 +23,7 @@ There are four modes of operation:
 
 * We have a version to convert strings in to 256-bit hex digests
 * We can output arbitrarily long random noise to standard output
-* We can generate a long list of 32-bit pesudo-random hexadecimal numbers
+* We can generate a long list of 32-bit pseudo-random hexadecimal numbers
 * We can generate passwords with a user-supplied level of entropy
 
 ## Generating hash digests
@@ -95,10 +95,10 @@ But, for some reason, it’s actually faster if tinyrg32 generates an
 infinite list of 32-bit hex numbers.  That in mind:
 
 ```
-time tinyrg32 --we --can --make --an --infinite --list --of --hex --numbers '1234'
+tinyrg32 --we --can --make --an --infinite --list --of --hex --numbers '1234'
 ```
 
-This makes an infinite list, which is faster in cygwin:
+This makes an infinite list, which is faster in Cygwin:
 
 ```
 $ time tinyrg32 --we --can --make --an --infinite --list --of --hex --numbers '1234' | head -1 | tail -1
@@ -125,12 +125,22 @@ have a number and punctuation mark in the password makes passwords more
 secure (see https://xkcd.com/936/ for why that doesn’t help); it is
 not intended to increase security.
 
-The number 3 above is the security level of the password; in other words
+The number 4 above is the security level of the password; in other words
 the number of bits of entropy in the password, divided by 20.  A
 security level of "1" gives us a password with 20 bits of entropy, "2"
-40 bits, "3" 60 bits, and so on up until "9" which gives us 180 bits
-of entropy.  Keep in mind that a password like this is only as secure
-as its secret.
+40 bits, "3" 60 bits, "4" 80 bits, and so on up until "9" which gives
+us 180 bits of entropy.  Keep in mind that a password like this is only
+as secure as its secret.
+
+If more than 180 bits of entropy is desired in the password, it’s possible
+to use letters to specify more entropy: "j" for 200 bits, "k" for 220 bits,
+up to "o" for 300 bits of entropy.  Note that a chain is only as strong
+as its weakest link: In order for us to _really_ have a large number
+of bits of security, we will need a passphrase which is quite long, as
+well as making sure the computer generating the bits is secure (ideally,
+offline).  Also, the best public attacks out there, as of 2018, can crack
+about 64 bits of entropy (the famous “Shattered” attack breaking
+SHA-1 from 2017 took about 2 ** 64 work).
 
 This will generate a large list of possible passwords.  To get a good
 password, invoke it like this:
