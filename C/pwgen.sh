@@ -91,8 +91,8 @@ EOF
 	TINYRG32=./tinyrg32-$$
 fi
 
-# If you need an index above ten, change this command line
-$TINYRG32 --make --many _$SUFFIX $LEN "$SECRET:$SITE" | head -$INDEX | \
+# If you need a really large index, change this command line
+$TINYRG32 --make --many _$SUFFIX $LEN "$LEN:$SECRET:$SITE" | head -$INDEX | \
 	tail -1 | tr -d "$ZAP" | tr '_' "$CHANGE"
 
 rm -f ./tinyrg32-$$ ./tinyrg32-$$.c ./tinyrg32-$$.exe
