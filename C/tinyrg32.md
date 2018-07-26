@@ -147,7 +147,8 @@ When used with a script, it would probably be invoked like this:
 ```
 SECRET="Some long secret which only we know"
 WEBSITE="example.com"
-tinyrg32 --password _Aa1 4 "${SECRET}:${WEBSITE}" | head -2 | tail -1
+LEN=4
+tinyrg32 --password _Aa1 $LEN "${LEN}:${SECRET}:${WEBSITE}" | head -2 | tail -1
 ```
 
 I have already written a script to generate good passwords, called pwgen.sh.
