@@ -73,40 +73,17 @@ invoke it thusly:
 tinyrg32 --hex --numbers '1234'
 ```
 
-This will generate a long (but finite) list of hexadecimal numbers.
-1234 is the seed, which is a string, not a number:
+This will generate a somewhat long (but finite) list of hexadecimal 
+numbers.  1234 is the seed, which is a string, not a number:
 
 ```
 tinyrg32 --hex --numbers 'Look, ma, a string'
 ```
 
-Note that, in Cygwin, something like this can be slow:
-
-```
-$ time tinyrg32 --hex --numbers '1234' | head -1 | tail -1
-9ebdd24f
-
-real    0m0.980s
-user    0m0.015s
-sys     0m0.107s
-```
-
-But, for some reason, it’s actually faster if tinyrg32 generates an 
-infinite list of 32-bit hex numbers.  That in mind:
+We can also have tinyrg32 generate an infinite list of 32-bit hex numbers: 
 
 ```
 tinyrg32 --we --can --make --an --infinite --list --of --hex --numbers '1234'
-```
-
-This makes an infinite list, which is faster in Cygwin:
-
-```
-$ time tinyrg32 --we --can --make --an --infinite --list --of --hex --numbers '1234' | head -1 | tail -1
-9ebdd24f
-
-real    0m0.062s
-user    0m0.046s
-sys     0m0.000s
 ```
 
 ## Generating a secure password
@@ -142,10 +119,10 @@ offline).  Also, the best public attacks out there, as of 2018, can crack
 about 64 bits of entropy (the famous “Shattered” attack breaking
 SHA-1 from 2017 took about 2 ** 64 work).
 
-tinyrg32 will generate a long, but finite, list of passwords; it is 
-designed to be used with the standard `head` and `tail` tools included 
-with *NIX to pick the password we can use.  These tools allow us to
-print only a single line from a list given to us; for example:
+tinyrg32 will generate a somewhat long, but finite, list of passwords;
+it is designed to be used with the standard `head` and `tail` tools
+included with *NIX to pick the password we can use.  These tools allow
+us to print only a single line from a list given to us; for example:
 
 ```
 tinyrg32 - _B1ah 'secret:example.com' | head -1 | tail -1
@@ -179,16 +156,56 @@ compensate for clueless password rules from site admins (e.g. As I type
 this, southwest.com does not allow a `_` in a password, so we make it a `:` 
 instead for that one site).
 
-The reason why the password list is long, but finite, is because some
-setups, such as the msys toolkit for Windows, will not terminate if
-a given program sends an infinite amount of data piped in to another
-program (such as the `head` tool), even when the second program is done
-receiving data and closes the pipe.
+The reason why the password list is finite is because some setups, such
+as the msys toolkit for Windows, will not terminate if a given program
+sends an infinite amount of data piped in to another program (such as
+the `head` tool), even when the second program is done receiving data
+and closes the pipe.
 
 We can, if desired, make an infinitely long list of passwords:
 
 ```
 tinyrg32 --infinite --password --list _Suff1x 4 'secret:website'
+```
+
+Note that password strings never have the characters “0” and “1” in
+them; they use a custom base32 alphabet designed to minimize code size:
+
+|0|1|2|3|4|5|6|7|8|9|10|11|12|13|14|15|
+|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|
+|2|3|4|5|6|7|8|9|a|b|c|d|e|f|g|h|
+
+|16|17|18|19|20|21|22|23|24|25|26|27|28|29|30|31|
+|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|
+|i|j|k|l|m|n|o|p|q|r|s|t|u|v|w|x|
+
+Here is a Python program which reads hex numbers on the standard input
+(e.g. "1234abcd321a") and converts them in to the base32 format used
+for passwords:
+
+```python
+#!/usr/bin/env python
+
+# This script takes hex numbers on the standard input and outputs
+# their tinyrg32 base32 form on the standard output
+
+import sys
+
+k = "23456789abcdefghijklmnopqrstuvwx"
+
+for line in sys.stdin:
+        while len(line) > 0:
+                h = line[0:2]
+                line = line[2:]
+                if(len(h) > 0):
+                    try:
+                        a = int(h,16)
+                    except:
+                        a = -1
+                    if a >= 0:
+                        a &= 31
+                        sys.stdout.write(k[a:a+1])
+        print ""
 ```
 
 ## Source code
@@ -205,7 +222,7 @@ uint32_t c,e[40],f[40],g=19,h=13,r,s,t,n[40],i,k,y,z;void m(){int c,j=0;b(
 g];n[c]=k>>j|k<<(32-j);}for(c=39;c--;f[c+1]=f[c])e[c]=n[c]^n[(c+1)%g]^n[(c
 +4)%g];*e^=1;b(3)e[c+h]^=f[c*h]=f[c*h+h];}int main(int p,char**v){char *q=
 v[--p],*x=0;for(;;m()){b(3){for(r=0;r<4;){f[c*h]^=k=(*q?*q&255:1)<<8*r++;e
-[16+c]^=k;if(!*q++){b(17)m();b(p<3?8:9973){if(~t&1)m();s=e[(t&1)+1];r=(p&3
+[16+c]^=k;if(!*q++){b(17)m();b(p<3?8:89*p){if(~t&1)m();s=e[(t&1)+1];r=(p&3
 )-2?c:1;b(4){i=s;if(p&4){x=v[p-2];y=z=z?z:*v[p-1]%16;i&=31;i+=i<8?50:89;}s
 >>=8;printf(p==2||p&4?"%c":"%02x",255&i);}if((++t%8==0||(p&22)==2)&&p-2&&!
 y){puts("");}c=r;if(y&&!--z)puts(*x==95?x:"");}if(x)puts(x);return 0;}}}}}
