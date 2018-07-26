@@ -115,7 +115,7 @@ These days, it is a bad idea to use the same password on multiple sites.
 Tinyrg32 has a mode of operation where it helps generate strong passwords:
 
 ```
-tinyrg32 --password _Suff1x 4 'secret:website.example.com'
+tinyrg32 --password _Suff1x 4 'secret:website.example.com' | head -1 
 ```
 
 Here, _Suff1x (which _must_ start with `_`) is a string we place at
@@ -142,8 +142,30 @@ offline).  Also, the best public attacks out there, as of 2018, can crack
 about 64 bits of entropy (the famous “Shattered” attack breaking
 SHA-1 from 2017 took about 2 ** 64 work).
 
-This will generate a large list of possible passwords.  To get a good
-password, invoke it like this:
+tinyrg32 will generate a long, but finite, list of passwords; it is 
+designed to be used with the standard `head` and `tail` tools included 
+with *NIX to pick the password we can use.  These tools allow us to
+print only a single line from a list given to us; for example:
+
+```
+tinyrg32 - _B1ah 'secret:example.com' | head -1 | tail -1
+```
+
+This will print only the first line.  Should the example.com password
+database be hacked, forcing us to change the password, we can change
+the password:
+
+```
+tinyrg32 - _B1ah 'secret:example.com' | head -2 | tail -1
+```
+
+Should they require us to change the password again in a few months:
+
+```
+tinyrg32 - _B1ah 'secret:example.com' | head -3 | tail -1
+```
+
+When used with a script, it would probably be invoked like this:
 
 ```
 SECRET="Some long secret which only we know"
@@ -157,7 +179,13 @@ compensate for clueless password rules from site admins (e.g. As I type
 this, southwest.com does not allow a `_` in a password, so we make it a `:` 
 instead for that one site).
 
-We can make an infinitely long list of passwords:
+The reason why the password list is long, but finite, is because some
+setups, such as the msys toolkit for Windows, will not terminate if
+a given program sends an infinite amount of data piped in to another
+program (such as the `head` tool), even when the second program is done
+receiving data and closes the pipe.
+
+We can, if desired, make an infinitely long list of passwords:
 
 ```
 tinyrg32 --infinite --password --list _Suff1x 4 'secret:website'
