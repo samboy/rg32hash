@@ -238,6 +238,9 @@ To change the length of the numbers, replace the "6" in the AWK script
 with the desired quantity of numeric digits.  The `head` and `tail` tools 
 can be used if we only want to see a single PIN.
 
+Note that a short numeric PIN does not have enough entropy to be used 
+as a secure long-term password.
+
 ## Source code
 
 This source code (as well as this document) is donated to the public 
