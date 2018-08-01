@@ -125,7 +125,7 @@ included with *NIX to pick the password we can use.  These tools allow
 us to print only a single line from a list given to us; for example:
 
 ```
-tinyrg32 - _B1ah 'secret:example.com' | head -1 | tail -1
+tinyrg32 --password _B1ah 'secret:example.com' | head -1 | tail -1
 ```
 
 This will print only the first line.  Should the example.com password
@@ -133,13 +133,13 @@ database be hacked, forcing us to change the password, we can change
 the password:
 
 ```
-tinyrg32 - _B1ah 'secret:example.com' | head -2 | tail -1
+tinyrg32 --password _B1ah 'secret:example.com' | head -2 | tail -1
 ```
 
 Should they require us to change the password again in a few months:
 
 ```
-tinyrg32 - _B1ah 'secret:example.com' | head -3 | tail -1
+tinyrg32 --password _B1ah 'secret:example.com' | head -3 | tail -1
 ```
 
 When used with a script, it would probably be invoked like this:
@@ -208,6 +208,35 @@ for line in sys.stdin:
                         sys.stdout.write(k[a:a+1])
         print ""
 ```
+
+## Generating numeric PINs
+
+(I should note here that some clueless websites incorrectly call an 
+alphanumeric password with special characters a “PIN”, even though a
+PIN is a personally identifiable *number*; for such sites, use a random
+password as described above.)
+
+Invoking tinyrg32 like this will generate a large (but finite) number 
+of 256-bit hex numbers:
+
+```
+tinyrg32 --a --bunch --of --256 --bit --hex --numbers 'seed' 
+```
+
+Replace 'seed' with the desired string seed for the random password
+maker.
+
+We can use standard UNIX tools to make that long hex number a numeric PIN.  
+To make six digit pins:
+
+```
+tinyrg32 --a --bunch --of --256 --bit --hex --numbers 'seed' | \
+	tr -d '[a-f]' | awk '{print substr($0,0,6)}' 
+```
+
+To change the length of the numbers, replace the "6" in the AWK script
+with the desired quantity of numeric digits.  The `head` and `tail` tools 
+can be used if we only want to see a single PIN.
 
 ## Source code
 
