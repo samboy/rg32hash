@@ -156,23 +156,11 @@ To use, do something like this:
 
 ```
 echo 'Some secret string' > ~/.mash_prefix2 # Only do this once
-pwgen.sh 1 facebook.com
+pwgen.sh facebook.com
 ```
 
 Replace “Some secret string” with a suitably hard to guess string, and 
 facebook.com with the site you need to log in to.
-
-To create another password for the site, do something like this:
-
-```
-pwgen.sh 2 facebook.com
-```
-
-Or, if the index is above ten:
-
-```
-pwgen.sh facebook.com:6
-```
 
 pwgen.sh is smart enough to compile tinyrg32 should tinyrg32 not be
 in one's path.
