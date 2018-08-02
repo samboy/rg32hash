@@ -112,18 +112,19 @@ generate the same numbers.
 The current behavior is this:
 
 ```
-./tinyrg32: A 256-bit hash of argv[0]
-./tinyrg32 '¡Es una niña linda!': 256-bit hash
-./tinyrg32 --binary-stream '¡La niña!': Binary stream
-./tinyrg32 --hex --numbers '¡Niña!': Many 32-bit hex numbers
-./tinyrg32 --ten _Fo0 3 'ñ': Many 60-bit alphanumeric strings 
-./tinyrg32 --eight _Fo0 4 'ñ': Many 80-bit alphanumeric strings 
-./tinyrg32 --infinite --number --strings _Fo0 3 'ñ': Infinite 60-bit strings
-./tinyrg32 --infinite --number --strings _Fo0 4 'ñ': Infinite 80-bit strings
-./tinyrg32 --infinite --number --strings _Fo0 5 'ñ': Infinite 100-bit strings
-./tinyrg32 --infinite --number --strings _Fo0 9 'ñ': Infinite 180-bit strings
-./tinyrg32 - - - - - - - - - -: Infinite 32-bit hex strings
-./tinyrg32 - - - - - - - - - - - - - - - - - -: Infinite 256-bit hex strings
+tinyrg32: A 256-bit hash of argv[0]
+tinyrg32 '¡Es una niña linda!': 256-bit hash
+tinyrg32 --binary-stream '¡La niña!': Binary stream
+tinyrg32 --hex --numbers '¡Niña!': Many 32-bit hex numbers
+tinyrg32 --lotsa _Fo0 3 'ñ': Many 60-bit alphanumeric strings 
+tinyrg32 --many _Fo0 4 'ñ': Many 80-bit alphanumeric strings 
+tinyrg32 --a --lot --of --256 --bit --hex --nums 'ñ': Many 256-bit hex strings
+tinyrg32 --infinite --number --strings _Fo0 3 'ñ': Infinite 60-bit strings
+tinyrg32 --infinite --number --strings _Fo0 4 'ñ': Infinite 80-bit strings
+tinyrg32 --infinite --number --strings _Fo0 5 'ñ': Infinite 100-bit strings
+tinyrg32 --infinite --number --strings _Fo0 9 'ñ': Infinite 180-bit strings
+tinyrg32 - - - - - - - - - -: Infinite 32-bit hex strings
+tinyrg32 - - - - - - - - - - - - - - - - - -: Infinite 256-bit hex strings
 ```
 
 I understand that tinyrg32.c still has some bloat in it; which is
