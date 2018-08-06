@@ -270,10 +270,10 @@ mill[i] = mill[i] ^ (mill[(i + x) % millsize] | (~mill[(i + y) % millsize)]);
 This is the “gamma” step in RadioGatún.
 
 Observe the constants `x` and `y` above.  As it turns out, for this gamma
-operation (|~), we need it so `y = x * 2`, i.e. y is x multiplied by two 
-(so, if x is one, y is two; if x is two, y is four; and so on).  If we
-do not do this, the mill function is no longer invertible, which is
-not desired.
+operation (|~), we need it so `y = x * 2` (or so that `x = y * 2`), i.e. 
+y is x multiplied by two (so, if x is one, y is two; if x is two, y is 
+four; and so on).  If we do not do this nor make x be y multiplied by two, 
+the mill function is no longer invertible, which is not desired.
 
 However, in RV200, the gamma step looks like this:
 
