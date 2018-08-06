@@ -110,7 +110,6 @@ This might look like this is pseudo-code:
     i = a * 7
     i = i % 19 # Mill width
     k = mill[i]
-    i = i + 1
     k = k ^ (mill[(i + 1) % 19] | (~mill[(i + 2) % 19]))
     t[a] = rotate_right(k, r)
  }
