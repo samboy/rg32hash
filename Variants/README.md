@@ -181,7 +181,7 @@ The reason for the changes in the design:
     522 bytes of RAM which costs 77 cents — a 12% cost savings.
 
 *   Since RG has a sponge security claim based on the size of the mill,
-    RV200 gives us 272 bits of claimed securty instead of the 304 bits
+    RV200 gives us 272 bits of claimed security instead of the 304 bits
     of security 32-bit RadioGatún claims to have. That’s still over
     256 bits of security.
 
@@ -189,7 +189,7 @@ The reason for the changes in the design:
     using 16-bit words, which gives us 128 bits of security. The only
     reason to have smaller RV variants is to perform cryptographic
     research on them. There is no real-world reason to have 21-bit,
-    22-bit, and so on word sizes; indeed Keccak (RG’s direct sucessor)
+    22-bit, and so on word sizes; indeed Keccak (RG’s direct successor)
     forces the word size to be a power of two — All modern non-embedded
     CPUs work with 8-bit, 16-bit, and 32-bit words, with a large number
     of CPUs also able to work with 64-bit words. Unless you still have
@@ -256,3 +256,35 @@ To generate these test vectors:
 ./rg-variants '1' 32 37 1 34
 ./rg-variants '1' 32 43 1 41
 ```
+
+## A thought on the Gamma step
+
+The mill function for RadioGatún includes this operation:
+
+```c
+x = 1;
+y = 2;
+mill[i] = mill[i] ^ (mill[(i + x) % millsize] | (~mill[(i + y) % millsize)]);
+```
+
+This is the “gamma” step in RadioGatún.
+
+Observe the constants `x` and `y` above.  As it turns out, for this gamma
+operation (|~), we need it so `y = x * 2`, i.e. y is x multiplied by two 
+(so, if x is one, y is two; if x is two, y is four; and so on).  If we
+do not do this, the mill function is no longer invertible, which is
+not desired.
+
+However, in RV200, the gamma step looks like this:
+
+```c
+x = 1;
+y = 2;
+mill[i] = mill[i] ^ (mill[(i + x) % millsize] - mill[(i + y) % millsize]);
+```
+
+Here, instead of "or not" (`|~`) in the core of the gamma step, we
+instead perform subtraction.  When we do this, the requirement that
+y be x multiplied by two no longer applies.  We can have, for example,
+x be 2 and y be three, and still have an invertible mill function.
+
