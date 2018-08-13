@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdint.h>
 #define b(z) for(c=0;c<z;c++)
-uint32_t c,e[40],f[40],g=19,h
+uint32_t c,e[42],f[42],g=19,h
 =13,n[45],i,k;void m(){int c,
 j=0;b(12)f[c+c%3*h]^=e[c+1];b
 (g){i=c*7%g;k=e[i++];j=(c+j)&
