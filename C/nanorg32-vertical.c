@@ -6,7 +6,7 @@ uint32_t c,e[42],f[42],g=19,h
 j=0;b(12)f[c+c%3*h]^=e[c+1];b
 (g){i=c*7%g;k=e[i++];j=(c+j)&
 31;k^=e[i%g]|~e[(i+1)%g];n[c]
-=n[c+g]=k>>j|k<<((32-j)&31);}
+=n[c+g]=k>>j|k<<(32-j)%32;}//
 for(i=39;i--;f[i+1]=f[i])e[i]
 =n[i]^n[i+1]^n[i+4];b(3)e[c+h
 ]^=f[c*h]=f[c*h+h];*e^=1;}int 
