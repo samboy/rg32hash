@@ -1,5 +1,5 @@
-/* Donated the the public domain 2012-2017 Sam Trenholme.  Written in 2009,
- * 2012, 2015, and 2017. 
+/* Donated the the public domain 2012-2018 Sam Trenholme.  Written in 2009,
+ * 2012, 2015, 2017, and 2018. 
  *
  * This software is provided 'as is' with no guarantees of correctness or
  * fitness for purpose.
@@ -11,6 +11,7 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <inttypes.h>
 
 /* This determines the word size we use for this particular Radio Gatun
  * implementation; DWR_WORDSIZE needs to be a multiple of 8 */
@@ -220,6 +221,6 @@ int main(int argc, char **argv) {
 		printf("%02x",((x >>  8) & 0xff));
 		printf("%02x",(x & 0xff));
 	}
-	printf(" %llu\n",length);
+	printf(" %"PRIu64"\n",length);
 }
 	

@@ -1,5 +1,5 @@
-/* Donated the the public domain 2012, 2015 Sam Trenholme.  Written in 2009,
- * 2012, and 2015. 
+/* Donated the the public domain 2012, 2015, and 2018 Sam Trenholme.  
+ * Written in 2009, 2012, 2015, and 2018.
  *
  * This software is provided 'as is' with no guarantees of correctness or
  * fitness for purpose.
