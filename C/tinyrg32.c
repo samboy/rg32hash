@@ -1,6 +1,6 @@
-#include <stdio.h> // cc -o tinyrg32 tinyrg32.c /////// Public domain code
-#include <stdint.h> // ./tinyrg32 --hex --numbers 'A tiny list of numbers'
-#define b(z) for(c=0;c<(z);c++) // ./tinyrg32 --binary-stream 'Es la niña'
+#include <stdio.h> // cc -o tinyrg32 tinyrg32.c ; ./tinyrg32 --binary '12'
+#include <stdint.h> // ./tinyrg32 --hex --numbers 'Hello' // Public domain
+#define b(z) for(c=0;c<(z);c++) // ./tinyrg32 --password _Q 3 'Xyz' | head
 uint32_t c,e[40],f[40],g=19,h=13,r,s,t,n[45],i,k,y,z;void m(){int c,j=0;b(
 12)f[c+c%3*h]^=e[c+1];b(g){j=(c+j)&31;i=c*7%g;k=e[i++];k^=e[i%g]|~e[(i+1)%
 g];n[c]=n[c+g]=k>>j|k<<((32-j)&31);}for(c=39;c--;f[c+1]=f[c])e[c]=n[c]^n[c
