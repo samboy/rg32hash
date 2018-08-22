@@ -1,3 +1,16 @@
+# microrg32.c
+
+microrg32.c is a security hardened version of tinyrg32.c:
+
+* It generates only base-32 passwords, which are more secure than using
+  hex numbers for passwords
+* It grabs the secret key from the environment instead of the command
+  line; this helps keep things secure on systems where one’s command 
+  line is visible to untrusted accounts.
+* It allows one to define how much work is needed to generate a password;
+  this makes attacks where someone tries to determine a master password
+  based on a generated password more difficult.
+
 ## Compile
 
 ```
