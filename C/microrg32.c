@@ -1,7 +1,7 @@
-#include <stdio.h> // cc -o microrg32 microrg32.c
-#include <stdint.h> // export P="foo" ; ./microrg32 @ 4 | head
-#include <stdlib.h>
-#define b(z) for(c=0;c<(z);c++)
+#include <stdio.h> // cc -o microrg32 microrg32.c ; WORK=3 ; LEN=4 #######
+#include <stdint.h> // SECRET="Something random like qhohxks5mx9el9v6ujg3"
+#include <stdlib.h> // export P="$LEN:$SECRET:x.org" ## Public domain code
+#define b(z) for(c=0;c<(z);c++) // ./microrg32 $WORK $LEN | head -1 | tail
 uint32_t c,e[40],f[40],g=19,h=13,r,s,t=2,n[45],i,k,y,z;void m(){int c,j=0;
 b(12)f[c+c%3*h]^=e[c+1];b(g){j=(c+j)&31;i=c*7%g;k=e[i++];k^=e[i%g]|~e[(i+1
 )%g];n[c]=n[c+g]=k>>j|k<<(32-j)%32;}for(c=39;c--;f[c+1]=f[c])e[c]=n[c]^n[c

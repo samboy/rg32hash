@@ -81,6 +81,8 @@ export P="$LEN:Some secret:example.com"
 ./microrg32 3 4 | head -1
 ```
 
+(Be sure to have SECRET be different than the above example!)
+
 Now, let’s suppose some cybercriminals obtain the password database
 at example.com.  While they perform brute force searches to get passwords
 (which will, as of 2018, take some time with the above password, which has 
