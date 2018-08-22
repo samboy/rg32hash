@@ -5,6 +5,7 @@ PROG="$1"
 if [ -z "$PROG" ] ; then
 	echo Usage: $0 {program_name}
 	echo Where the program is microrg32 compiled
+	echo Or, better, call this script from microrg32.test1.sh
 	exit 255
 fi
 

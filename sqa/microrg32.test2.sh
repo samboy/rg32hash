@@ -25,3 +25,4 @@ if ! cmp output.work.reference output.test > /dev/null 2>&1 ; then
 fi
 
 echo Test pass
+rm -f output.test microrg32 microrg32.exe variants variants.exe
