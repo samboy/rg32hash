@@ -1,18 +1,18 @@
 #!/bin/sh
 
-# Use tinyrg32 to generate a password; tinyrg32 source at the end of
-# this script
-
-# Note that this version of pwgen.sh is not compatible with passwords
-# generated with the older pwgen.sh; this in mind, there is pwgen-old.sh
-# for people who need the older passwords.
-
-# Change this to something else to get a bit more security
+# Change this to something else to get a tiny bit more security
+# (but changing this will break passwords already being used)
+# Be aware that SUFFIX is here not for security, but to generate
+# passwords allowed by stupid site-specific password rules
 SUFFIX="Aa9"
 
-SECRET=$( cat $HOME/.mhash_prefix2 )
+# All of the passwords are generated from the file .master_password
+# Edit that file to generate a secure master password.  Not that
+# the security of this system is dependent on the master password being
+# secret.
+SECRET=$( cat $HOME/.master_password )
 if [ -z "$SECRET" ] ; then
-	echo Could not find $HOME/.mhash_prefix2
+	echo Could not find $HOME/.master_password
 	exit 1
 fi
 
@@ -28,7 +28,7 @@ fi
 # b) upper case letter
 # c) number
 # d) punctuation, where _ is considered punctuation
-# The tinyrg32 program adds _Aa1 to the end of each password which covers
+# This script adds _Aa1 to the end of each password which covers
 # *most* sites.  However, this being the internet, some sites have dumb
 # password rules we have to make exceptions for.  This script covers
 # most of them
@@ -55,45 +55,51 @@ INDEX=1
 LEN=3 # 16 character password
 
 ##### SITE SPECIFIC RULES GO HERE #####
-if [ "$SITE" = "timewarnercable.com" ] ; then
-	ZAP='_'
-fi
-if [ "$SITE" = "southwest.com" ] ; then
-	CHANGE=':'
-fi
-if [ "$SITE" = "paypal.com" ] ; then
-	INDEX=2
-fi
-if [ "$SITE" = "idiot.example.com" ] ; then
-	LEN=2
-fi
+case "$SITE" in
+timewarnercable.com)
+	ZAP='_' # Remove the _ at the end of the password
+	;;
+southwest.com)
+	CHANGE=':' # Make the _ a : in the password
+	;;
+paypal.com)
+	INDEX=2 # Increase index by 1 every time we change a password
+	;;
+idiot.example.com)
+	LEN=2 # This makes the password shorter
+	;;
+esac
 ### END SITE SPECIFIC RULES ###
 
-# Make sure tinyrg32 is in the path; if not then compile and run it
-TINYRG32="tinyrg32"
+# Make sure microrg32 is in the path; if not then compile and run it
+MICRORG32="microrg32"
 
-if ! command -v tinyrg32 > /dev/null 2>&1 ; then
-	cat > tinyrg32-$$.c << EOF
-#include <stdio.h> // cc -o tinyrg32 tinyrg32.c ; ./tinyrg32 --binary '12'
-#include <stdint.h> // ./tinyrg32 --hex --numbers 'Hello' // Public domain
-#define b(z) for(c=0;c<(z);c++) // ./tinyrg32 --passwords _Q 3 'Xz' | head
-uint32_t c,e[40],f[40],g=19,h=13,r,s,t,n[45],i,k,y,z;void m(){int c,j=0;b(
-12)f[c+c%3*h]^=e[c+1];b(g){j=(c+j)&31;i=c*7%g;k=e[i++];k^=e[i%g]|~e[(i+1)%
-g];n[c]=n[c+g]=k>>j|k<<(32-j)%32;}for(c=39;c--;f[c+1]=f[c])e[c]=n[c]^n[c+1
-]^n[c+4];*e^=1;b(3)e[c+h]^=f[c*h]=f[c*h+h];}int main(int p,char**v){char*q
-=v[--p],*x=0;for(;;m()){b(3){for(r=0;r<4;){f[c*h]^=k=(*q?*q&255:1)<<r++*8;
-e[16+c]^=k;if(!*q++){b(17)m();b(p<3?8:89*p){if(~t&1)m();s=e[(t&1)+1];r=(p&
-3)-2?c:1;b(4){i=s;if(p&4){x=v[p-2];y=z=z?z:*v[p-1]%16;i&=31;i+=i<8?50:89;}
-s>>=8;printf(p==2||p&4?"%c":"%02x",255&i);}if(((++t%8==0||(p&22)==2)&&!y&&
-p-2)||r+2>89*p){puts("");}c=r;if(y&&!--z)puts(*x==95?x:"");}return 0;}}}}}
+if ! command -v microrg32 > /dev/null 2>&1 ; then
+	cat > microrg32-$$.c << EOF
+#include <stdio.h> // cc -o microrg32 microrg32.c ; WORK=3 ; LEN=4 #######
+#include <stdint.h> // SECRET="Something random like qhohxks5mx9el9v6ujg3"
+#include <stdlib.h> // export P="$LEN:$SECRET:x.org" ## Public domain code
+#define b(z) for(c=0;c<(z);c++) // ./microrg32 $WORK $LEN | head -1 | tail
+uint32_t c,e[40],f[40],g=19,h=13,r,s,t=2,n[45],i,k,y,z;void m(){int c,j=0;
+b(12)f[c+c%3*h]^=e[c+1];b(g){j=(c+j)&31;i=c*7%g;k=e[i++];k^=e[i%g]|~e[(i+1
+)%g];n[c]=n[c+g]=k>>j|k<<(32-j)%32;}for(c=39;c--;f[c+1]=f[c])e[c]=n[c]^n[c
++1]^n[c+4];*e^=1;b(3)e[c+h]^=f[c*h]=f[c*h+h];}int main(int p,char**v){char
+*q;q=getenv("P");if(q&&p>2){for(;;m()){b(3){for(r=0;r<4;){f[c*h]^=k=(*q?*q
+&255:1)<<r++*8;e[16+c]^=k;if(!*q++){b(16+(1<<*v[1]%32))m();b(983){if(~t&1)
+{m();}s=e[t^=3];r=c;b(4){q=v[p-1];z=i=z?z:*v[2]%16;i=s;i&=31;i+=i<8?50:89;
+s>>=8;printf("%c",255&i);}c=r;if(!--z)puts("");}puts("__");return 0;}}}}}}
 EOF
-	cc -o tinyrg32-$$ tinyrg32-$$.c
-	TINYRG32=./tinyrg32-$$
+	cc -o microrg32-$$ microrg32-$$.c
+	MICRORG32=./microrg32-$$
 fi
 
-# If you need a really large index, change this command line
-$TINYRG32 --make --many _$SUFFIX $LEN "$LEN:$SECRET:$SITE" | head -$INDEX | \
-	tail -1 | tr -d "$ZAP" | tr '_' "$CHANGE"
+# If you need a really really large index, change this command line
+export P="$LEN:$SECRET:$SITE"
+# For compatibility with older versions of pwgen, make cost "@"
+COST=3
+PW=$( $MICRORG32 $COST $LEN | head -$INDEX | tail -1 | tr -d "$ZAP" | \
+	tr '_' "$CHANGE" )
+echo ${PW}_${SUFFIX}
 
-rm -f ./tinyrg32-$$ ./tinyrg32-$$.c ./tinyrg32-$$.exe
+rm -f ./microrg32-$$ ./microrg32-$$.c ./microrg32-$$.exe
 
