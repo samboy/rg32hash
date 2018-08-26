@@ -119,7 +119,7 @@ The operators are the same as above; in addition, ~ is bitwise negation
 rotate_right is a circular rotate right.  For example, for 32-bit RadioGatún, rotate_right might look like this is C:
 
  uint32_t rotate_right(uint32_t k, int r) {
-    return k>>r|k<<(32-r);
+    return k>>r|k<<((32-r)%32);
  }
 
 ===Updating the mill===
