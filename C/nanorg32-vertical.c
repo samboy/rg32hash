@@ -1,5 +1,5 @@
-#include <stdio.h>
-#include <stdint.h>
+#include<stdio.h>
+#include<stdint.h>
 #define b(z) for(c=0;c<z;c++)
 uint32_t c,e[42],f[42],g=19,h
 =13,n[45],i,k;void m(){int c,
