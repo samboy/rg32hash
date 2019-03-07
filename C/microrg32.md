@@ -25,6 +25,8 @@ export P="$LEN:Some secret:example.com"
 ./microrg32 1 $LEN | head -1
 ```
 
+Replace `Some secret` with a suitably hard to guess secret string.
+
 The first argument is how much effort we should expend to get this
 password; higher numbers mean more effort (this makes brute force
 attacks harder).  The second argument is how many bits of entropy the
@@ -77,7 +79,7 @@ let’s make an initial password for example.com:
 ```
 LEN=4
 SECRET="Some long passphrase with random text, like qhohxks5mx9el9v6ujg3t."
-export P="$LEN:Some secret:example.com"
+export P="$LEN:$SECRET:example.com"
 ./microrg32 3 $LEN | head -1
 ```
 
@@ -92,7 +94,7 @@ a new one:
 ```
 LEN=4
 SECRET="Some long passphrase with random text, like qhohxks5mx9el9v6ujg3t."
-export P="$LEN:Some secret:example.com"
+export P="$LEN:$SECRET:example.com"
 ./microrg32 3 $LEN | head -2 | tail -1
 ```
 
@@ -102,8 +104,54 @@ we can do this 90 days later to generate a new password:
 ```
 LEN=4
 SECRET="Some long passphrase with random text, like qhohxks5mx9el9v6ujg3t."
-export P="$LEN:Some secret:example.com"
+export P="$LEN:$SECRET:example.com"
 ./microrg32 3 $LEN | head -3 | tail -1
+```
+
+## The characters used in generated passwords
+
+Note that password strings never have the characters “0” and “1” in
+them; they use a custom base32 alphabet designed to minimize code size:
+
+|0|1|2|3|4|5|6|7|8|9|10|11|12|13|14|15|
+|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|
+|2|3|4|5|6|7|8|9|a|b|c|d|e|f|g|h|
+
+|16|17|18|19|20|21|22|23|24|25|26|27|28|29|30|31|
+|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|
+|i|j|k|l|m|n|o|p|q|r|s|t|u|v|w|x|
+
+Also, to minimize code size, to get five-bit numbers, we simply discard
+the upper three bits of each byte, since getting more bytes is so trivial
+with the RadioGatún algorithm.
+
+Here is a Python program which reads hex numbers on the standard input
+(e.g. "1234abcd321a") and converts them in to the base32 format used
+for passwords:
+
+```python
+#!/usr/bin/env python
+
+# This script takes hex numbers on the standard input and outputs
+# their tinyrg32 base32 form on the standard output
+
+import sys
+
+k = "23456789abcdefghijklmnopqrstuvwx"
+
+for line in sys.stdin:
+        while len(line) > 0:
+                h = line[0:2]
+                line = line[2:]
+                if(len(h) > 0):
+                    try:
+                        a = int(h,16)
+                    except:
+                        a = -1
+                    if a >= 0:
+                        a &= 31
+                        sys.stdout.write(k[a:a+1])
+        print ""
 ```
 
 ## The program
