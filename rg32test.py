@@ -11,7 +11,7 @@ import sys
 do_other_test = 0
 
 try:
-    i = sys.argv[1]
+    i = sys.argv[1].encode('utf-8')
 except:
     i = "12345678"
     do_other_test = 1

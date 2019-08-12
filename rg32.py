@@ -36,7 +36,7 @@ class RadioGatun32:
         self.beltfeed = 12
         self.mask = 0xffffffff # 32-bit
         self.index = 0
-        (self.a, self.b) = self.seed(str(m))
+        (self.a, self.b) = self.seed(m)
     def mill(self,a):
         aa = []
         for g in range(self.millsize):
@@ -110,7 +110,10 @@ class RadioGatun32:
                 while q < self.wordsize:
                     x = 0
                     try:
-                        x = ord(m[index]) & 255
+                        if(type(m[index]) == str):
+                            x = ord(m[index]) & 255
+                        else:
+                            x = m[index] & 255
                     except:
                         x = 1
                     index += 1
