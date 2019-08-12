@@ -110,7 +110,7 @@ class RadioGatun32:
                 while q < self.wordsize:
                     x = 0
                     try:
-                        x = ord(m[index])
+                        x = ord(m[index]) & 255
                     except:
                         x = 1
                     index += 1
