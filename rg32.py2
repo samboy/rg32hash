@@ -1,8 +1,8 @@
-#!/usr/bin/env python
+#!/usr/bin/env python2
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
 
-# rg32.py
+# rg32.py2
 # See rg32test.py to see how the API is used
 
 #test_rg32 = 1 # Make this 0 if using this as a library
