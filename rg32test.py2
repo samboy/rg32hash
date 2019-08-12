@@ -6,6 +6,8 @@
 # It outputs the 256-bit hex hash of the first argument given to the program
 # Use this with sqa/do.test.sh
 
+# While rg32.py (Python3) works, it's quite slow in Python2
+# rg32.py2 is Python-2 optimized
 #from rg32 import RadioGatun32
 execfile("rg32.py2")
 import sys
