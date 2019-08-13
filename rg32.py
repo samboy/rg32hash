@@ -1,5 +1,9 @@
 #!/usr/bin/env python3
 
+# Note that this class is a polyglot: It runs both as a Python2 and
+# a Python3 class; that said, this class is optimized for Python3 (replace
+# "range" with "xrange" to make it run faster in Python2).
+
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
 
 # rg32.py

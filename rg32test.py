@@ -6,6 +6,9 @@
 # It outputs the 256-bit hex hash of the first argument given to the program
 # Use this with sqa/do.test.sh
 
+# This script can run either in Python2 or Python3, but is optimized for
+# Python3
+
 from rg32 import RadioGatun32
 import sys
 do_other_test = 0

@@ -17,7 +17,7 @@ This repo has 14 implementations of RadioGatún[32]:
 * Nine C-language implementations
 * A C++ implementation
 * A PHP implementation
-* A Python implementation
+* A Python2 and a Python3 implementation
 * A Node-compatible Javascript implementation
 * A C# (.NET) implementation
 
@@ -228,12 +228,19 @@ rg.class.php is identical to rg32.class.php, but is written in a
 manner which makes it a little easier to experiement with
 RadioGatún variants.
 
-# rg32.py RadioGatún[32] in Python
+# rg32.py RadioGatún[32] in Python3
 
-rg32.py is a Python implementation I wrote of RadioGatún[32] back
-in 2012.  rg32test.py (an example of the API in use) can be used
-with sqa/do.test.sh to ensure this implementation generates correct
-RadioGatún[32] hashes.
+`rg32.py` is a Python implementation I wrote of RadioGatún[32] back
+in 2012; I updated it for Python3 in 2019.  `rg32test.py` (an example of the 
+API in use) can be used with `sqa/do.test.sh` to ensure this implementation 
+generates correct RadioGatún[32] hashes.
+
+# rg32.py2 RadioGatún[32] in Python2
+
+While `rg32.py` and `rg32test.py` will run in Python2, they are quite 
+slow since they use `range()` instead of `xrange()`.  Python2 users
+can use the `rg32.py2` class (which uses `xrange()`; and example of its
+(nearly identical) API can be seen in `rg32test.py2`.
 
 # rg32.js RadioGatún[32] in Javascript
 

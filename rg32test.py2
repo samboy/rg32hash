@@ -2,12 +2,15 @@
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
 
-# This is a Python script which calls the code in rg32.py
+# This is a Python script which calls the code in rg32.py2
 # It outputs the 256-bit hex hash of the first argument given to the program
 # Use this with sqa/do.test.sh
 
 # While rg32.py (Python3) works, it's quite slow in Python2
 # rg32.py2 is Python-2 optimized
+
+# This script only runs in Python2; use rg32test.py for Python3 support.
+
 #from rg32 import RadioGatun32
 execfile("rg32.py2")
 import sys

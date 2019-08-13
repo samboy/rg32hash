@@ -3,7 +3,10 @@
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
 
 # rg32.py2
-# See rg32test.py to see how the API is used
+# See rg32test.py2 to see how the API is used
+
+# This class is for Python2; there is also a Python3 version of this class
+# (rg32.py instead of rg32.py2).
 
 #test_rg32 = 1 # Make this 0 if using this as a library
 
