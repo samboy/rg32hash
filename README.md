@@ -239,7 +239,7 @@ generates correct RadioGatún[32] hashes.
 
 While `rg32.py` and `rg32test.py` will run in Python2, they are quite 
 slow since they use `range()` instead of `xrange()`.  Python2 users
-can use the `rg32.py2` class (which uses `xrange()`; and example of its
+can use the `rg32.py2` class, which uses `xrange()`; and example of its
 (nearly identical) API can be seen in `rg32test.py2`.
 
 # rg32.js RadioGatún[32] in Javascript
