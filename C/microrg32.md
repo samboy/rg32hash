@@ -2,7 +2,7 @@
 
 microrg32.c is a security hardened version of tinyrg32.c:
 
-* It generates only base-32 passwords, which are more secure than using
+* It usually generates base-32 passwords, which are more secure than using
   hex numbers for passwords
 * It grabs the secret key from the environment instead of the command
   line; this helps keep things secure on systems where one’s command 
