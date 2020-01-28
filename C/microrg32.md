@@ -153,7 +153,7 @@ for line in sys.stdin:
                     if a >= 0:
                         a &= 31
                         sys.stdout.write(k[a:a+1])
-        print ""
+        print("")
 ```
 
 ## The program
