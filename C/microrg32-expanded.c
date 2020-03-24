@@ -10,7 +10,7 @@ uint32_t c,mill[42],belt[42],g=19,h=13,r,s,n[45],i,k;
 char*q,y;
 
 // This is the cryptographic core of RadioGatun[32], a combination of
-// its belt and mill.  The reference specification for this code is
+// its belt and mill.  The reference specification for this algorithm is
 // at http://radiogatun.noekeon.org/RadioGatun.pdf
 void beltMill() {
 	int c, j = 0;
