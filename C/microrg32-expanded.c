@@ -6,7 +6,7 @@
 #include <stdint.h> 
 #include <stdlib.h> 
 
-uint32_t c,e[42],f[42],g=19,h=13,r,s,n[45],i,k;
+uint32_t c,mill[42],belt[42],g=19,h=13,r,s,n[45],i,k;
 char*q,y;
 
 // This is the cryptographic core of RadioGatun[32], a combination of
@@ -14,31 +14,38 @@ char*q,y;
 void beltMill() {
 	int c,j=0;
 	for(c=0;c<12;c++) {
-		f[c+c%3*h] ^= e[c+1];
+		belt[c+c%3*h] ^= mill[c+1];
 	}
 	for(c=0;c<19;c++) {
 		j = (j+c)%32;
 		i = c*7%g;
-		k = e[i++];
-		k ^= e[i%g]|~e[(i+1)%g];
-		n[c] = n[c+g]=k>>j|k<<(32-j)%32;
+		k = mill[i++];
+		k ^= mill[i%g]|~mill[(i+1)%g];
+		n[c] = k>>j|k<<(32-j)%32;
+		n[c + g] = n[c];
 	}
-	for(c=39;c--;f[c+1]=f[c]) {
-		e[c] = n[c]^n[c+1]^n[c+4];
+	for(c=39;c--;belt[c+1]=belt[c]) {
+		mill[c] = n[c]^n[c+1]^n[c+4];
 	}
-	*e ^= 1;
+	mill[0] ^= 1;
 	for(c=0;c<3;c++) {
-		e[c+h] ^= f[c*h]=f[c*h+h];
+		belt[c*h] = belt[c*h+h];
+		mill[c+h] ^= belt[c*h];
 	}
 }
 
 void generateOutput(char **v) {
 	int c,r;
+
+	// Depending on the work amount they specify, make it harder to
+	// generate a given password from the master password
 	for(c=0;c<17+(1<<*v[1]%32);c++) {
 		beltMill();
 	}
+
+	// Output a bunch of passwords on standard output
 	for(c=0;c<983;c++) {
-		s = e[1+c%2];
+		s = mill[1+c%2];
 		if(c%2) {
 			beltMill();
 		}
@@ -68,8 +75,8 @@ int main(int p,char **v){
 			for(c=0;c<3;c++) {
 				for(r=0;r<4;r++) {
 					k=(*q?*q&255:1)<<8*r;
-					f[c*h] ^= k;
-					e[16+c] ^= k;
+					belt[c*h] ^= k;
+					mill[16+c] ^= k;
 					if(!*q) {
 						generateOutput(v);
 						return 0;
