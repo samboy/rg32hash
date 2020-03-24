@@ -91,22 +91,27 @@ void generateOutput(char **v) {
 	}
 }
 
-int main(int p,char **v){
+int main(int argc,char **argv){
 	q=getenv("P");
-	if(q && p>2) {
-		for(;;beltMill()) {
+	if(q && argc>2) {
+		for(;;) {
+			// Input map
 			for(c=0;c<3;c++) {
 				for(r=0;r<4;r++) {
+					// Take a byte from the input and
+					// alter the RadioGatun state
 					k = (*q?*q&255:1)<<8*r;
 					belt[c*h] ^= k;
 					mill[16+c] ^= k;
 					if(!*q) {
-						generateOutput(v);
+						generateOutput(argv);
 						return 0;
 					}
 					q++;
 				}
 			}
+		beltMill();
 		}
 	}
 }
+
