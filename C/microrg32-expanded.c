@@ -55,12 +55,21 @@ void generateOutput(char **v) {
 
 	// Output a bunch of passwords on standard output
 	for(c=0;c<983;c++) {
+
+		// Obtain random numbers from RadioGatun's mill,
+		// running the round operation as needed
 		s = mill[1+c%2];
 		if(c%2) {
 			beltMill();
 		}
+
+		// Make the random binary number printable
 		for(r=0;r<4;r++) {
-			y = y>0?y:*v[2]%16;
+
+			if(y<=0) {
+				y = *v[2]%16;
+			}
+
 			i = s;
 			s >>= 8;
 
@@ -70,11 +79,15 @@ void generateOutput(char **v) {
 				i += i<8?50:89;
 			}
 
-		printf(y?"%c":"%02x",i&255);
+			printf(y?"%c":"%02x",i&255);
 		}
-		if(--y<1||c>981) {
+
+		y--;
+
+		if(y<1||c>981) {
 			puts("");
 		}
+
 	}
 }
 
