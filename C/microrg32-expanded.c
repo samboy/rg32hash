@@ -12,16 +12,16 @@ char*q,y;
 // This is the cryptographic core of RadioGatun[32], a combination of
 // its belt and mill
 void beltMill() {
-	int c,j=0;
+	int c, j = 0;
 	for(c=0;c<12;c++) {
 		belt[c+c%3*h] ^= mill[c+1];
 	}
 	for(c=0;c<19;c++) {
-		j = (j+c)%32;
-		i = c*7%g;
+		j = (j + c) % 32;
+		i = c * 7 % g;
 		k = mill[i++];
-		k ^= mill[i%g]|~mill[(i+1)%g];
-		n[c] = k>>j|k<<(32-j)%32;
+		k ^= mill[i % g] | ~mill[(i + 1) % g];
+		n[c] = k >> j | k << (32 - j) % 32;
 		n[c + g] = n[c];
 	}
 	for(c=39;c--;belt[c+1]=belt[c]) {
