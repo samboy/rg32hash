@@ -187,13 +187,6 @@ dwr_rg *dwr_init_rg(char *v, uint32_t init_value) {
 		}
 	}
 
-	for(c=0; c < DWR_BELTROWS * DWR_BELTCOL; c++) {
-		printf("BELT %d %08x\n",c,out->b[c]);
-	}
-	for(c=0; c < DWR_MILLSIZE; c++) {
-		printf("MILL %d %08x\n",c,out->a[c]);
-	}
-
 	out->index = 0;
 	dwr_input_map(out->a,out->b,(uint8_t*)v);
 	for(c = 0; c < DWR_BLANKROUNDS; c++) {
