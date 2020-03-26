@@ -16,7 +16,9 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
+/* Possible random-looking initial vectors */
 #include "SARS-CoV-2.h"
+#include "pi_digits.h"
 
 /* This determines the word size we use for this particular Radio Gatun
  * implementation; DWR_WORDSIZE needs to be a multiple of 8 */
@@ -144,7 +146,8 @@ typedef struct {
  * as the input.  init_value is the initial value for all elements in the
  * belt and mill (0 to 1024); if set to 2019, the belt and mill are
  * initialized to have a binary version of the start of the SARS-CoV-2 
- * genetic sequence */
+ * genetic sequence; if set to 314159, the belt and mill are initialized
+ * with digits of pi */
 dwr_rg *dwr_init_rg(char *v, uint32_t init_value) {
 	dwr_rg *out;
 	int c = 0;
@@ -169,6 +172,14 @@ dwr_rg *dwr_init_rg(char *v, uint32_t init_value) {
 		}
 		for(c = 0; c < DWR_MILLSIZE; c++) {
 			out->a[c] = SARS_Cov_2[c + (DWR_BELTROWS*DWR_BELTCOL)];
+		}
+	} else if(init_value == 314159) {
+		// Initialize the state with digits of pi
+		for(c = 0; c < DWR_BELTROWS * DWR_BELTCOL; c++) {
+			out->b[c] = pi_digits[c];
+		}
+		for(c = 0; c < DWR_MILLSIZE; c++) {
+			out->a[c] = pi_digits[c + (DWR_BELTROWS*DWR_BELTCOL)];
 		}
 	} else if(init_value <= 1024) {
 		for(c = 0; c < DWR_BELTROWS * DWR_BELTCOL; c++) {
@@ -242,7 +253,8 @@ int main(int argc, char **argv) {
 	if(argc == 3) {
 		init_value = atoi(argv[2]);
 	}
-	if((init_value < 0 || init_value > 1024) && init_value != 2019) {
+	if((init_value < 0 || init_value > 1024) && init_value != 2019
+	   && init_value != 314159) {
 		printf("Invalid init value\n");
 		return 1;
 	}
