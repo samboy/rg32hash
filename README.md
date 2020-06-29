@@ -12,7 +12,7 @@ More information about the algorithm is here:
 
 http://radiogatun.noekeon.org/
 
-This repo has 14 implementations of RadioGatún[32]:
+This repo has multiple implementations of RadioGatún[32]:
 
 * Nine C-language implementations
 * A C++ implementation
@@ -20,6 +20,7 @@ This repo has 14 implementations of RadioGatún[32]:
 * A Python2 and a Python3 implementation
 * A Node-compatible Javascript implementation
 * A C# (.NET) implementation
+* A Lua 5.1 implementation
 
 # Other RadioGatun[32] implementations
 
