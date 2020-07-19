@@ -102,7 +102,8 @@ The arguments are:
 I am proposing a modest RadioGatún variant, which I call RV200
 (Radiogatún Variant 200 bytes).
 
-##Definition
+## Definition
+
 RV200 is identical to RadioGatún, except:
 
 *   The belt rows are 11 words wide, and the mill is 17 words wide.
