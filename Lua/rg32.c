@@ -160,19 +160,20 @@ static int rg32_randomSeed (lua_State *L) {
 }
 
 static const luaL_Reg rg32lib[] = {
-  {"rand16",     math_rand16},
-  {"random",     math_random},
-  {"randomstrseed", math_randomStringseed},
-  {"randomseed", math_randomSeed},
+  {"rand16",     rg32_rand16},
+  {"rand32",     rg32_rand32},
+  {"random",     rg32_random},
+  {"randomstrseed", rg32_randomStringseed},
+  {"randomseed", rg32_randomSeed},
   {NULL, NULL}
 };
 
 
 /*
-** Open math library
+** Open rg32 library
 */
 LUALIB_API int luaopen_rg32 (lua_State *L) {
-  luaL_register(L, LUA_MATHLIBNAME, mathlib);
+  luaL_register(L, "rg32", rg32lib);
   return 1;
 }
 
