@@ -33,21 +33,22 @@ resulting `.so` (`.dll` on Windows) file can be loaded in Lua:
 
 ```lua
 require("rg32")
-rg32.randomstrseed("1234")
-string.format("%08x",rg32.rand32())
+rg32.randomseed("1234")
 string.format("%04x",rg32.rand16())
 print(rg32.random())
-rg32.randomseed(1)
+rg32.randomseed(101.1) -- Converted to "101.1"
 print(rg32.random(1,5))
 print(rg32.random())
 ```
 
-The API is a superset of Lua’s `math.random`, with the calls
-`randomstrseed` (use a string as a seed, which will make values which are
-the same as RadioGatún[32]’s test vectors), `rand32` (random number
-from 0 to 4294967295), and `rand16` (random number from 0 to 65535)
-added to the usual `randomseed` and `random` calls (both of which have
-the same API as Lua’s native `math.random`).
+The API is a superset of Lua’s `math.random`, with the call `rand16` 
+(random number from 0 to 65535) added to the usual `randomseed` and 
+`random` calls (both of which have an API compatible with Lua’s native 
+`math.random`).
+
+Actually, `rg32.randomseed` takes a *string* as its argument.  However,
+if a number is given, Lua automatically performs “coercion” and
+makes the number a string.
 
 # rg32bit32.lua
 
