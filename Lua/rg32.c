@@ -2,6 +2,7 @@
  * MIT license (same as Lua)
  * Copyright for Lua bits at end of file
  * Copyright 2020 Sam Trenholme
+ * Portions (mainly rg32_random()) Copyright (C) 1994-2012 Lua.org, PUC-Rio
  */
 
 #include <stdlib.h>

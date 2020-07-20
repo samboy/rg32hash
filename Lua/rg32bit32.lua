@@ -1,5 +1,7 @@
 #!/usr/bin/env lua
 
+-- Placed in the public domain 2020 Sam Trenholme
+
 -- This is a version of RadioGatun[32] (RG32) which uses bit32.  This is
 -- faster than the pure LUA 5.1 implementation of RG32, but needs either
 -- a Lua 5.1 port of the bit32 library (Roblox and Lunacy have both
