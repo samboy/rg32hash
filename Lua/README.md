@@ -6,7 +6,7 @@ with lfs and bit32 support).
 
 The way Lua keeps things so small is by being a “batteries not included”
 language.  Lua has, in every version, kept the language as small as possible.
-This means that, for Lua 5.1, there is no way to before bit operations
+This means that, for Lua 5.1, there is no direct support for bit operations
 such as and/or/xor.  Since both xor and a “or-not” operation are used
 by RadioGatún, my Lua 5.1 version of RadioGatún emulates those options
 by using 4x4 sboxes (take 4 bits of two numbers, perform a table lookup
