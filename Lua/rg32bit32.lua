@@ -9,8 +9,10 @@
 -- LuaJIT does not have bit32, but its bit library is close enough for us
 -- to be able to use it.
 
--- LuaJIT 2.1.0-beta3 and Lua 5.4 compatibility
+-- LuaJIT 2.1.0-beta3 compatibility
 if not bit32 then bit32 = bit end
+if not bit32.rrotate then bit32.rrotate = bit32.ror end
+-- Just in case we do not have ror (e.g. https://github.com/LuaDist/bitlib)
 if not bit32.rrotate then
   bit32.rrotate = function(a, r)
     r = r % 32
