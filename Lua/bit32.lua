@@ -1,4 +1,12 @@
+-- **WARNING** This lib is *only* for Lua 5.4+, which has dropped bit32
+-- this is a lib which allows Lua 5.4 to run scripts written for LuaJIT,
+-- luau, and other implmentations based on some variant of Lua 5.1 + bit32
+--
 -- Pure Lua implementation of bit32 for Lua 5.4+
+-- This is only for Lua 5.4+; Lua 5.3 and Lua 5.2 have bit32, and
+-- there are various workarounds for Lua 5.1 (LuaJIT uses bit, which
+-- is similar; Roblox luau uses bit32; my own lunacy uses a subset of 
+-- bit32; etc.)
 bit32 = {}
 bit32.band = function(a,...) 
   for _,v in pairs({...}) do a = a & v end
