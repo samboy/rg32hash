@@ -5,7 +5,19 @@
 -- This is a version of RadioGatun[32] (RG32) which uses bit32.  This is
 -- faster than the pure LUA 5.1 implementation of RG32, but needs either
 -- a Lua 5.1 port of the bit32 library (Roblox and Lunacy have both
--- done this), or Lua >= 5.2
+-- done this), or Lua 5.2/5.3 (bit32 was removed from Lua 5.4)
+-- LuaJIT does not have bit32, but its bit library is close enough for us
+-- to be able to use it.
+
+-- LuaJIT 2.1.0-beta3 and Lua 5.4 compatibility
+if not bit32 then bit32 = bit end
+if not bit32.rrotate then
+  bit32.rrotate = function(a, r)
+    r = r % 32
+    if r == 0 then return a end
+    return bit32.bor(bit32.rshift(a,r),bit32.lshift(a,32-r))
+  end
+end
 
 -- Note that belt and mill are 1-indexed here
 function beltMill(belt, mill) 
