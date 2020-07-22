@@ -2,6 +2,12 @@
 -- this is a lib which allows Lua 5.4 to run scripts written for LuaJIT,
 -- luau, and other implmentations based on some variant of Lua 5.1 + bit32
 --
+-- This file should be loaded as follows:
+--
+-- if not bit32 and tonumber((string.gsub(_VERSION,'^[^ ]+',''))) > 5.3 then
+--   require("bit32")
+-- end
+-- 
 -- Pure Lua implementation of bit32 for Lua 5.4+
 -- This is only for Lua 5.4+; Lua 5.3 and Lua 5.2 have bit32, and
 -- there are various workarounds for Lua 5.1 (LuaJIT uses bit, which
