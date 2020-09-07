@@ -11,7 +11,7 @@
 
 #test_rg32 = 1 # Make this 0 if using this as a library
 
-# Copyright (c) 2012-2019 Sam Trenholme
+# Copyright (c) 2012-2020 Sam Trenholme
 #
 # TERMS
 #
