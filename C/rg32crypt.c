@@ -18,13 +18,17 @@
 //
 // The salt has 48 bits of entropy; the format of the password is:
 // “~~” (2 characters), followed by a 8-character salt, followed by 
-// a 22 character password hash with 132 bits of entropy.
+// a 22 character password hash with 132 bits of entropy (base-64)
 //
 // When decoding the password, the first 10 characters of the hashed PW
 // are put in a string as is (but no NULL is allowed in the string, and
 // the first two characters *must* be '~', so between 63 and 64 bits 
 // of entropy), followed by a '+', followed by their password (which 
-// could be millions of characters long)
+// could be millions of characters long).  While this *could* have
+// between 63 and 64 bits of entropy, the “documented” interface only
+// allows [A-Za-z0-9@] and the literal “.” in the salt, giving us 48
+// bits of entropy (we could increase that to around 50 bits if we allow
+// legitimate UTF-8 Unicode sequences in the salt).
 //
 // Again, **USE ARGON2 IF POSSIBLE** but this is “good enough” (the
 // same way Solar Designer’s mid-oughts phpass using multiple passes
