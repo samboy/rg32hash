@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010-2017 Sam Trenholme
+ * Copyright (c) 2010-2020 Sam Trenholme
  * 
  * TERMS
  *
@@ -78,8 +78,15 @@ function rg32(input) {
 
 	}
 
+	this.runbelt = function(iterations) {
+		var c;
+		for(c = 0; c < iterations; c++) {
+			beltmill()
+		}
+	}
+
 	place = 1;
-	function nextbyte() {
+	function nextword() {
 		var output = a[place];
 		if(output < 0) {
 			output += 0x100000000;
@@ -97,7 +104,7 @@ function rg32(input) {
 	// Return the next raw 32-bit number rg32 gives us
 	this.rng = function() {
 		var endian;
-		endian = nextbyte();
+		endian = nextword();
 		endian = ((endian & 0xff000000) >>> 24) |
 			 ((endian & 0x00ff0000) >>>  8) |
 			 ((endian & 0x0000ff00) <<  8) |
