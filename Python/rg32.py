@@ -91,6 +91,9 @@ class RadioGatun32:
         for i in range(self.beltrows):
             a[(i + self.beltcol)] ^= q[i]
         return (a, b)
+    def runbelt(self, n):
+        for a in range(n):
+            self.belt(self.a, self.b)
     def seed(self,m):
         p = []
         for g in range(3):
