@@ -1,13 +1,14 @@
 // This is a public domain pashword hasher using RadioGatún[32]
 // This is only for diverse systems where it is not feasible to
-// implement Argon2 side wide; most commonly mixed shops where
+// implement Argon2 site wide; most commonly mixed shops where
 // there is no site-wide standardization of the language or
 // environment used.
 //
 // This is reasonably secure; the cost is not specified in the hash,
 // but is 2 ^ 15 (32768) blank rounds of RagioGatún[32].  This is harder
 // to crack, but should be fast enough to be usable across various 
-// languages.
+// languages (The pure Python implementation is dog slow, but a pure
+// PHP implementation is reasonably fast)
 //
 // The hashed password is 32 characters long.  This is so the hashed
 // password can fit in a database with a 32-character fixed width field
@@ -37,8 +38,8 @@ void rg32_f(uint32_t*a,uint32_t*b){
 	for(c=0;c<12;c++)b[c+c%3*o]^=a[c+1];
 	for(c=0;c<m;c++){
 		r=(c+r)&31;y=c*7;x=a[y++%m];x^=a[y%m]|~a[(y+1)%m];
-		A[c]=A[c+m]=x>>r|x<<(32-r)%32;
-	}for(y=39;y--;b[y+1]=b[y])a[y%m]=A[y]^A[y+1]^A[y+4];*a^=1;
+		A[c]=x>>r|x<<(32-r)%32;
+	}for(y=39;y--;b[y+1]=b[y])a[y%m]=A[y]^A[(y+1)%m]^A[(y+4)%m];*a^=1;
 	for(c=0;c<3;c++)a[c+o]^=b[c*o]=b[c*o+o];}
 void rg32_seed(uint32_t*u,uint32_t*w,char*v,uint32_t len,
 	uint32_t cost){
