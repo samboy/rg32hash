@@ -1,7 +1,7 @@
 #!/usr/bin/php
 <?php
 
-# Copyright (c) 2015 Sam Trenholme
+# Copyright (c) 2015,2020 Sam Trenholme
 #
 # TERMS
 #
@@ -186,13 +186,52 @@ class rg32 {
 
 }
 
+class rg32crypt extends rg32 {
+	protected $base64;
+	public $hash;
+	# Allow empty rounds to be quickly and easily run
+        protected function runmill($n) {
+		for($a = 1;$a < $n; $a++) {
+			$this->beltfunction();
+		}
+	}
+
+	protected function b64() {
+		$a = $this->rg();
+		$a >>= 24;
+		$a &= 0x3f;
+		$a = substr($this->base64, $a, 1);
+		return $a;		
+	}
+
+	public function __construct($password, $salt) {
+		$this->init_rg();
+		$m = substr($salt, 0, 10) . "+" . $password;
+		$this->init_rg();
+		$this->input_map($m);
+		$this->runmill(32753);
+		$this->base64 = 
+	    "0123456789@ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz.";
+		$this->hash = substr($salt, 0, 10);
+		for($a = 0; $a < 22; $a++) {
+			$this->hash .= $this->b64();
+		}
+	}
+
+}
+	
+	
+
 # This is testing code which I used to make sure this code
 # generates correct test vectors.
+# rg32crypt interface
 #@$in = $argv[1];
-#$test = new rg32($in);
-#for($a=0;$a<8;$a++) {
-#	printf("%08x", $test->rg());
-#}
+#$test = new rg32crypt($in,"~~12345678");
+#print $test->hash;
+#print "\n";
+# RG32 interface
+#$test2 = new rg32($in);
+#for($a = 0; $a < 8; $a++) {printf("%08x",$test2->rg());}
 #print "\n";
 
 ?>
