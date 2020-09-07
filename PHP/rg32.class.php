@@ -186,6 +186,8 @@ class rg32 {
 
 }
 
+# This is a pure PHP implementation of rg32crypt, which is a 
+# RadioGatun[32] password hashing method.
 class rg32crypt extends rg32 {
 	protected $base64;
 	public $hash;
@@ -225,11 +227,15 @@ class rg32crypt extends rg32 {
 # This is testing code which I used to make sure this code
 # generates correct test vectors.
 # rg32crypt interface
+# “@” here suppresses errors; use with caution
+# Remove # as needed
 #@$in = $argv[1];
-#$test = new rg32crypt($in,"~~12345678");
+#@$salt = $argv[2];
+#if(!$salt) {$salt = "~~12345678";}
+#$test = new rg32crypt($in,$salt);
 #print $test->hash;
 #print "\n";
-# RG32 interface
+## RG32 interface ##
 #$test2 = new rg32($in);
 #for($a = 0; $a < 8; $a++) {printf("%08x",$test2->rg());}
 #print "\n";
