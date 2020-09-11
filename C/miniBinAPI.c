@@ -5,8 +5,10 @@ void rg32_f(uint32_t*a,uint32_t*b){
 	for(c=0;c<12;c++)b[c+c%3*o]^=a[c+1];
 	for(c=0;c<m;c++){
 		r=(c+r)&31;y=c*7;x=a[y++%m];x^=a[y%m]|~a[(y+1)%m];
-		A[c]=A[c+m]=x>>r|x<<(32-r)%32;
-	}for(y=39;y--;b[y+1]=b[y])a[y%m]=A[y]^A[y+1]^A[y+4];*a^=1;
+		A[c]=(x>>r)|(x<<((32-r)%32));
+	}
+        for(y=39;y--;b[y+1]=b[y])a[y%m]=A[y]^A[(y+1)%m]^A[(y+4)%m];
+	*a^=1;
 	for(c=0;c<3;c++)a[c+o]^=b[c*o]=b[c*o+o];}
 void rg32_seed(uint32_t*u,uint32_t*w,char*v,uint32_t len){
 	uint32_t s,q,c;
