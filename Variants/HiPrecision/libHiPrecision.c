@@ -15,6 +15,7 @@ typedef struct arbNum {
 // before more significant (bigger) numbers
 // Base should be “256” but this code originally added base-10 numbers
 // together.
+// This creates a new arbNum with the output of the operation
 arbNum *add(arbNum *a, arbNum *b, uint32_t base) {
     arbNum *out, *z;
     int carry = 0;
@@ -53,6 +54,7 @@ arbNum *add(arbNum *a, arbNum *b, uint32_t base) {
 // Binary XOR
 // What base we are in doesn’t matter with exclusive or; since XOR is base
 // 2, the base will become a power of 2 by doing this operation
+// This creates a new arbNum with the output of the operation
 arbNum *xor(arbNum *a, arbNum *b) {
     arbNum *out, *z;
     out = malloc(sizeof(struct arbNum));
@@ -78,6 +80,7 @@ arbNum *xor(arbNum *a, arbNum *b) {
 }
 
 // Binary AND
+// This creates a new arbNum with the output of the operation
 arbNum *band(arbNum *a, arbNum *b) {
     arbNum *out, *z;
     out = malloc(sizeof(struct arbNum));
@@ -99,6 +102,7 @@ arbNum *band(arbNum *a, arbNum *b) {
 }
 
 // Binary OR
+// This creates a new arbNum with the output of the operation
 arbNum *bor(arbNum *a, arbNum *b) {
     arbNum *out, *z;
     out = malloc(sizeof(struct arbNum));
@@ -125,6 +129,7 @@ arbNum *bor(arbNum *a, arbNum *b) {
 
 // We need to specify a length when doing a “not” operation
 // Note that this will return an error on non-power of 2 bases
+// This creates a new arbNum with the output of the operation
 arbNum *bnot(arbNum *a, int32_t len, int32_t base) {
     if((base & (base - 1)) != 0) {return NULL;} // Must be power of 2
     arbNum *out, *z;
@@ -168,7 +173,8 @@ void truncateArb(arbNum *a, int32_t len) {
 } 
 
 // Expand a number to be N words in size with 0 padding (if needed).  If the
-// number is too big, do nothing.  Create the number as needed.
+// number is too big, do nothing.  Create the number as needed.  We only need
+// to look at the return value if creating a new number.
 arbNum *zeroPadArb(arbNum *a, int32_t len) {
     arbNum *z = NULL;
     arbNum *top = NULL;
@@ -202,6 +208,9 @@ arbNum *zeroPadArb(arbNum *a, int32_t len) {
 // value to use)
 // We rotate in place, but this can move the pointer to the top of the
 // linked list
+// We need to update the pointer to the arbNum based on the return value
+// of this function, but memory is not allocated (we move its top to rotate
+// the bits).
 arbNum *rotateRightArb(arbNum *a, uint32_t rotateBits, uint32_t digitBits) {
     arbNum *top, *last;
 
@@ -233,7 +242,8 @@ arbNum *rotateRightArb(arbNum *a, uint32_t rotateBits, uint32_t digitBits) {
 
 // Add a digit to the end of the linked list.  This is used for the
 // input mapping.  Create linked list if needed; point to either
-// existing or created linked list
+// existing or created linked list (we only need to look at return
+// value when making new list)
 arbNum *addDigitToArb(arbNum *a, int32_t digit) {
     arbNum *new;
     arbNum *top;
