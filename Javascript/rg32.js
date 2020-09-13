@@ -78,6 +78,12 @@ function rg32(input) {
 
 	}
 
+	// This is a public function used to run the belt+mill a given
+	// number of times.  Each iteration is the work needed to generate
+	// 64 bits worth of pseudo-random numbers.  This is used for
+	// systems (such as password crypting) where we want to expend
+	// more work making a given pseudo-random number, to make dictionary
+	// attacks and rainbow table generation more difficult.
 	this.runbelt = function(iterations) {
 		var c;
 		for(c = 0; c < iterations; c++) {
