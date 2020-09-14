@@ -278,6 +278,116 @@ arbNum *addDigitToArb(arbNum *a, int32_t digit) {
     return top;
 }
 
+// How many digits does a given arbNum have?
+// return 0 is NULL (no digits)
+uint32_t arbLen(arbNum *a) {
+    uint32_t out;
+    if(a == NULL){return 0;}
+    out = 1;
+    while(a->next != NULL){
+        out++;
+        a = a->next;
+    }
+    return out;
+}
+
+// Initialize an array of arbNum elements
+// Input:
+// elements: Number of arbNum elements
+// digits: Number of digits each arbNum element has (set to 0 here; if
+//     this is 0, we just make an array of NULL pointers)
+arbNum **makeArbNumArray(uint32_t elements, uint32_t digits) {
+    arbNum **out = NULL;
+    uint32_t a, b;
+    out = malloc(elements * sizeof(arbNum *));
+    if(out == NULL) {return NULL;}
+    for(a = 0; a < elements; a++) {
+        out[a] = NULL;
+        for(b = 0; b < digits; b++) {
+            out[a] = addDigitToArb(out[a], 0);
+        }
+    }
+    return out;
+}
+
+// Copy an arbNum 
+arbNum *copyArb(arbNum *a) {
+    arbNum *out = NULL;
+    arbNum *z;
+    if(a == NULL) {return NULL;}
+    out = malloc(sizeof(struct arbNum));
+    z = out;
+    while(a != NULL) {
+        z->val = a->val;
+        if(a->next != NULL) {
+            z->next = malloc(sizeof(struct arbNum));
+        } else {
+            z->next = NULL;
+        }
+        z = z->next;
+        a = a->next;
+    }
+    return out;
+}
+
+#define MILLSIZE 19
+// Return the RadioGatun Belt and Mill 
+// Input: 
+//   Belt (array of 39 RadioGatún elements)
+//   Mill (array of 19 RadioGatún elements)
+//   len: The number of digits in each elements
+//   base: The number of possible value per digit (usually 256) must be
+//         a power of 2
+void RGbeltMill(arbNum **belt, arbNum **mill, int32_t len, int32_t base) {
+    if(belt == NULL || mill == NULL) { return; }
+    if(base < 2) { return; }
+    int digitBits = 0;
+    int a;
+    int rotate = 0;
+    arbNum **millPrime;
+    // arbNum *k;
+    a = 1;
+    while(a < base) {
+         digitBits++;
+         a <<= 1;
+         if(a > 16777216) { break; }
+    }
+    if(a != base) { return; }
+    millPrime = makeArbNumArray(MILLSIZE, 0);
+    // Belt to mill feedforward
+    for(a = 0; a < MILLSIZE - 7; a++) {
+        arbNum *z;
+        int n = a + ((a % 3) * (MILLSIZE - 6)); // Belt element to change
+        z = xor(belt[n],mill[a + 1]);
+        truncateArb(belt[n],0);
+        belt[n] = z;
+    }
+    // Core mill function
+    for(a = 0; a < MILLSIZE; a++) {
+        int j;
+        arbNum *z, *y;
+        j = (a * 7) % MILLSIZE;
+        rotate += a;
+        z = bnot(mill[(j + 2) % MILLSIZE], len, base);
+        y = bor(mill[(j + 1) % MILLSIZE],z);
+        truncateArb(z,0);
+        z = xor(mill[j],y);
+        truncateArb(y,0);
+        z = rotateRightArb(z, j, digitBits);
+        millPrime[a] = z;
+    } 
+    for(a = 0; a < MILLSIZE; a++) {
+        arbNum *z, *y;
+        z = xor(millPrime[a], millPrime[(a + 1) % MILLSIZE]);
+        y = xor(z, millPrime[(a + 4) % MILLSIZE]);
+        truncateArb(z,0);
+        truncateArb(mill[a],0);
+        mill[a] = y;
+    }
+    // Belt rotate 
+    // CODE HERE
+}
+
 // Convert the low 32-bits of a high precision number in to an unsigned
 // 32-bit number.  Assumes each “digit” in arbNum is 8 bits in size
 uint32_t convertArb32(arbNum *a) {
@@ -370,5 +480,21 @@ int main() {
 	b = bnot(a,4,256);
         printArbNum(b,"%02x");
     }
+    a = truncateArb(a,0);
+    b = truncateArb(b,0);
+    puts("Test #7: addDigitToArb and arbLen test");
+    for(z = 0; z <= 32; z++) {
+        a = addDigitToArb(a, z);
+        printArbNum(a,"%02x");
+        printf("%d\n",arbLen(a));
+    }
+    a = truncateArb(a,0);
+    puts("Test #8: copyArb test");
+    a = makeArb32(0x12345678);
+    b = copyArb(a);
+    printArbNum(a,"%02x");
+    printArbNum(b,"%02x");
+    a = truncateArb(a,0);
+    b = truncateArb(a,0);
 }
 #endif // TEST
