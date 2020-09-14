@@ -250,6 +250,9 @@ arbNum *rotateRightArb(arbNum *a, uint32_t rotateBits, uint32_t digitBits) {
 // input mapping.  Create linked list if needed; point to either
 // existing or created linked list (we only need to look at return
 // value when making new list)
+// The digit will be a new higher significance digit.  For example,
+// if the value is 0x7f (127) and we add 0xff, the resulting value
+// is 7f->ff, or 0xff7f (65407)
 arbNum *addDigitToArb(arbNum *a, int32_t digit) {
     arbNum *new;
     arbNum *top;
@@ -263,3 +266,65 @@ arbNum *addDigitToArb(arbNum *a, int32_t digit) {
     a->next = new;
     return top;
 }
+
+// Convert the low 32-bits of a high precision number in to an unsigned
+// 32-bit number.  Assumes each “digit” in arbNum is 8 bits in size
+uint32_t convertArb32(arbNum *a) {
+    uint32_t out;
+    int z;
+    out = 0;
+    for(z = 0; z < 4; z++) {
+        if(a == NULL) {break;}
+	out |= ((a->val & 0xff) << 8 * z);
+	a = a->next;
+    }
+    return out;
+}
+
+// Convert a 32-bit unsigned number in to a 4-digit, 8-bit-per-digit
+// arbNum.  Allocates a new arbNum
+arbNum *makeArb32(uint32_t a) {
+    arbNum *out;
+    arbNum *z;
+    int c;
+    out = malloc(sizeof(struct arbNum));
+    if(out == NULL) {return NULL;}
+    z = out;
+    for(c = 0; c < 4; c++) {
+	z->val = (a & 0xff);
+        a >>= 8;
+        if(c < 3) {
+            z->next = malloc(sizeof(struct arbNum));
+            if(z->next == NULL) {return NULL;}
+            z = z->next;
+        } else {
+            z->next = NULL;
+        }
+    }
+    return out;
+}
+
+#ifdef TEST
+#include <stdio.h>
+void printArbNum(arbNum *a, char *fmt) {
+    if(fmt == NULL){fmt = "%x";}
+    while(a != NULL) {
+        printf(fmt, a->val);
+        if(a->next != NULL) {
+            printf("->");
+        }
+        a = a->next;
+    }
+    puts("");
+}
+
+int main() {
+    arbNum *a, *b, *c;
+    a = makeArb32(0x01020304);
+    printArbNum(a,"%x");
+    b = makeArb32(0x10203040);
+    printArbNum(b,"%x");
+    c = xor(a,b);
+    printArbNum(c,"%x");
+}
+#endif // TEST
