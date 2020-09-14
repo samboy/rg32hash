@@ -163,6 +163,7 @@ arbNum *bnot(arbNum *a, int32_t len, int32_t base) {
 arbNum *truncateArb(arbNum *a, int32_t len) {
     arbNum *out;
     out = a;
+    if(a == NULL) { return NULL; }
     while(len > 0 && a != NULL) {
         a = a->next;
         len--;
@@ -359,6 +360,15 @@ int main() {
         a = makeArb32(0x80000000);
         a = rotateRightArb(a,z,8);
         printArbNum(a,"%02x");
+    }
+    puts("Test #6: not test");
+    for(z = 0; z <= 32; z++) {
+	a = truncateArb(a,0);
+        b = truncateArb(b,0);
+        a = makeArb32(0x80000000);
+        a = rotateRightArb(a,z,8);
+	b = bnot(a,4,256);
+        printArbNum(b,"%02x");
     }
 }
 #endif // TEST
