@@ -213,6 +213,7 @@ arbNum *zeroPadArb(arbNum *a, int32_t len) {
 // the bits).
 arbNum *rotateRightArb(arbNum *a, uint32_t rotateBits, uint32_t digitBits) {
     arbNum *top, *last;
+    uint32_t v = 0;
 
     // First, make it a circular linked list (easier to rotate)
     top = a;
@@ -230,9 +231,14 @@ arbNum *rotateRightArb(arbNum *a, uint32_t rotateBits, uint32_t digitBits) {
 
     // Now, rotate the bits in each digit
     a = top;
+    v = a->val;
     do {
-	a->val = (a->val >> rotateBits) | 
-                 (a->next->val << (digitBits - rotateBits));
+        if(a->next == top) {
+	    a->val = (a->val >> rotateBits) | (v << (digitBits - rotateBits));
+        } else {
+	    a->val = (a->val >> rotateBits) | 
+                     (a->next->val << (digitBits - rotateBits));
+        }
         last = a;
 	a = a->next;
     } while(a != top);
