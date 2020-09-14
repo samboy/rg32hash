@@ -159,7 +159,10 @@ arbNum *bnot(arbNum *a, int32_t len, int32_t base) {
 // operation (remember, the further down the linked list we are, the
 // bigger the numbers are).  Use this as truncateArb(a,0) to zap
 // entire number
-void truncateArb(arbNum *a, int32_t len) {
+// Output: arbNum if still there, NULL if completely zapped
+arbNum *truncateArb(arbNum *a, int32_t len) {
+    arbNum *out;
+    out = a;
     while(len > 0 && a != NULL) {
         a = a->next;
         len--;
@@ -170,6 +173,8 @@ void truncateArb(arbNum *a, int32_t len) {
         a = a->next;
         free(tmp);
     }
+    if(len == 0) {return NULL;}
+    return out;
 } 
 
 // Expand a number to be N words in size with 0 padding (if needed).  If the
@@ -215,6 +220,10 @@ arbNum *rotateRightArb(arbNum *a, uint32_t rotateBits, uint32_t digitBits) {
     arbNum *top, *last;
     uint32_t v = 0;
 
+    uint32_t mask = 1;
+    mask = 1 << digitBits;
+    mask--;
+
     // First, make it a circular linked list (easier to rotate)
     top = a;
     if(top == NULL) {return NULL;}
@@ -239,6 +248,7 @@ arbNum *rotateRightArb(arbNum *a, uint32_t rotateBits, uint32_t digitBits) {
 	    a->val = (a->val >> rotateBits) | 
                      (a->next->val << (digitBits - rotateBits));
         }
+        a->val &= mask;
         last = a;
 	a = a->next;
     } while(a != top);
@@ -320,11 +330,35 @@ void printArbNum(arbNum *a, char *fmt) {
 
 int main() {
     arbNum *a, *b, *c;
+    int z;
+    puts("Test #1: makeArb32.  Should be 04->03->02->01");
     a = makeArb32(0x01020304);
-    printArbNum(a,"%x");
+    printArbNum(a,"%02x");
+    puts("Should be 40->30->20->10");
     b = makeArb32(0x10203040);
-    printArbNum(b,"%x");
+    printArbNum(b,"%02x");
+    puts("Test #2: XOR.  Should be 44->33->22->11");
     c = xor(a,b);
-    printArbNum(c,"%x");
+    printArbNum(c,"%02x");
+    c = truncateArb(c,0);
+    puts("Test #3: OR.  Should be 44->33->22->11");
+    c = bor(a,b);
+    printArbNum(c,"%02x");
+    a = truncateArb(a,0);
+    b = truncateArb(b,0);
+    c = truncateArb(c,0);
+    puts("Test #4: Rotate 32 times.");
+    a = makeArb32(0x80000000);
+    for(z = 0; z <= 32; z++) {
+	printArbNum(a,"%02x");
+        a = rotateRightArb(a,1,8);
+    }
+    puts("Test #5: Rotate test #2");
+    for(z = 0; z <= 32; z++) {
+	a = truncateArb(a,0);
+        a = makeArb32(0x80000000);
+        a = rotateRightArb(a,z,8);
+        printArbNum(a,"%02x");
+    }
 }
 #endif // TEST

@@ -4,4 +4,4 @@ clean:
 	rm -f libHiPrecisionTest *.exe
 
 libHiPrecisionTest: libHiPrecision.c
-	${CC} ${CFLAGS} -DTEST -o libHiPrecisionTest libHiPrecision.c
+	${CC} ${CFLAGS} -Wall -DTEST -o libHiPrecisionTest libHiPrecision.c
