@@ -585,6 +585,7 @@ int main(int argc, char **argv) {
     if(argc == 3) {
         int w = atoi(argv[2]); // Number of 8-bit bytes in word length
         int x = 16 / w;
+        if(x < 1) { x = 1; }
         initRG(argv[1],w);
         printRGnum(gMill, gBelt, x, w, 256);
         cleanRG();
