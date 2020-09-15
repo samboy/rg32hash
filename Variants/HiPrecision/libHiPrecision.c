@@ -410,7 +410,6 @@ void RGbeltMill(arbNum **belt, arbNum **mill, int32_t len, int32_t base) {
     // Iota; quick and dirty
     mill[0]->val ^= 1;
 }
-
     
 // Convert the low 32-bits of a high precision number in to an unsigned
 // 32-bit number.  Assumes each “digit” in arbNum is 8 bits in size
@@ -449,14 +448,58 @@ arbNum *makeArb32(uint32_t a) {
     return out;
 }
 
+// Given 8-bit digits, initialize the RG state based on an input string
+// and any word size.  To keep things simple, the input string is a 
+// NUL-terminated string, and we’ll just have a global state.
+// Digits is the number of 8-bit words this RadioGatún variant uses.
+arbNum **gBelt;
+arbNum **gMill;
+char *inputMapRG(arbNum **belt, arbNum **mill, char *in, int32_t digits) {
+    int z;
+    for(z = 0; z < 3; z++) {
+        int y;
+        for(y = 0; y < digits; y++) {
+             arbNum *m, *b;
+             m = gMill[(MILLSIZE - 3) + z]; 
+             b = gBelt[(MILLSIZE - 6) * z];
+             int32_t w, x;
+             w = *in;
+             w &= 0xff;
+             in++;
+             for(x = 0; x < digits - 1; x++) {
+		 m = m->next;
+                 b = b->next;
+             }
+             if(w == 0) {
+		 m->val ^= 1;
+                 b->val ^= 1;
+                 return NULL;
+             } else {
+                 m->val ^= w;
+                 b->val ^= w;
+             }
+        }         
+    } 
+    RGbeltMill(belt, mill, digits, 256);
+    return in;
+}
+
+void initRG(char *in, int32_t digits) {
+    int z;
+    if(digits < 1) { return; }
+    gBelt = makeArbNumArray((MILLSIZE - 6) * 3,digits);
+    gMill = makeArbNumArray(MILLSIZE,digits);
+    while(in != NULL) { in = inputMapRG(gBelt, gMill, in, digits); }
+    for(z = 0; z < 18; z++) {
+        RGbeltMill(gBelt, gMill, digits, 256);
+    }
+}
+
 #ifdef TEST
 #include <stdio.h>
-
 // Initialize a RG32 state with a 32-bit fixed-length seed
 // This is in the TEST code because this has too many “business
 // logic” assumptions.
-arbNum **gBelt;
-arbNum **gMill;
 void initRG32(uint32_t seed) {
     int z;
     gBelt = makeArbNumArray((MILLSIZE - 6) * 3,4);
@@ -575,6 +618,8 @@ int main() {
     b = truncateArb(a,0);
     puts("Test #9: RG32 test");
     initRG32(0x34333231); // "1234"
+    printRGnum(gMill, gBelt, 4, 4, 256);
+    initRG("1234",4);
     printRGnum(gMill, gBelt, 4, 4, 256);
 }
 #endif // TEST
