@@ -388,19 +388,32 @@ void RGbeltMill(arbNum **belt, arbNum **mill, int32_t len, int32_t base) {
         truncateArb(mill[a],0);
         mill[a] = y;
     }
+    printRG();//DEBUG
+    for(a = 0; a < MILLSIZE; a++) {
+        truncateArb(millPrime[a],0);
+    }
     // Belt rotate 
-    k = copyArb(belt[(3 * (MILLSIZE - 6)) - 1]);
+    k = belt[(3 * (MILLSIZE - 6)) - 1];
     for(a = (3 * (MILLSIZE - 6)) - 1; a > 0; a--) {
-        arbNum *q;
-        q = copyArb(belt[a - 1]);
-        truncateArb(belt[a],0);
-        belt[a] = q;
+        belt[a] = belt[a - 1];
     }
     truncateArb(belt[0],0);
-    belt[0] = k;
-    // CODE HERE
+    // Final “move down” to make single belt rotate 3-row rotate
+    belt[0] = belt[MILLSIZE - 6];
+    belt[MILLSIZE - 6] = belt[2 * (MILLSIZE - 6)];
+    belt[2 * (MILLSIZE - 6)] = k;
+    // Belt to mill
+    for(a = 0; a < 3; a++) {
+        arbNum *z;
+        z = xor(mill[(MILLSIZE - 6) + a],belt[(MILLSIZE - 6) * a]); 
+        truncateArb(mill[(MILLSIZE - 6) + a],0);
+        mill[(MILLSIZE - 6) + a] = z;
+    }
+    // Iota; quick and dirty
+    belt[0]->val ^= 1;
 }
 
+    
 // Convert the low 32-bits of a high precision number in to an unsigned
 // 32-bit number.  Assumes each “digit” in arbNum is 8 bits in size
 uint32_t convertArb32(arbNum *a) {
@@ -440,7 +453,24 @@ arbNum *makeArb32(uint32_t a) {
 
 #ifdef TEST
 #include <stdio.h>
-void printArbNum(arbNum *a, char *fmt) {
+
+// Initialize a RG32 state with a 32-bit fixed-length seed
+// This is in the TEST code because this has too many “business
+// logic” assumptions.
+arbNum **gBelt;
+arbNum **gMill;
+void initRG32(uint32_t seed) {
+    gBelt = makeArbNumArray((MILLSIZE - 6) * 3,4);
+    gMill = makeArbNumArray(MILLSIZE,4);
+    truncateArb(gBelt[0],0);
+    gBelt[0] = makeArb32(seed);
+    gBelt[MILLSIZE - 6]->val ^= 1;
+    truncateArb(gMill[MILLSIZE - 3],0);
+    gMill[MILLSIZE - 3] = makeArb32(seed);
+    gMill[MILLSIZE - 2]->val ^= 1;
+}
+
+void printArbNum(arbNum *a, char *fmt, int newLine) {
     if(fmt == NULL){fmt = "%x";}
     while(a != NULL) {
         printf(fmt, a->val);
@@ -449,32 +479,47 @@ void printArbNum(arbNum *a, char *fmt) {
         }
         a = a->next;
     }
-    puts("");
+    if(newLine == 1) {puts("");}
+    if(newLine == 2) {printf(" ");}
 }
 
+void printRG() {
+    int a;
+    int n = MILLSIZE - 6;
+    for(a = 0; a < n; a++) {
+        printArbNum(gMill[a],"%02x",2);
+        printArbNum(gBelt[a],"%02x",2);
+        printArbNum(gBelt[a + n],"%02x",2);
+        printArbNum(gBelt[a + n + n],"%02x",1);
+    }
+    for(;a < MILLSIZE; a++) {
+        printArbNum(gMill[a],"%02x",1);
+    }
+}
+	
 int main() {
     arbNum *a, *b, *c;
     int z;
     puts("Test #1: makeArb32.  Should be 04->03->02->01");
     a = makeArb32(0x01020304);
-    printArbNum(a,"%02x");
+    printArbNum(a,"%02x",1);
     puts("Should be 40->30->20->10");
     b = makeArb32(0x10203040);
-    printArbNum(b,"%02x");
+    printArbNum(b,"%02x",1);
     puts("Test #2: XOR.  Should be 44->33->22->11");
     c = xor(a,b);
-    printArbNum(c,"%02x");
+    printArbNum(c,"%02x",1);
     c = truncateArb(c,0);
     puts("Test #3: OR.  Should be 44->33->22->11");
     c = bor(a,b);
-    printArbNum(c,"%02x");
+    printArbNum(c,"%02x",1);
     a = truncateArb(a,0);
     b = truncateArb(b,0);
     c = truncateArb(c,0);
     puts("Test #4: Rotate 32 times.");
     a = makeArb32(0x80000000);
     for(z = 0; z <= 32; z++) {
-	printArbNum(a,"%02x");
+	printArbNum(a,"%02x",1);
         a = rotateRightArb(a,1,8);
     }
     puts("Test #5: Rotate test #2");
@@ -482,7 +527,7 @@ int main() {
 	a = truncateArb(a,0);
         a = makeArb32(0x80000000);
         a = rotateRightArb(a,z,8);
-        printArbNum(a,"%02x");
+        printArbNum(a,"%02x",1);
     }
     puts("Test #6: not test");
     for(z = 0; z <= 32; z++) {
@@ -491,23 +536,27 @@ int main() {
         a = makeArb32(0x80000000);
         a = rotateRightArb(a,z,8);
 	b = bnot(a,4,256);
-        printArbNum(b,"%02x");
+        printArbNum(b,"%02x",1);
     }
     a = truncateArb(a,0);
     b = truncateArb(b,0);
     puts("Test #7: addDigitToArb and arbLen test");
     for(z = 0; z <= 32; z++) {
         a = addDigitToArb(a, z);
-        printArbNum(a,"%02x");
+        printArbNum(a,"%02x",1);
         printf("%d\n",arbLen(a));
     }
     a = truncateArb(a,0);
     puts("Test #8: copyArb test");
     a = makeArb32(0x12345678);
     b = copyArb(a);
-    printArbNum(a,"%02x");
-    printArbNum(b,"%02x");
+    printArbNum(a,"%02x",1);
+    printArbNum(b,"%02x",1);
     a = truncateArb(a,0);
     b = truncateArb(a,0);
+    puts("Test #9: RG32 test");
+    initRG32(0x34333231); // "1234"
+    printRG();
+    RGbeltMill(gBelt, gMill, 4, 256);
 }
 #endif // TEST
