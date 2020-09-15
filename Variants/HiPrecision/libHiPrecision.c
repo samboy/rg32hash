@@ -391,6 +391,7 @@ void RGbeltMill(arbNum **belt, arbNum **mill, int32_t len, int32_t base) {
     for(a = 0; a < MILLSIZE; a++) {
         truncateArb(millPrime[a],0);
     }
+    free(millPrime);
     // Belt rotate 
     k = belt[(3 * (MILLSIZE - 6)) - 1];
     for(a = (3 * (MILLSIZE - 6)) - 1; a > 0; a--) {
@@ -484,6 +485,8 @@ char *inputMapRG(arbNum **belt, arbNum **mill, char *in, int32_t digits) {
     return in;
 }
 
+// Given an input string, and the word size (in bytes; e.g. RadioGatún[32]
+// has a value of 4), initialize the RadioGatún state
 void initRG(char *in, int32_t digits) {
     int z;
     if(digits < 1) { return; }
@@ -493,6 +496,19 @@ void initRG(char *in, int32_t digits) {
     for(z = 0; z < 18; z++) {
         RGbeltMill(gBelt, gMill, digits, 256);
     }
+}
+
+// Free the memory used by an initialized RG32 state
+void cleanRG() {
+    int z;
+    for(z = 0; z < MILLSIZE; z++) {
+	gMill[z] = truncateArb(gMill[z],0);
+    }
+    for(z = 0; z < (MILLSIZE - 6) * 3; z++) {
+	gBelt[z] = truncateArb(gBelt[z],0);
+    }
+    free(gMill);
+    free(gBelt);
 }
 
 #ifdef TEST
@@ -615,11 +631,13 @@ int main() {
     printArbNum(a,"%02x",1);
     printArbNum(b,"%02x",1);
     a = truncateArb(a,0);
-    b = truncateArb(a,0);
+    b = truncateArb(b,0);
     puts("Test #9: RG32 test");
     initRG32(0x34333231); // "1234"
     printRGnum(gMill, gBelt, 4, 4, 256);
+    cleanRG(); 
     initRG("1234",4);
     printRGnum(gMill, gBelt, 4, 4, 256);
+    cleanRG();
 }
 #endif // TEST
