@@ -575,7 +575,13 @@ void printRGnum(arbNum **mill, arbNum **belt, int n, int words, int base) {
     puts("");
 }
 
-int main() {
+int main(int argc, char **argv) {
+    if(argc == 2) {
+        initRG(argv[1],4);
+        printRGnum(gMill, gBelt, 4, 4, 256);
+        cleanRG();
+        return 0;
+    }
     arbNum *a, *b, *c;
     int z;
     puts("Test #1: makeArb32.  Should be 04->03->02->01");
@@ -639,5 +645,6 @@ int main() {
     initRG("1234",4);
     printRGnum(gMill, gBelt, 4, 4, 256);
     cleanRG();
+    return 0;
 }
 #endif // TEST
