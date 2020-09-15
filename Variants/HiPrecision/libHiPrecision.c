@@ -377,10 +377,12 @@ void RGbeltMill(arbNum **belt, arbNum **mill, int32_t len, int32_t base) {
         truncateArb(z,0);
         z = xor(mill[j],y);
         truncateArb(y,0);
-        z = rotateRightArb(z, j, digitBits);
+        z = rotateRightArb(z, rotate, digitBits);
         millPrime[a] = z;
     } 
+    puts("millPrime");//DEBUG
     for(a = 0; a < MILLSIZE; a++) {
+        printArbNum(millPrime[a],"%02x",1);//DEBUG
         arbNum *z, *y;
         z = xor(millPrime[a], millPrime[(a + 1) % MILLSIZE]);
         y = xor(z, millPrime[(a + 4) % MILLSIZE]);
@@ -388,7 +390,6 @@ void RGbeltMill(arbNum **belt, arbNum **mill, int32_t len, int32_t base) {
         truncateArb(mill[a],0);
         mill[a] = y;
     }
-    printRG();//DEBUG
     for(a = 0; a < MILLSIZE; a++) {
         truncateArb(millPrime[a],0);
     }
