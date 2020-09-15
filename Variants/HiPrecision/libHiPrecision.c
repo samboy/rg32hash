@@ -330,6 +330,10 @@ arbNum *copyArb(arbNum *a) {
     return out;
 }
 
+// RadioGatún specific stuff
+// The following number has to be the second number in a “sexy prime”
+// pair, such as 11, 13, 17, 19, 23, 29, 37, 43, 47, 53, etc. (see
+// https://oeis.org/A046117 ).  It is 19 for RadioGatún.
 #define MILLSIZE 19
 // Return the RadioGatun Belt and Mill 
 // Input: 
@@ -345,7 +349,7 @@ void RGbeltMill(arbNum **belt, arbNum **mill, int32_t len, int32_t base) {
     int a;
     int rotate = 0;
     arbNum **millPrime;
-    // arbNum *k;
+    arbNum *k;
     a = 1;
     while(a < base) {
          digitBits++;
@@ -385,6 +389,15 @@ void RGbeltMill(arbNum **belt, arbNum **mill, int32_t len, int32_t base) {
         mill[a] = y;
     }
     // Belt rotate 
+    k = copyArb(belt[(3 * (MILLSIZE - 6)) - 1]);
+    for(a = (3 * (MILLSIZE - 6)) - 1; a > 0; a--) {
+        arbNum *q;
+        q = copyArb(belt[a - 1]);
+        truncateArb(belt[a],0);
+        belt[a] = q;
+    }
+    truncateArb(belt[0],0);
+    belt[0] = k;
     // CODE HERE
 }
 
