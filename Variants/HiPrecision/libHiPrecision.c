@@ -380,9 +380,7 @@ void RGbeltMill(arbNum **belt, arbNum **mill, int32_t len, int32_t base) {
         z = rotateRightArb(z, rotate, digitBits);
         millPrime[a] = z;
     } 
-    puts("millPrime");//DEBUG
     for(a = 0; a < MILLSIZE; a++) {
-        printArbNum(millPrime[a],"%02x",1);//DEBUG
         arbNum *z, *y;
         z = xor(millPrime[a], millPrime[(a + 1) % MILLSIZE]);
         y = xor(z, millPrime[(a + 4) % MILLSIZE]);
@@ -398,7 +396,6 @@ void RGbeltMill(arbNum **belt, arbNum **mill, int32_t len, int32_t base) {
     for(a = (3 * (MILLSIZE - 6)) - 1; a > 0; a--) {
         belt[a] = belt[a - 1];
     }
-    truncateArb(belt[0],0);
     // Final “move down” to make single belt rotate 3-row rotate
     belt[0] = belt[MILLSIZE - 6];
     belt[MILLSIZE - 6] = belt[2 * (MILLSIZE - 6)];
@@ -411,7 +408,7 @@ void RGbeltMill(arbNum **belt, arbNum **mill, int32_t len, int32_t base) {
         mill[(MILLSIZE - 6) + a] = z;
     }
     // Iota; quick and dirty
-    belt[0]->val ^= 1;
+    mill[0]->val ^= 1;
 }
 
     
@@ -461,6 +458,7 @@ arbNum *makeArb32(uint32_t a) {
 arbNum **gBelt;
 arbNum **gMill;
 void initRG32(uint32_t seed) {
+    int z;
     gBelt = makeArbNumArray((MILLSIZE - 6) * 3,4);
     gMill = makeArbNumArray(MILLSIZE,4);
     truncateArb(gBelt[0],0);
@@ -469,21 +467,30 @@ void initRG32(uint32_t seed) {
     truncateArb(gMill[MILLSIZE - 3],0);
     gMill[MILLSIZE - 3] = makeArb32(seed);
     gMill[MILLSIZE - 2]->val ^= 1;
+    for(z = 0; z < 18; z++) { 
+        RGbeltMill(gBelt, gMill, 4, 256);
+    }
 }
 
-void printArbNum(arbNum *a, char *fmt, int newLine) {
+// Print the contents of an arbNum
+// Mode:
+// 1: 1->2->3->4 followed by new line
+// 2: 1->2->3->4 followed by space
+// 3: 01020304 followed by nothing
+void printArbNum(arbNum *a, char *fmt, int mode) {
     if(fmt == NULL){fmt = "%x";}
     while(a != NULL) {
         printf(fmt, a->val);
-        if(a->next != NULL) {
+        if(a->next != NULL && mode != 3) {
             printf("->");
         }
         a = a->next;
     }
-    if(newLine == 1) {puts("");}
-    if(newLine == 2) {printf(" ");}
+    if(mode == 1) {puts("");}
+    if(mode == 2) {printf(" ");}
 }
 
+// Print the full RG belt and mill
 void printRG() {
     int a;
     int n = MILLSIZE - 6;
@@ -497,7 +504,18 @@ void printRG() {
         printArbNum(gMill[a],"%02x",1);
     }
 }
-	
+
+// Print n * 2 words based on the rg32 state
+void printRGnum(arbNum **mill, arbNum **belt, int n, int words, int base) {
+    while(n > 0) {
+        printArbNum(mill[1],"%02x",3);
+        printArbNum(mill[2],"%02x",3);
+        RGbeltMill(belt, mill, words, base);
+        n--;
+    }
+    puts("");
+}
+
 int main() {
     arbNum *a, *b, *c;
     int z;
@@ -557,7 +575,6 @@ int main() {
     b = truncateArb(a,0);
     puts("Test #9: RG32 test");
     initRG32(0x34333231); // "1234"
-    printRG();
-    RGbeltMill(gBelt, gMill, 4, 256);
+    printRGnum(gMill, gBelt, 4, 4, 256);
 }
 #endif // TEST
