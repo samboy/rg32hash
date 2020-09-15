@@ -466,7 +466,7 @@ char *inputMapRG(arbNum **belt, arbNum **mill, char *in, int32_t digits) {
              w = *in;
              w &= 0xff;
              in++;
-             for(x = 0; x < digits - 1; x++) {
+             for(x = 0; x < y; x++) {
 		 m = m->next;
                  b = b->next;
              }
