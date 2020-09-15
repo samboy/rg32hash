@@ -582,6 +582,14 @@ int main(int argc, char **argv) {
         cleanRG();
         return 0;
     }
+    if(argc == 3) {
+        int w = atoi(argv[2]); // Number of 8-bit bytes in word length
+        int x = 16 / w;
+        initRG(argv[1],w);
+        printRGnum(gMill, gBelt, x, w, 256);
+        cleanRG();
+        return 0;
+    }
     arbNum *a, *b, *c;
     int z;
     puts("Test #1: makeArb32.  Should be 04->03->02->01");
