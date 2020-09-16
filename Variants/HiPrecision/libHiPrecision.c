@@ -568,11 +568,13 @@ char *inputMapRG(arbNum **belt, arbNum **mill, char *in, int32_t digits) {
 // has a value of 4), initialize the RadioGatún state
 void initRG(char *in, int32_t digits) {
     int z;
+    int blankRounds = 18;
+    if(digits > 8) { blankRounds++; }
     if(digits < 1) { return; }
     gBelt = makeArbNumArray((MILLSIZE - 6) * 3,digits);
     gMill = makeArbNumArray(MILLSIZE,digits);
     while(in != NULL) { in = inputMapRG(gBelt, gMill, in, digits); }
-    for(z = 0; z < 18; z++) {
+    for(z = 0; z < blankRounds; z++) {
         RGbeltMill(gBelt, gMill, digits, 256);
     }
 }
@@ -734,7 +736,13 @@ int main(int argc, char **argv) {
     initRG("1234",4);
     printRGnum(gMill, gBelt, 4, 4, 256);
     cleanRG();
-    for(z = 1 ; z <= 20; z++) {
+    for(z = 1 ; z <= 18; z++) {
+	printf("Words: %d Sat: %d\n",z,roundsToMillSat(z));
+    }
+    for(z = 20; z < 32; z+=4) {
+	printf("Words: %d Sat: %d\n",z,roundsToMillSat(z));
+    }
+    for(z = 32; z <= 64; z+= 16) {
 	printf("Words: %d Sat: %d\n",z,roundsToMillSat(z));
     }
     return 0;
