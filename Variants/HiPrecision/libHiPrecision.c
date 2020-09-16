@@ -594,6 +594,7 @@ void cleanRG() {
 
 #ifdef TEST
 #include <stdio.h>
+#include <string.h>
 
 // Initialize a RG32 state with a 32-bit fixed-length seed
 // This is in the TEST code because this has too many “business
@@ -658,6 +659,33 @@ void printRGnum(arbNum **mill, arbNum **belt, int n, int words, int base) {
 }
 
 int main(int argc, char **argv) {
+    if(argc > 3 || (argc >= 2 && strcmp(argv[1],"--help") == 0)) {
+        puts("Usage: libHiPrecisionTest (lots of tests)");
+        puts("libHiPrecisionTest 1234 returns the RadioGatun[32] sum");
+        puts("libHiPrecisionTest 1234 8 returns the RadioGatun[64] sum");
+        puts("libHiPrecisionTest 1234 2 is the RadioGatun[16] sum");
+        puts("libHiPrecisionTest 1234 16 uses unofficial RadioGatun[128]");
+        puts("libHiPrecisionTest --help shows this");
+        puts("libHiPrecisionTest --blankRounds shows blank round info");
+        puts("libHiPrecisionTest --blankRounds 16 also works");
+        return 0;
+    }
+    if(argc >= 2 && strcmp(argv[1],"--blankRounds") == 0) {
+        int z;
+        if(argc == 3) {
+            z = atoi(argv[2]);
+            if(z < 1 || z > 64) { z = 4; }
+            printf("Words: %d Sat: %d\n",z,roundsToMillSat(z));
+            return 0;
+        }
+        for(z = 1 ; z <= 18; z++) {
+	    printf("Words: %d Sat: %d\n",z,roundsToMillSat(z));
+        }
+	printf("Words: %d Sat: %d\n",20,roundsToMillSat(20));
+	printf("Words: %d Sat: %d\n",24,roundsToMillSat(24));
+	printf("Words: %d Sat: %d\n",32,roundsToMillSat(32));
+        return 0;
+    }
     if(argc == 2) {
         initRG(argv[1],4);
         printRGnum(gMill, gBelt, 4, 4, 256);
@@ -666,6 +694,7 @@ int main(int argc, char **argv) {
     }
     if(argc == 3) {
         int w = atoi(argv[2]); // Number of 8-bit bytes in word length
+        if(w < 1 || w > 64) { w = 4; }
         int x = 16 / w;
         if(x < 1) { x = 1; }
         initRG(argv[1],w);
@@ -736,15 +765,6 @@ int main(int argc, char **argv) {
     initRG("1234",4);
     printRGnum(gMill, gBelt, 4, 4, 256);
     cleanRG();
-    for(z = 1 ; z <= 18; z++) {
-	printf("Words: %d Sat: %d\n",z,roundsToMillSat(z));
-    }
-    for(z = 20; z < 32; z+=4) {
-	printf("Words: %d Sat: %d\n",z,roundsToMillSat(z));
-    }
-    for(z = 32; z <= 64; z+= 16) {
-	printf("Words: %d Sat: %d\n",z,roundsToMillSat(z));
-    }
     return 0;
 }
 #endif // TEST
