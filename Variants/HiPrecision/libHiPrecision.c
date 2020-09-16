@@ -466,6 +466,31 @@ int isSat(arbNum **a, int32_t elements, int32_t allOnes) {
     return 1;
 }
 
+// Get information about the number of rounds for every bit in the
+// mill of a given arbitrary word size to influence every other bit
+int roundsToMillSat(int32_t words) {
+    int b, max, d;
+    max = 0;
+    for(b = 0; b < MILLSIZE; b++) {
+        int c;
+        for(c = 0; c < words * 8; c++) {
+            arbNum **a;
+            int z;
+            a = makeArbNumArray(MILLSIZE, words);
+            a[b]->val = 1;
+            a[b] = rotateRightArb(a[b],c,8);
+            d = 0;
+            while(isSat(a, MILLSIZE, 0xff) == 0) {
+                RGcoverage(a, words, 8);
+                d++;
+            }
+            if(d > max) { max = d; }
+            for(z=0;z<MILLSIZE;z++){a[z]=truncateArb(a[z],0);}free(a);//Cleanup
+        } 
+    }
+    return max;
+}
+
 // Convert the low 32-bits of a high precision number in to an unsigned
 // 32-bit number.  Assumes each “digit” in arbNum is 8 bits in size
 uint32_t convertArb32(arbNum *a) {
@@ -567,6 +592,7 @@ void cleanRG() {
 
 #ifdef TEST
 #include <stdio.h>
+
 // Initialize a RG32 state with a 32-bit fixed-length seed
 // This is in the TEST code because this has too many “business
 // logic” assumptions.
@@ -708,6 +734,9 @@ int main(int argc, char **argv) {
     initRG("1234",4);
     printRGnum(gMill, gBelt, 4, 4, 256);
     cleanRG();
+    for(z = 1 ; z <= 20; z++) {
+	printf("Words: %d Sat: %d\n",z,roundsToMillSat(z));
+    }
     return 0;
 }
 #endif // TEST
