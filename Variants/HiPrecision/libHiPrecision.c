@@ -411,7 +411,61 @@ void RGbeltMill(arbNum **belt, arbNum **mill, int32_t len, int32_t base) {
     // Iota; quick and dirty
     mill[0]->val ^= 1;
 }
-    
+
+// See how many mill rounds we need before we get full coverage    
+// Here, “full coverage” means, that if a single bit is set, and
+// we replace all of RadioGatún’s operations with or, how many
+// rounds of the mill do we need to run before every bit is set
+// In other words, how long before a given bit affects all bits in 
+// the mill.
+void RGcoverage(arbNum **mill, int32_t len, int32_t digitBits) {
+    if(mill == NULL) { return; }
+    int a;
+    int rotate = 0;
+    arbNum **millPrime;
+    millPrime = makeArbNumArray(MILLSIZE, 0);
+    // Core mill function
+    for(a = 0; a < MILLSIZE; a++) {
+        int j;
+        arbNum *z, *y;
+        j = (a * 7) % MILLSIZE;
+        rotate += a;
+        y = bor(mill[(j + 1) % MILLSIZE],mill[(j + 2) % MILLSIZE]);
+        z = bor(mill[j],y);
+        truncateArb(y,0);
+        z = rotateRightArb(z, rotate, digitBits);
+        millPrime[a] = z;
+    } 
+    for(a = 0; a < MILLSIZE; a++) {
+        arbNum *z, *y;
+        z = bor(millPrime[a], millPrime[(a + 1) % MILLSIZE]);
+        y = bor(z, millPrime[(a + 4) % MILLSIZE]);
+        truncateArb(z,0);
+        truncateArb(mill[a],0);
+        mill[a] = y;
+    }
+    for(a = 0; a < MILLSIZE; a++) {
+        truncateArb(millPrime[a],0);
+    }
+    free(millPrime);
+}
+
+// Is a given array of arbNum “saturated”, i.e. is every value 0xff (allOnes)?
+int isSat(arbNum **a, int32_t elements, int32_t allOnes) {
+    int z;
+    for(z = 0; z < elements; z++) {
+        arbNum *x;
+        x = a[z];
+        while(x != NULL) {
+            if(x->val != allOnes) {
+                return 0;
+            }
+            x = x->next;
+        }
+    }
+    return 1;
+}
+
 // Convert the low 32-bits of a high precision number in to an unsigned
 // 32-bit number.  Assumes each “digit” in arbNum is 8 bits in size
 uint32_t convertArb32(arbNum *a) {
