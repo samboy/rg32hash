@@ -570,7 +570,9 @@ void initRG(char *in, int32_t digits) {
     int z;
     int blankRounds = 18;
     if(digits > 8) { blankRounds++; }
+    if(digits > 45) { blankRounds++; }
     if(digits < 1) { return; }
+    if(digits > 64) { digits = 4; } // Anything past 512 bits is untested
     gBelt = makeArbNumArray((MILLSIZE - 6) * 3,digits);
     gMill = makeArbNumArray(MILLSIZE,digits);
     while(in != NULL) { in = inputMapRG(gBelt, gMill, in, digits); }
