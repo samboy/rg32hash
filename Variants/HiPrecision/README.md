@@ -60,6 +60,18 @@ sum for a given NUL-terminated string:
 ./libHiPrecisionTest foo
 ```
 
+One can get RadioGatún[64] sums:
+
+```
+./libHiPrecisionTest foo 8
+```
+
+Or even (unofficial) RadioGatún[128] sums:
+
+```
+./libHiPrecisionTest foo 16
+```
+
 To get full usage directions:
 
 ```
