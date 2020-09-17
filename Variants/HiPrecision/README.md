@@ -34,3 +34,35 @@ RadioGatun[128] (unofficial variant)
 RadioGatún[16], RadioGatún[32], and RadioGatún[64] have 18 blank rounds.
 RadioGatún[128], on the other hand, has 19 blank rounds.
 
+# Building
+
+To build this package, one needs a C compiler (Both `GCC` and `Clang` 
+will work), and a version of `make`.  The Makefile does *not* require
+GNU make.
+
+To build, do this:
+
+```
+export CFLAGS=-O3
+make
+```
+
+If one does not have make:
+
+```
+cc -O3 -Wall -DTEST -o libHiPrecisionTest libHiPrecision.c
+```
+
+Once that is done, this will show, on standard output, the RadioGatún[32]
+sum for a given NUL-terminated string:
+
+```
+./libHiPrecisionTest foo
+```
+
+To get full usage directions:
+
+```
+./libHiPrecisionTest --help
+```
+
