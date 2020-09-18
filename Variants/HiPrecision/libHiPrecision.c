@@ -595,6 +595,50 @@ void cleanRG() {
 }
 
 #ifdef TEST
+// Standard RadioGatún test vectors
+char *vectors[] ={
+"",
+"0",
+"1",
+"2",
+"3",
+"4",
+"5",
+"6",
+"7",
+"8",
+"9",
+"12",
+"123",
+"1234",
+"12345",
+"123456",
+"1234567",
+"12345678",
+"123456789",
+"1234567890",
+"12345678901",
+"123456789012",
+"1234567890123",
+"12345678901234",
+"123456789012345",
+"1234567890123456",
+"12345678901234567",
+"123456789012345678",
+"1234567890123456789",
+"12345678901234567890",
+"123456789012345678901",
+"1234567890123456789012",
+"12345678901234567890123",
+"123456789012345678901234",
+"SECOND CRYPTOGRAPHIC HASH WORKSHOP",
+"August 24-25, 2006",
+"Santa Barbara, California",
+"In response to the SHA-1 vulnerability that was announced in Feb. 2005, NIST held a Cryptographic Hash Workshop on Oct. 31-Nov. 1, 2005 to solicit public input on its cryptographic hash function policy and standards. NIST continues to recommend a transition from SHA-1 to the larger approved hash functions (SHA-224, SHA-256, SHA-384, and SHA-512). In response to the workshop, NIST has also decided that it would be prudent in the long-term to develop an additional hash function through a public competition, similar to the development process for the block cipher in the Advanced Encryption Standard (AES).",
+"12345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890",
+"¡Es una niña!",
+NULL};
+
 #include <stdio.h>
 #include <string.h>
 
@@ -650,16 +694,49 @@ void printRG() {
 }
 
 // Print n * 2 words based on the rg32 state
-void printRGnum(arbNum **mill, arbNum **belt, int n, int words, int base) {
+void printRGnum(arbNum **mill, arbNum **belt, int n, int words, int base, 
+		int z) {
     while(n > 0) {
         printArbNum(mill[1],"%02x",3);
         printArbNum(mill[2],"%02x",3);
         RGbeltMill(belt, mill, words, base);
         n--;
     }
-    puts("");
+    if(z == 0) {
+        puts("");
+    }
 }
 
+void testVector(int wordsize) {
+    char **v;
+    v = vectors;
+    int a = 0;
+    while(v[a] != NULL) {
+        int x = 16 / wordsize;
+        if(x < 1) { x = 1; }
+        int b = wordsize;
+	b *= 8;
+	printf("RadioGatun[%d](\"%s\") = \"",b,v[a]);
+        initRG(v[a],wordsize);
+        printRGnum(gMill, gBelt, x, wordsize, 256, 1);
+        puts("\")");
+        a++;
+    }
+}
+
+void testVectors() {
+    int wordsize;
+    for(wordsize = 1; wordsize < 8; wordsize++) {
+        testVector(wordsize);
+    }
+    for(wordsize = 8; wordsize < 16; wordsize+=2) {
+        testVector(wordsize);
+    }
+    for(wordsize = 16; wordsize <= 32; wordsize+=4) {
+        testVector(wordsize);
+    }
+}
+    
 int main(int argc, char **argv) {
     if(argc > 3 || (argc >= 2 && strcmp(argv[1],"--help") == 0)) {
         puts("Usage: libHiPrecisionTest (lots of tests)");
@@ -670,7 +747,11 @@ int main(int argc, char **argv) {
         puts("libHiPrecisionTest --help shows this");
         puts("libHiPrecisionTest --blankRounds shows blank round info");
         puts("libHiPrecisionTest --blankRounds 16 also works");
+        puts("libHiPrecisionTest --testVectors shows test vectors");
         return 0;
+    }
+    if(argc == 2 && strcmp(argv[1],"--testVectors") == 0) {
+        testVectors();return(0);
     }
     if(argc >= 2 && strcmp(argv[1],"--blankRounds") == 0) {
         int z;
@@ -690,7 +771,7 @@ int main(int argc, char **argv) {
     }
     if(argc == 2) {
         initRG(argv[1],4);
-        printRGnum(gMill, gBelt, 4, 4, 256);
+        printRGnum(gMill, gBelt, 4, 4, 256, 0);
         cleanRG();
         return 0;
     }
@@ -700,7 +781,7 @@ int main(int argc, char **argv) {
         int x = 16 / w;
         if(x < 1) { x = 1; }
         initRG(argv[1],w);
-        printRGnum(gMill, gBelt, x, w, 256);
+        printRGnum(gMill, gBelt, x, w, 256, 0);
         cleanRG();
         return 0;
     }
@@ -762,10 +843,10 @@ int main(int argc, char **argv) {
     b = truncateArb(b,0);
     puts("Test #9: RG32 test");
     initRG32(0x34333231); // "1234"
-    printRGnum(gMill, gBelt, 4, 4, 256);
+    printRGnum(gMill, gBelt, 4, 4, 256, 0);
     cleanRG(); 
     initRG("1234",4);
-    printRGnum(gMill, gBelt, 4, 4, 256);
+    printRGnum(gMill, gBelt, 4, 4, 256, 0);
     cleanRG();
     return 0;
 }
