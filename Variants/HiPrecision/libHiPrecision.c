@@ -719,20 +719,14 @@ void testVector(int wordsize) {
 	printf("RadioGatun[%d](\"%s\") = \"",b,v[a]);
         initRG(v[a],wordsize);
         printRGnum(gMill, gBelt, x, wordsize, 256, 1);
-        puts("\")");
+        puts("\"");
         a++;
     }
 }
 
 void testVectors() {
     int wordsize;
-    for(wordsize = 1; wordsize < 8; wordsize++) {
-        testVector(wordsize);
-    }
-    for(wordsize = 8; wordsize < 16; wordsize+=2) {
-        testVector(wordsize);
-    }
-    for(wordsize = 16; wordsize <= 32; wordsize+=4) {
+    for(wordsize = 1; wordsize < 32; wordsize *= 2) {
         testVector(wordsize);
     }
 }
