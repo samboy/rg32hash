@@ -665,12 +665,20 @@ void initRG32(uint32_t seed) {
 // 1: 1->2->3->4 followed by new line
 // 2: 1->2->3->4 followed by space
 // 3: 01020304 followed by nothing
+// 4-35: Print only mode - 3 bytes of the number
 void printArbNum(arbNum *a, char *fmt, int mode) {
+    int z;
+    z = 3;
+    if(mode > 35) { return; } // Currently undefined.  Do nothing.
     if(fmt == NULL){fmt = "%x";}
     while(a != NULL) {
         printf(fmt, a->val);
-        if(a->next != NULL && mode != 3) {
+        if(a->next != NULL && mode < 3) {
             printf("->");
+        }
+        if(mode > 3) { // Modes 4-35 limit the number of bytes we show
+            z++;
+            if(z >= mode) { return; }
         }
         a = a->next;
     }
@@ -693,14 +701,27 @@ void printRG() {
     }
 }
 
-// Print n * 2 words based on the rg32 state
+// Print n bytes (OK, words) in hex based on the rg32 state
 void printRGnum(arbNum **mill, arbNum **belt, int n, int words, int base, 
 		int z) {
     while(n > 0) {
-        printArbNum(mill[1],"%02x",3);
-        printArbNum(mill[2],"%02x",3);
+        if(n > 0) {
+            if(n > 32) {
+                printArbNum(mill[1],"%02x",3);
+            } else {
+                printArbNum(mill[1],"%02x",3+n);
+            }
+            n -= words;
+        }
+        if(n > 0) {
+            if(n > 32) {
+                printArbNum(mill[2],"%02x",3);
+            } else {
+                printArbNum(mill[2],"%02x",3+n);
+            }
+            n -= words;
+        }
         RGbeltMill(belt, mill, words, base);
-        n--;
     }
     if(z == 0) {
         puts("");
@@ -712,13 +733,12 @@ void testVector(int wordsize) {
     v = vectors;
     int a = 0;
     while(v[a] != NULL) {
-        int x = 16 / wordsize;
-        if(x < 1) { x = 1; }
         int b = wordsize;
 	b *= 8;
 	printf("RadioGatun[%d](\"%s\") = \"",b,v[a]);
         initRG(v[a],wordsize);
-        printRGnum(gMill, gBelt, x, wordsize, 256, 1);
+        printRGnum(gMill, gBelt, 32, wordsize, 256, 1);
+        cleanRG();
         puts("\"");
         a++;
     }
@@ -726,9 +746,10 @@ void testVector(int wordsize) {
 
 void testVectors() {
     int wordsize;
-    for(wordsize = 1; wordsize < 32; wordsize *= 2) {
+    for(wordsize = 1; wordsize <= 8; wordsize++) {
         testVector(wordsize);
     }
+    testVector(16);
 }
     
 int main(int argc, char **argv) {
@@ -765,17 +786,15 @@ int main(int argc, char **argv) {
     }
     if(argc == 2) {
         initRG(argv[1],4);
-        printRGnum(gMill, gBelt, 4, 4, 256, 0);
+        printRGnum(gMill, gBelt, 32, 4, 256, 0);
         cleanRG();
         return 0;
     }
     if(argc == 3) {
         int w = atoi(argv[2]); // Number of 8-bit bytes in word length
         if(w < 1 || w > 64) { w = 4; }
-        int x = 16 / w;
-        if(x < 1) { x = 1; }
         initRG(argv[1],w);
-        printRGnum(gMill, gBelt, x, w, 256, 0);
+        printRGnum(gMill, gBelt, 32, w, 256, 0);
         cleanRG();
         return 0;
     }
@@ -837,10 +856,10 @@ int main(int argc, char **argv) {
     b = truncateArb(b,0);
     puts("Test #9: RG32 test");
     initRG32(0x34333231); // "1234"
-    printRGnum(gMill, gBelt, 4, 4, 256, 0);
+    printRGnum(gMill, gBelt, 32, 4, 256, 0);
     cleanRG(); 
     initRG("1234",4);
-    printRGnum(gMill, gBelt, 4, 4, 256, 0);
+    printRGnum(gMill, gBelt, 32, 4, 256, 0);
     cleanRG();
     return 0;
 }
