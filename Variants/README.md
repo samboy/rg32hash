@@ -1,3 +1,26 @@
+# Variants supported
+
+We have code here which supports a large number of RadioGatún
+variants.
+
+`rg-variants.c` supports any word size in bytes between 8 and 64
+bits; any mill size that is the second number in a sexy prime
+pair: 11, 13, 17, 19, 23, 29, 37, 43, etc. as per 
+[A046117](https://oeis.org/A046117); any number of blank rounds;
+any value for the iota (exclusive or) constant, including using
+Keccak’s iota constant calculation or incrementing the iota constant
+every round, and a number of mill operations besides or-not (0. or-not
+as per RadioGatún 1. Subtraction as per RV200 2. not-add 3. not-add
+as per Keccak 4. NORX “subtraction”)
+
+`rg32-infected.c` allows the RadioGatún[32] initial state, instead of
+being all 0s, be digits of Pi or the genetic sequence for the
+SARS-CoV-2 virus which causes COVID-19.
+
+The directory `HiPrecision` has an arbitrary precision library which
+allows us to look at the RadioGatún[128] and other large word size
+variants.
+
 # A thought experiment: Infinite Radio Gatun
 
 For all practical purposes, in the universe that exists, RadioGatun may
