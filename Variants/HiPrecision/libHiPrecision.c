@@ -746,10 +746,9 @@ void testVector(int wordsize) {
 
 void testVectors() {
     int wordsize;
-    for(wordsize = 1; wordsize <= 8; wordsize++) {
+    for(wordsize = 1; wordsize <= 64; wordsize++) {
         testVector(wordsize);
     }
-    testVector(16);
 }
     
 int main(int argc, char **argv) {
@@ -763,6 +762,7 @@ int main(int argc, char **argv) {
         puts("libHiPrecisionTest --blankRounds shows blank round info");
         puts("libHiPrecisionTest --blankRounds 16 also works");
         puts("libHiPrecisionTest --testVectors shows test vectors");
+        puts("libHiPrecisionTest --tests runs tests");
         return 0;
     }
     if(argc == 2 && strcmp(argv[1],"--testVectors") == 0) {
@@ -784,7 +784,7 @@ int main(int argc, char **argv) {
 	printf("Words: %d Sat: %d\n",32,roundsToMillSat(32));
         return 0;
     }
-    if(argc == 2) {
+    if(argc == 2 && *argv[1] != '-') {
         initRG(argv[1],4);
         printRGnum(gMill, gBelt, 32, 4, 256, 0);
         cleanRG();
@@ -797,6 +797,10 @@ int main(int argc, char **argv) {
         printRGnum(gMill, gBelt, 32, w, 256, 0);
         cleanRG();
         return 0;
+    }
+    if(argc < 2 || strcmp(argv[1],"--tests") != 0) {
+        puts("libHiPrecisionTest --help shows help");
+        return 1;
     }
     arbNum *a, *b, *c;
     int z;
