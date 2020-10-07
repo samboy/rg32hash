@@ -1,3 +1,10 @@
+==Overview==
+
+This is a look at doing various operations (rotate left, rotate right, 
+and, or, xor) in bases which are not powers of 2.
+
+==Rotate Left, Rotate Right==
+
 It’s possible to do the equivalent of “rotate left” and “rotate right”
 for any positive natural number base.
 
@@ -58,5 +65,43 @@ a generalized “rotate right” rule.  The rotate right rule is this:
 * Divide by two.  
 * If the resulting number is a fraction, add (base / 2) to the number
 * Round the number down, if needed (only when the base is a power of 2)
+
+==XOR==
+
+XOR is both addition or subtraction; only in base two is addition 
+and subtraction the same.
+
+Here’s an old job interview question on how to swap two variables 
+containing real numbers without a temp variable:
+
+a = a - b
+b = a + b
+a = b - a
+
+This also works with any integers.
+
+The standard answer uses XOR:
+
+a = a ^ b
+b = a ^ b
+a = b ^ a
+
+But, since XOR is addition or subtractions base two, the first XOR is
+a subtraction, the second XOR is addition, and the third XOR is
+a subtraction.
+
+So, to generalize XOR to any base we need to do the following:
+
+* Decide whether XOR is really addition or subtraction
+* Break down a given base in to its prime factors
+* Perform addition (or subtraction) individually for each prime factor
+  in an order we need to decide on
+
+Point being, XOR for a prime base is simply addition or subtraction
+modulo that base, which means we can not get the cryptographic benefits
+of a standard AXR (Add, XOR, Rotate) construction in a prime base.
+
+Is there a way of viewing XOR in say, base seven, which makes it 
+different from addition or subtraction base seven?
 
 
