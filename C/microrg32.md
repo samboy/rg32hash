@@ -14,7 +14,7 @@ microrg32.c is a security hardened version of tinyrg32.c:
 ## Compile
 
 ```
-cc -O3 -o microrg32 microrg32.c
+cc -Wall -Wpedantic -O3 -o microrg32 microrg32.c
 ```
 
 ## Run
@@ -174,6 +174,10 @@ getenv("P");if(q&&p>2){for(;;m()){b(3){for(r=0;r<4;){f[c*h]^=k=(*q?*q&255:
 c;if(c%2)m();b(4){y=y>0?y:*v[2]%16;i=s;s>>=8;if(y!=0){i&=31;i+=i<8?50:89;}
 printf(y?"%c":"%02x",i&255);}c=r;if(--y<1||c>981)puts("");}return 0;}}}}}}
 ```
+
+This code is correct C code: It compiles in `gcc`, `clang`, `tcc`, and
+`cproc` without any warnings generated, even when compiled with
+`-Wall -Wpedantic`
 
 ## Copyright
 
