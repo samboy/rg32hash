@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 # This script takes hex numbers on the standard input and outputs
 # their tinyrg32 base32 form on the standard output
