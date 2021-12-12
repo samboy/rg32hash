@@ -23,6 +23,7 @@ cc -O3 -o microrg32 microrg32.c
 LEN=4
 export P="$LEN:Some secret:example.com"
 ./microrg32 1 $LEN | head -1
+export P="foo"
 ```
 
 Replace `Some secret` with a suitably hard to guess secret string.
@@ -48,6 +49,7 @@ Acts the same as:
 LEN=4
 export P="$LEN:Some secret:example.com"
 ./microrg32 @ $LEN | head -1
+export P="foo"
 ```
 
 ## Determining how much work to make a password
@@ -83,13 +85,14 @@ LEN=4
 SECRET="Some long passphrase with random text, like qhohxks5mx9el9v6ujg3t."
 export P="$LEN:$SECRET:example.com"
 ./microrg32 3 $LEN | head -1
+export P="foo"
 ```
 
 (Be sure to have SECRET be different than the above example!)
 
 Now, let’s suppose some cybercriminals obtain the password database
 at example.com.  While they perform brute force searches to get passwords
-(which will, as of 2018, take some time with the above password, which has 
+(which will, as of 2021, take some time with the above password, which has 
 some 80 bits of entropy), we can update our password at example.com with
 a new one:
 
@@ -98,6 +101,7 @@ LEN=4
 SECRET="Some long passphrase with random text, like qhohxks5mx9el9v6ujg3t."
 export P="$LEN:$SECRET:example.com"
 ./microrg32 3 $LEN | head -2 | tail -1
+export P="foo"
 ```
 
 Should example.com now require us to change our password every 90 days,
@@ -108,6 +112,7 @@ LEN=4
 SECRET="Some long passphrase with random text, like qhohxks5mx9el9v6ujg3t."
 export P="$LEN:$SECRET:example.com"
 ./microrg32 3 $LEN | head -3 | tail -1
+export P="foo"
 ```
 
 ## The characters used in generated passwords
@@ -128,7 +133,7 @@ the upper three bits of each byte, since getting more bytes is so trivial
 with the RadioGatún algorithm.
 
 Here is a Python program which reads hex numbers on the standard input
-(e.g. "1234abcd321a") and converts them in to the base32 format used
+(e.g. `1234abcd321a`) and converts them in to the base32 format used
 for passwords:
 
 ```python
@@ -156,9 +161,27 @@ for line in sys.stdin:
         print("")
 ```
 
+## Security notes about environment variables
+
+microrg32 uses the environment variable `P` to read the secret which is
+then converted in to an encrypted password.  Environmental variables can
+be seen by the following on a POSIX system:
+
+* The current process and any child processes (even if the child process
+  is a setuid process)
+* To any process run as the same user/group after environment
+  variables are passed to a child process
+* To the root user after environment variables are passed to
+  a child process
+
+That in mind, do not run microrg32 on a system where either the root user
+or one’s own user account can not be trusted to keep secrets, and be
+sure to reset the `P` environment variable after using it with microrg32
+(This is why we have the `export P="foo"` lines in the examples).
+
 ## The program
 
-microrg32.c, which generates the passwords, is as follows:
+`microrg32.c`, which generates the passwords, is as follows:
 
 ```c
 #include <stdio.h> // cc -o microrg32 microrg32.c ; WORK=3 ; LEN=4 #######
