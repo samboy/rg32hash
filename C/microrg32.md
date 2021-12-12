@@ -165,7 +165,7 @@ for line in sys.stdin:
 
 microrg32 uses the environment variable `P` to read the secret which is
 then converted in to an encrypted password.  Environmental variables can
-be seen by the following on a POSIX system:
+be seen by the following on a POSIX/*NIX system:
 
 * The current process and any child processes (even if the child process
   is a setuid process)
@@ -174,10 +174,16 @@ be seen by the following on a POSIX system:
 * To the root user after environment variables are passed to
   a child process
 
+Unlike command line arguments, they are *not* visible to other non-root
+processes running on the same POSIX/*NIX system.
+
 That in mind, do not run microrg32 on a system where either the root user
 or one’s own user account can not be trusted to keep secrets, and be
-sure to reset the `P` environment variable after using it with microrg32
-(This is why we have the `export P="foo"` lines in the examples).
+sure to either reset the `P` environment variable after using it 
+with microrg32 (This is why we have the `export P="foo"` lines in 
+the examples) or terminate the process which set the `P` environment
+variable (usually, by having the shell script calling microrg32 exit
+after showing the encrypted password).
 
 ## The program
 
