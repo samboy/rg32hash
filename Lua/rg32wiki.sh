@@ -6,7 +6,11 @@
 
 LUA=lua
 
-if which lunacy > /dev/null ; then
+if which lua5.3 > /dev/null ; then
+	LUA=lua5.3
+elif which lua-5.3 > /dev/null ; then
+	LUA=lua-5.3
+elif which lunacy > /dev/null ; then
 	LUA=lunacy
 fi
 
