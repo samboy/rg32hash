@@ -154,9 +154,7 @@ end
 
 -- Given an input string, make a string with the hex RadioGatun[32] sum
 function p.rg32sum(i)
-  local input = grabString(i)
-  local belt, mill = RG32inputMap(i)
-  -- print(lunacyVerifyVector(i)) -- DEBUG
+  local belt, mill = RG32inputMap(grabString(i))
   return makeRG32sum(belt,mill)
 end
 
