@@ -133,21 +133,28 @@ local function RG32inputMap(i)
   return belt, mill
 end
 
-function p.rg32sum(i)
+-- Get the input string from a function input
+-- depending on how the parent function is called, this can be a Mediawiki 
+-- table with all args or it can be a simple string.
+function grabString(i)
   local input = i
-  if type(i) == "table" then
+  if type(input) == "table" then
     local args = nil
     local pargs = nil
-    args = i.args
-    pargs = i:getParent().args
+    args = input.args
+    pargs = input:getParent().args
     if args and args[1] then 
-      i = args[1]
+      input = args[1]
     elseif pargs and pargs[1] then
-      i = pargs[1]
-    else
-      i = "123"
+      input = pargs[1]
     end
   end
+  return input
+end
+
+-- Given an input string, make a string with the hex RadioGatun[32] sum
+function p.rg32sum(i)
+  local input = grabString(i)
   local belt, mill = RG32inputMap(i)
   -- print(lunacyVerifyVector(i)) -- DEBUG
   return makeRG32sum(belt,mill)
@@ -155,23 +162,10 @@ end
 
 -- Given an input to hash, return a formatted version of the hash
 -- with both the input and hash value
-function p.rg32(frame)
-  local input = "1234"
-  local args = nil
-  local pargs = nil
-  -- The mw check allows this function to run outside of Mediawiki as
-  -- a standalone Lua script
-  if mw then
-    args = frame.args
-    pargs = frame:getParent().args
-  else
-    args = {}
-    args[1] = frame
-  end
-  if args[1] then
-    input = tostring(args[1])
-  elseif pargs[1] then
-    input = tostring(pargs[1])
+function p.rg32(i)
+  local input = grabString(i)
+  if not input then
+    input = "1234" -- Default value
   end
   local rginput
   -- Remove formatting from the string we give to the rg32 engine
