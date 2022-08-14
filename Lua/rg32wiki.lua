@@ -133,7 +133,7 @@ local function RG32inputMap(i)
   return belt, mill
 end
 
-function rg32sum(i)
+function p.rg32sum(i)
   local belt, mill = RG32inputMap(i)
   -- print(lunacyVerifyVector(i)) -- DEBUG
   return makeRG32sum(belt,mill)
@@ -163,7 +163,7 @@ function p.rg32(frame)
   -- Remove formatting from the string we give to the rg32 engine
   rginput = input:gsub("{{Background color|#%w+|(%w+)}}","%1")
   rginput = rginput:gsub("<[^>]+>","") -- Remove HTML tags
-  local sum = rg32sum(rginput)
+  local sum = p.rg32sum(rginput)
   -- This is the output in Mediawiki markup format we give to
   -- the caller of this function
   return(' RadioGatun[32]("' .. input .. '") =\n ' .. sum)
