@@ -134,6 +134,20 @@ local function RG32inputMap(i)
 end
 
 function p.rg32sum(i)
+  local input = i
+  if type(i) == "table" then
+    local args = nil
+    local pargs = nil
+    args = i.args
+    pargs = i:getParent().args
+    if args and args[1] then 
+      i = args[1]
+    elseif pargs and pargs[1] then
+      i = pargs[1]
+    else
+      i = "123"
+    end
+  end
   local belt, mill = RG32inputMap(i)
   -- print(lunacyVerifyVector(i)) -- DEBUG
   return makeRG32sum(belt,mill)
