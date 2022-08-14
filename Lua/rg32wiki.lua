@@ -147,6 +147,8 @@ function grabString(i)
       input = args[1]
     elseif pargs and pargs[1] then
       input = pargs[1]
+    else
+      input = "1234" -- Default value
     end
   end
   return input
@@ -162,9 +164,6 @@ end
 -- with both the input and hash value
 function p.rg32(i)
   local input = grabString(i)
-  if not input then
-    input = "1234" -- Default value
-  end
   local rginput
   -- Remove formatting from the string we give to the rg32 engine
   rginput = input:gsub("{{Background color|#%w+|(%w+)}}","%1")
