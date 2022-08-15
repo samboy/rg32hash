@@ -13,7 +13,7 @@ local function beltMill(belt, mill)
 
   -- Mill to belt feedforward
   for z = 0, 11 do
-    offset = z + ((z % 3) * 13) + 1
+    local offset = z + ((z % 3) * 13) + 1
     belt[offset] = bit32.bxor(belt[offset],mill[z + 2])
   end
 
@@ -136,7 +136,7 @@ end
 -- Get the input string from a function input
 -- depending on how the parent function is called, this can be a Mediawiki 
 -- table with all args or it can be a simple string.
-function grabString(i)
+local function grabString(i)
   local input = i
   if type(input) == "table" then
     local args = nil
