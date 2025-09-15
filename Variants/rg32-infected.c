@@ -93,6 +93,7 @@ void dwr_belt(DWR_WORD *a, DWR_WORD *b) {
 	}
 }
 
+/* Main function; remove this if using the above as an API in your program */
 /* Convert a null-terminated string in to a Radio Gatun state (doesn't
  * include padding and what not) */
 void dwr_input_map(DWR_WORD *a, DWR_WORD *b, uint8_t *v) {
@@ -140,6 +141,18 @@ typedef struct {
 	int index;
 } dwr_rg;
 
+/* This code, which shows the belt and bill, assumes three belt rows */
+void show_hash(dwr_rg *h) {
+	int a;
+	for(a = 0; a < DWR_BELTCOL; a++) {
+		printf("%08x %08x %08x %08x\n",h->a[a],
+        	       h->b[a],h->b[a+DWR_BELTCOL],h->b[a+(DWR_BELTCOL*2)]);
+        } 
+        for(a = 13; a < DWR_MILLSIZE; a++) {
+		printf("%08x\n",h->a[a]);
+        }
+}
+
 /* These are the "public methods" for this library */
 
 /* Given a null-terminated string, create a RG32 state using the string
@@ -181,6 +194,14 @@ dwr_rg *dwr_init_rg(char *v, uint32_t init_value) {
 		for(c = 0; c < DWR_MILLSIZE; c++) {
 			out->a[c] = pi_digits[c + (DWR_BELTROWS*DWR_BELTCOL)];
 		}
+        } else if(init_value==1 || (init_value>1024 && init_value<=131072)) {
+		for(c = 0; c < DWR_BELTROWS * DWR_BELTCOL; c++) {
+			out->b[c] = 0;
+		}
+		for(c = 0; c < DWR_MILLSIZE; c++) {
+			out->a[c] = 0;
+		}
+                out->b[2] = init_value;
 	} else if(init_value <= 1024) {
 		for(c = 0; c < DWR_BELTROWS * DWR_BELTCOL; c++) {
 			out->b[c] = init_value;
@@ -197,6 +218,8 @@ dwr_rg *dwr_init_rg(char *v, uint32_t init_value) {
 			out->a[c] = 0;
 		}
 	}
+
+        show_hash(out); // Show initial state of hash
 
 	out->index = 0;
 	dwr_input_map(out->a,out->b,(uint8_t*)v);
@@ -240,7 +263,6 @@ DWR_WORD dwr_rng(dwr_rg *state) {
 	return out;
 }
 
-/* Main function; remove this if using the above as an API in your program */
 int main(int argc, char **argv) {
 	dwr_rg *hash;
 	int a, init_value;
@@ -253,7 +275,7 @@ int main(int argc, char **argv) {
 	if(argc == 3) {
 		init_value = atoi(argv[2]);
 	}
-	if((init_value < 0 || init_value > 1024) && init_value != 2019
+	if((init_value < 0 || init_value > 131072) && init_value != 2019
 	   && init_value != 314159) {
 		printf("Invalid init value\n");
 		return 1;
