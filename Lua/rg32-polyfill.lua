@@ -5,6 +5,10 @@
 -- Lua 5.1 install.  No library using bitwise operations is needed
 -- for this polyfill.
 
+-- Please note this polyfill is very slow.  It’s for places where slow
+-- execution is better than going through the bother of installing
+-- Lunacy or the rg32 Lua library.
+
 -- Placed in the public domain 2020, 2025 Sam Trenholme
 
 -- If you have access to the Lua C API, or if you are using a version
@@ -23,8 +27,9 @@
 -- there are multiple places where "Lua scripting" means Lua 5.1
 -- scripting, even though Lua 5.3 has been out for over five years.
 
+if not rg32 then
 -- 4x4 xor table
-xorT = {{ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15 },
+local xorT = {{ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15 },
         { 1, 0, 3, 2, 5, 4, 7, 6, 9, 8, 11, 10, 13, 12, 15, 14 },
         { 2, 3, 0, 1, 6, 7, 4, 5, 10, 11, 8, 9, 14, 15, 12, 13 },
         { 3, 2, 1, 0, 7, 6, 5, 4, 11, 10, 9, 8, 15, 14, 13, 12 },
@@ -42,7 +47,8 @@ xorT = {{ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15 },
         { 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0 }}
 
 -- 4x4 or-not table (a|~b)
-orNotT = {{ 15, 14, 13, 12, 11, 10,  9,  8,  7,  6,  5,  4,  3,  2,  1,  0 },
+local orNotT = 
+         {{ 15, 14, 13, 12, 11, 10,  9,  8,  7,  6,  5,  4,  3,  2,  1,  0 },
           { 15, 15, 13, 13, 11, 11,  9,  9,  7,  7,  5,  5,  3,  3,  1,  1 },
           { 15, 14, 15, 14, 11, 10, 11, 10,  7,  6,  7,  6,  3,  2,  3,  2 },
           { 15, 15, 15, 15, 11, 11, 11, 11,  7,  7,  7,  7,  3,  3,  3,  3 },
@@ -61,7 +67,7 @@ orNotT = {{ 15, 14, 13, 12, 11, 10,  9,  8,  7,  6,  5,  4,  3,  2,  1,  0 },
 
 -- Like Javascript, we only run bitwise operations across 32 bits
 -- Here, tbl is one of the tables above
-function bitwise(a, b, sbox) 
+local function bitwise(a, b, sbox) 
   a = math.floor(a)
   a = a % 4294967296
   b = math.floor(b)
@@ -78,7 +84,7 @@ function bitwise(a, b, sbox)
 end
 
 -- Circular rotate right n bits
-function ror(a, bits) 
+local function ror(a, bits) 
   bits = bits % 32
   a = math.floor(a)
   a = a % 4294967296
@@ -88,11 +94,11 @@ function ror(a, bits)
   return a + b
 end
 
-function xor(a,b) return bitwise(a,b,xorT) end
-function orNot(a,b) return bitwise(a,b,orNotT) end
+local function xor(a,b) return bitwise(a,b,xorT) end
+local function orNot(a,b) return bitwise(a,b,orNotT) end
 
 -- Note that belt and mill are 1-indexed here
-function beltMill(belt, mill) 
+local function beltMill(belt, mill) 
 
   -- Mill to belt feedforward
   for z = 0, 11 do
@@ -142,7 +148,7 @@ function beltMill(belt, mill)
 end
 
 -- Debug function to show the belt and mill
-function showBeltMill(belt, mill)
+local function showBeltMill(belt, mill)
   for z = 1, 13 do
     print(string.format("%2d %08x %08x %08x %08x",z,mill[z],belt[z],
                         belt[z + 13],belt[z + 26]))
@@ -152,7 +158,7 @@ function showBeltMill(belt, mill)
   end
 end
 
-function initBeltMill()
+local function initBeltMill()
   local belt = {}
   local mill = {}
   for z = 1, 40 do
@@ -166,7 +172,7 @@ end
 
 -- Output strings which are hex numbers in the same endian order
 -- as RadioGatun[32] test vectors, given a float
-function makeLittleEndianHex(i) 
+local function makeLittleEndianHex(i) 
   local out = ""
   for z = 1, 4 do
     i = math.floor(i)
@@ -178,7 +184,7 @@ end
 
 -- Output a 256-bit digest string, given a radiogatun state.  Affects belt and
 -- mill, returns string
-function makeRG32sum(belt, mill)
+local function makeRG32sum(belt, mill)
   local out = ""
   for z = 1, 4 do
     out = out .. makeLittleEndianHex(mill[2]) .. makeLittleEndianHex(mill[3])
@@ -188,7 +194,7 @@ function makeRG32sum(belt, mill)
 end
 
 -- RadioGatun input map; given string return belt, mill, and "phase"
-function RG32inputMap(i) 
+local function RG32inputMap(i) 
   local belt, mill
   belt, mill = initBeltMill()
   local phase = 0;
@@ -220,7 +226,7 @@ function RG32inputMap(i)
 end
 
 -- Verify rg32 sum, if we're using Lunacy (my Lua 5.1 fork)
-function lunacyVerifyVector(i)
+local function lunacyVerifyVector(i)
   local out = ""
   if math.randomstrseed then
     math.randomstrseed(i)
@@ -231,20 +237,20 @@ function lunacyVerifyVector(i)
   return out
 end
 
-function RG32sum(i) 
+local function RG32sum(i) 
   local belt, mill = RG32inputMap(i)
   -- print(lunacyVerifyVector(i)) -- DEBUG
   return makeRG32sum(belt,mill)
 end
 
 -- Initialize a RG32 state we can get 32-bit PRNGs from
-function RG32init(i)
+local function RG32init(i)
   local belt, mill = RG32inputMap(i)
   return {belt = belt, mill = mill, phase = 1}
 end
 
 -- This returns a 32-bit pseudo-random integer from a RG32 state
-function RG32rand32(state)
+local function RG32rand32(state)
   if state.phase == 1 then
     state.phase = 2
   elseif state.phase == 2 then
@@ -261,9 +267,8 @@ end
 -- print(RG32rand32(rs))
 -- print(RG32sum("1234"))
 
-RG32state = false
+local RG32state = false
 
-if not rg32 then
   rg32 = {}
   function rg32.randomseed(seed) 
     RG32state = RG32init(tostring(seed))
